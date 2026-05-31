@@ -11,9 +11,14 @@
         public string GitHubUrl { get; set; } = string.Empty;
 
         // 계산 프로퍼티 (DB 저장 X)
-        public int DaysLeft => (Deadline - DateTime.Today).Days;
-        public double TargetProgress =>
-            Math.Min(100, (DateTime.Today - StartDate).TotalDays
-            / (Deadline - StartDate).TotalDays * 100);
+        public int DaysLeft { get { return (Deadline - DateTime.Today).Days; } }
+        public double TargetProgress
+        {
+            get
+            {
+                return Math.Min(100, (DateTime.Today - StartDate).TotalDays
+                    / (Deadline - StartDate).TotalDays * 100);
+            }
+        }
     }
 }

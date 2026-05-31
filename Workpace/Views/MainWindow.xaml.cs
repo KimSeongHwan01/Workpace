@@ -1,16 +1,23 @@
 ﻿using System.Windows;
+using Workpace.ViewModels;
 
 namespace Workpace.Views
 {
-    /// <summary>
-    /// Interaction logic for MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
+        // ProjectViewModel을 프로퍼티로 선언
+        // XAML에서 이 프로퍼티에 접근해서 칸반 보드 영역 DataContext로 연결
+        public ProjectViewModel ProjectVM { get; }
+
         public MainWindow()
         {
             InitializeComponent();
-            DataContext = new ViewModels.MainViewModel();
+
+            // MainViewModel — 사이드바 담당, 전체 DataContext로 설정
+            DataContext = new MainViewModel();
+
+            // ProjectViewModel — 칸반 보드 담당, 메시지 수신 대기 시작
+            ProjectVM = new ProjectViewModel();
         }
     }
 }
