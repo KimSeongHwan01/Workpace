@@ -13,11 +13,11 @@ namespace Workpace.Views
         {
             InitializeComponent();
 
-            // MainViewModel — 사이드바 담당, 전체 DataContext로 설정
-            DataContext = new MainViewModel();
-
-            // ProjectViewModel — 칸반 보드 담당, 메시지 수신 대기 시작
+            // ProjectViewModel 먼저 생성 — 메시지 수신 대기 시작
             ProjectVM = new ProjectViewModel();
+
+            // MainViewModel 생성 시 ProjectViewModel 전달
+            DataContext = new MainViewModel(ProjectVM);
         }
     }
 }

@@ -118,12 +118,9 @@
         <!-- ───────────────────────────────────────
              오른쪽 콘텐츠 영역 — 나중에 칸반/통계/설정으로 교체
              ─────────────────────────────────────── -->
-        <Border Grid.Column="1" Padding="32">
-            <TextBlock Text="프로젝트를 선택하세요"
-                       FontSize="20" Foreground="#9CA3AF"
-                       HorizontalAlignment="Center"
-                       VerticalAlignment="Center"/>
-        </Border>
+        <!-- 오른쪽 콘텐츠 영역 — CurrentView에 따라 화면 자동 전환 -->
+        <ContentControl Grid.Column="1"
+                Content="{Binding CurrentView}"/>
 
     </Grid>
 </Window>

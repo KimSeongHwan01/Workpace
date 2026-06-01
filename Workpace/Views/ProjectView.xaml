@@ -1,0 +1,267 @@
+﻿<UserControl x:Class="Workpace.Views.ProjectView"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:Workpace.Views"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <Grid Margin="32">
+        <Grid.RowDefinitions>
+            <!-- 1. 헤더 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 2. 진행률 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 3. 단계 표시 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 4. 탭 필터 -->
+            <RowDefinition Height="Auto"/>
+            <!-- 5. 칸반 보드 — 남은 공간 전부 차지 -->
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- 1. 헤더 영역 — 프로젝트 이름 + D-day 뱃지 -->
+        <StackPanel Grid.Row="0" Orientation="Horizontal" 
+            VerticalAlignment="Center" Margin="0,0,0,16">
+
+            <!-- 프로젝트 이름 -->
+            <TextBlock Text="{Binding CurrentProject.Name}"
+               FontSize="24" FontWeight="Bold"
+               Foreground="#1F1F1F"
+               VerticalAlignment="Center"/>
+
+            <!-- D-day 뱃지 -->
+            <Border Background="#F3F4F6" CornerRadius="6"
+            Padding="10,4" Margin="12,0,0,0"
+            VerticalAlignment="Center">
+                <TextBlock Text="{Binding DDayText}"
+                   FontSize="13" FontWeight="Medium"
+                   Foreground="{StaticResource PrimaryBrush}"/>
+            </Border>
+
+        </StackPanel>
+
+        <!-- 2. 진행률 영역 -->
+        <StackPanel Grid.Row="1" Margin="0,0,0,16">
+
+            <!-- 현재 진행률 -->
+            <DockPanel Margin="0,0,0,6">
+                <TextBlock Text="현재 진행률:" FontSize="13"
+                   Foreground="#6B7280" Width="80"/>
+                <TextBlock Text="{Binding CurrentProgressText}"
+                   FontSize="13" Foreground="#1F1F1F"
+                   DockPanel.Dock="Right" Width="40"
+                   TextAlignment="Right"/>
+                <ProgressBar Value="{Binding CurrentProgress}"
+                     Minimum="0" Maximum="100"
+                     Height="8"
+                     Foreground="{StaticResource PrimaryBrush}"
+                     Background="#E5E7EB"/>
+            </DockPanel>
+
+            <!-- 목표 진행률 -->
+            <DockPanel Margin="0,0,0,6">
+                <TextBlock Text="목표 진행률:" FontSize="13"
+                   Foreground="#6B7280" Width="80"/>
+                <TextBlock Text="{Binding TargetProgressText}"
+                   FontSize="13" Foreground="#1F1F1F"
+                   DockPanel.Dock="Right" Width="40"
+                   TextAlignment="Right"/>
+                <ProgressBar Value="{Binding TargetProgress}"
+                     Minimum="0" Maximum="100"
+                     Height="8"
+                     Foreground="#9CA3AF"
+                     Background="#E5E7EB"/>
+            </DockPanel>
+
+            <!-- 페이스 경고 메시지 -->
+            <TextBlock Text="{Binding PaceWarningText}"
+               FontSize="13" Foreground="#EF4444"
+               Margin="0,4,0,0"/>
+
+        </StackPanel>
+
+        <!-- 3. 단계 표시 — 기획→설계→개발→테스트→완료 -->
+        <StackPanel Grid.Row="2" Orientation="Horizontal"
+            Margin="0,0,0,20">
+
+            <!-- 단계 하나를 템플릿처럼 반복 -->
+            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+
+                <!-- 기획 -->
+                <Ellipse Width="28" Height="28"
+                 Fill="{StaticResource PrimaryBrush}"/>
+                <TextBlock Text="기획" FontSize="12"
+                   Foreground="#1F1F1F" Margin="6,0,0,0"
+                   VerticalAlignment="Center"/>
+
+                <!-- 연결선 -->
+                <Rectangle Width="40" Height="2"
+                   Fill="#E5E7EB" Margin="8,0"/>
+
+                <!-- 설계 -->
+                <Ellipse Width="28" Height="28"
+                 Fill="{StaticResource PrimaryBrush}"/>
+                <TextBlock Text="설계" FontSize="12"
+                   Foreground="#1F1F1F" Margin="6,0,0,0"
+                   VerticalAlignment="Center"/>
+
+                <!-- 연결선 -->
+                <Rectangle Width="40" Height="2"
+                   Fill="#E5E7EB" Margin="8,0"/>
+
+                <!-- 개발 -->
+                <Ellipse Width="28" Height="28"
+                 Fill="#E5E7EB"/>
+                <TextBlock Text="개발" FontSize="12"
+                   Foreground="#9CA3AF" Margin="6,0,0,0"
+                   VerticalAlignment="Center"/>
+
+                <!-- 연결선 -->
+                <Rectangle Width="40" Height="2"
+                   Fill="#E5E7EB" Margin="8,0"/>
+
+                <!-- 테스트 -->
+                <Ellipse Width="28" Height="28"
+                 Fill="#E5E7EB"/>
+                <TextBlock Text="테스트" FontSize="12"
+                   Foreground="#9CA3AF" Margin="6,0,0,0"
+                   VerticalAlignment="Center"/>
+
+                <!-- 연결선 -->
+                <Rectangle Width="40" Height="2"
+                   Fill="#E5E7EB" Margin="8,0"/>
+
+                <!-- 완료 -->
+                <Ellipse Width="28" Height="28"
+                 Fill="#E5E7EB"/>
+                <TextBlock Text="완료" FontSize="12"
+                   Foreground="#9CA3AF" Margin="6,0,0,0"
+                   VerticalAlignment="Center"/>
+
+            </StackPanel>
+        </StackPanel>
+
+        <!-- 4. 탭 필터 — 전체/기획/설계/개발/테스트/완료 -->
+        <Border Grid.Row="3" Margin="0,0,0,16"
+        BorderBrush="#E5E7EB" BorderThickness="0,0,0,1">
+            <StackPanel Orientation="Horizontal">
+
+                <Button Content="전체"
+                Command="{Binding FilterCommand}"
+                CommandParameter="전체"/>
+
+                <Button Content="기획"
+                Command="{Binding FilterCommand}"
+                CommandParameter="기획"/>
+
+                <Button Content="설계"
+                Command="{Binding FilterCommand}"
+                CommandParameter="설계"/>
+
+                <Button Content="개발"
+                Command="{Binding FilterCommand}"
+                CommandParameter="개발"/>
+
+                <Button Content="테스트"
+                Command="{Binding FilterCommand}"
+                CommandParameter="테스트"/>
+
+                <Button Content="완료"
+                Command="{Binding FilterCommand}"
+                CommandParameter="완료"/>
+
+            </StackPanel>
+        </Border>
+
+        <!-- 5. 칸반 보드 — 할일/진행중/완료 3컬럼 -->
+        <Grid Grid.Row="4">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="16"/>
+                <ColumnDefinition Width="*"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- 할일 컬럼 -->
+            <StackPanel Grid.Column="0">
+                <TextBlock Text="할일" FontSize="14" FontWeight="Bold"
+                   Foreground="#1F1F1F" Margin="0,0,0,12"/>
+                <ListBox ItemsSource="{Binding TodoTasks}"
+                 Background="Transparent"
+                 BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="White" CornerRadius="8"
+                            Padding="16" Margin="0,0,0,8"
+                            BorderBrush="#E5E7EB" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}"
+                                       FontSize="14" FontWeight="Medium"
+                                       Foreground="#1F1F1F"/>
+                                    <TextBlock Text="{Binding Priority}"
+                                       FontSize="12" Foreground="#9CA3AF"
+                                       Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+
+            <!-- 진행중 컬럼 -->
+            <StackPanel Grid.Column="2">
+                <TextBlock Text="진행중" FontSize="14" FontWeight="Bold"
+                   Foreground="#1F1F1F" Margin="0,0,0,12"/>
+                <ListBox ItemsSource="{Binding InProgressTasks}"
+                 Background="Transparent"
+                 BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="White" CornerRadius="8"
+                            Padding="16" Margin="0,0,0,8"
+                            BorderBrush="#E5E7EB" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}"
+                                       FontSize="14" FontWeight="Medium"
+                                       Foreground="#1F1F1F"/>
+                                    <TextBlock Text="{Binding Priority}"
+                                       FontSize="12" Foreground="#9CA3AF"
+                                       Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+
+            <!-- 완료 컬럼 -->
+            <StackPanel Grid.Column="4">
+                <TextBlock Text="완료" FontSize="14" FontWeight="Bold"
+                   Foreground="#1F1F1F" Margin="0,0,0,12"/>
+                <ListBox ItemsSource="{Binding DoneTasks}"
+                 Background="Transparent"
+                 BorderThickness="0">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <Border Background="White" CornerRadius="8"
+                            Padding="16" Margin="0,0,0,8"
+                            BorderBrush="#E5E7EB" BorderThickness="1">
+                                <StackPanel>
+                                    <TextBlock Text="{Binding Title}"
+                                       FontSize="14" FontWeight="Medium"
+                                       Foreground="#1F1F1F"/>
+                                    <TextBlock Text="{Binding Priority}"
+                                       FontSize="12" Foreground="#9CA3AF"
+                                       Margin="0,4,0,0"/>
+                                </StackPanel>
+                            </Border>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+            </StackPanel>
+
+        </Grid>
+    </Grid>
+</UserControl>

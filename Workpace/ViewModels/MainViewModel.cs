@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using Workpace.Messages;
 using Workpace.Models;
 using Workpace.Services;
+using Workpace.Views;
 
 namespace Workpace.ViewModels
 {
@@ -13,12 +14,19 @@ namespace Workpace.ViewModels
         // DatabaseService 인스턴스 — DB 작업은 전부 여기를 통해서 함
         private readonly DatabaseService _db;
 
+        private readonly ProjectViewModel _projectVM;
+
         // ───────────────────────────────────────
         // ObservableCollection — 일반 List와 달리
         // 항목이 추가/삭제될 때 UI가 자동으로 갱신됨
         // ───────────────────────────────────────
         [ObservableProperty]
         private ObservableCollection<Project> projects = new();
+
+        // 오른쪽 콘텐츠 영역에 표시할 화면
+        // object 타입인 이유 — 나중에 ProjectView, StatisticsView 등 다양한 화면이 들어올 수 있어서
+        [ObservableProperty]
+        private object? currentView;
 
         // 현재 선택된 프로젝트 — 사이드바에서 클릭한 프로젝트
         [ObservableProperty]
@@ -34,8 +42,9 @@ namespace Workpace.ViewModels
         [RelayCommand]
         private void GoToSettings() { }
 
-        public MainViewModel()
+        public MainViewModel(ProjectViewModel projectVM)
         {
+            _projectVM = projectVM;
             _db = new DatabaseService();
             LoadProjects(); // 앱 시작 시 DB에서 프로젝트 목록 불러오기
         }
@@ -100,6 +109,18 @@ namespace Workpace.ViewModels
         partial void OnSelectedProjectChanged(Project? value)
         {
             WeakReferenceMessenger.Default.Send(new ProjectSelectedMessage(value));
+
+            if (value != null)
+            {
+                // ProjectView 생성 시 DataContext를 ProjectViewModel로 설정
+                var view = new ProjectView();
+                view.DataContext = _projectVM;
+                CurrentView = view;
+            }
+            else
+            {
+                CurrentView = null;
+            }
         }
     }
 }
