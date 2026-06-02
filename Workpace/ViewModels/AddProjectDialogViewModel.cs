@@ -26,6 +26,28 @@ namespace Workpace.ViewModels
         [ObservableProperty]
         private string gitHubUrl = "";
 
+        [ObservableProperty]
+        private string background = "";
+
+        // 기술 스택 목록 — 선택 가능한 전체 목록
+        public List<TechStack> TechStacks { get; } = new()
+        {
+            new TechStack { Name = "C#" },
+            new TechStack { Name = "WPF" },
+            new TechStack { Name = "SQLite" },
+            new TechStack { Name = "Python" },
+            new TechStack { Name = "React" },
+            new TechStack { Name = "Flutter" },
+            new TechStack { Name = "Java" },
+        };
+
+        // 선택된 기술 스택 목록 반환
+        // Confirm() 에서 Project 생성 시 사용
+        public List<string> SelectedTechStacks =>
+            TechStacks.Where(t => t.IsSelected)
+                      .Select(t => t.Name)
+                      .ToList();
+
         // 프로젝트 유형 목록 — ComboBox에 표시할 항목들
         public List<string> ProjectTypes { get; } = new()
         {
@@ -78,7 +100,8 @@ namespace Workpace.ViewModels
                 StartDate = StartDate,
                 Deadline = Deadline,
                 Description = Description,
-                GitHubUrl = GitHubUrl
+                GitHubUrl = GitHubUrl,
+                Background = Background
             };
 
             // 창 닫기

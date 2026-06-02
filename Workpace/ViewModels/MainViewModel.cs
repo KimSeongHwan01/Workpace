@@ -13,7 +13,7 @@ namespace Workpace.ViewModels
     {
         // DatabaseService 인스턴스 — DB 작업은 전부 여기를 통해서 함
         private readonly DatabaseService _db;
-
+        
         private readonly ProjectViewModel _projectVM;
 
         // ───────────────────────────────────────
@@ -71,34 +71,43 @@ namespace Workpace.ViewModels
         [RelayCommand]
         private void AddProject()
         {
-            // 임시 테스트용 프로젝트 — 나중에 입력 다이얼로그로 교체
-            var newProject = new Project
-            {
-                Name = "새 프로젝트",
-                Type = "소프트웨어개발",
-                StartDate = DateTime.Today,
-                Deadline = DateTime.Today.AddDays(30),
-                Description = "",
-                GitHubUrl = ""
-            };
+            // 다이얼로그 창 열기
+            var dialog = new AddProjectDialog();
 
-            var newId = _db.AddProject(newProject);
-            newProject.Id = newId;
-            Projects.Insert(0, newProject); // 목록 맨 앞에 추가
+            // ShowDialog() — 창이 닫힐 때까지 여기서 기다림
+            // 확인 누르면 true, 취소 누르면 false 반환
+            if (dialog.ShowDialog() == true)
+            {
+                // 확인 눌렀을 때만 실행
+                // dialog.Result — AddProjectDialogViewModel에서 만든 Project 객체
+                var newProject = dialog.Result;
+
+                if (newProject == null) return;
+
+                // DB에 저장 후 Id 받아오기
+                var newId = _db.AddProject(newProject);
+                newProject.Id = newId;
+
+                // 사이드바 목록 맨 앞에 추가
+                Projects.Insert(0, newProject);
+            }
         }
 
         // ───────────────────────────────────────
-        // DELETE — 선택된 프로젝트 삭제
-        // SelectedProject가 null이면 아무것도 안 함
+        // DELETE — 파라미터로 받은 프로젝트 삭제
+        // 우클릭 메뉴에서 직접 Project 객체를 넘겨받음
         // ───────────────────────────────────────
         [RelayCommand]
-        private void DeleteProject()
+        private void DeleteProject(Project project)
         {
-            if (SelectedProject == null) return;
+            if (project == null) return;
 
-            _db.DeleteProject(SelectedProject.Id);
-            Projects.Remove(SelectedProject);
-            SelectedProject = null;
+            _db.DeleteProject(project.Id);
+            Projects.Remove(project);
+
+            // 삭제된 프로젝트가 현재 선택된 프로젝트면 선택 해제
+            if (SelectedProject?.Id == project.Id)
+                SelectedProject = null;
         }
 
         // ───────────────────────────────────────

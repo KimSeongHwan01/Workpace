@@ -79,23 +79,34 @@
                 </DockPanel>
 
                 <!-- 프로젝트 목록 — DB에서 불러온 Projects에 바인딩 -->
-                <ListBox ItemsSource="{Binding Projects}"
+                <ListBox x:Name="ProjectListBox"
+                         ItemsSource="{Binding Projects}"
                          SelectedItem="{Binding SelectedProject, Mode=TwoWay}"
                          Background="Transparent"
                          BorderThickness="0"
                          Margin="8,0">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
-                            <Border Padding="12,10" CornerRadius="8">
+                            <Border Padding="12,10" CornerRadius="8"
+                                    Tag="{Binding DataContext, 
+                                RelativeSource={RelativeSource AncestorType=ListBox}}">
+                                <Border.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="삭제"
+                                  Command="{Binding PlacementTarget.Tag.DeleteProjectCommand,
+                                  RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  CommandParameter="{Binding PlacementTarget.DataContext,
+                                  RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                  Foreground="#EF4444"/>
+                                    </ContextMenu>
+                                </Border.ContextMenu>
                                 <StackPanel>
-                                    <!-- 프로젝트 이름 -->
                                     <TextBlock Text="{Binding Name}"
-                                               FontSize="14" FontWeight="Medium"
-                                               Foreground="#1F1F1F"/>
-                                    <!-- D-day + 진행률 -->
+                               FontSize="14" FontWeight="Medium"
+                               Foreground="#1F1F1F"/>
                                     <TextBlock FontSize="12" Foreground="#9CA3AF"
-                                               Margin="0,2,0,0"
-                                               Text="진행중"/>
+                               Margin="0,2,0,0"
+                               Text="진행중"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>

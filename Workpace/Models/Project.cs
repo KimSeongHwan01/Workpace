@@ -9,6 +9,7 @@
         public DateTime Deadline { get; set; }
         public string Description { get; set; } = string.Empty;
         public string GitHubUrl { get; set; } = string.Empty;
+        public string Background { get; set; } = string.Empty;
 
         // 계산 프로퍼티 (DB 저장 X)
         public int DaysLeft { get { return (Deadline - DateTime.Today).Days; } }

@@ -4,112 +4,235 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         mc:Ignorable="d"
-        Title="새 프로젝트 추가" Height="480" Width="480"
+        Title="새 프로젝트 만들기" Height="700" Width="600"
         WindowStartupLocation="CenterOwner"
         ResizeMode="NoResize">
 
-    <Grid Margin="32">
+    <Grid>
         <Grid.RowDefinitions>
             <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
-            <RowDefinition Height="Auto"/>
+            <!-- 제목 -->
             <RowDefinition Height="*"/>
+            <!-- 스크롤 영역 -->
             <RowDefinition Height="Auto"/>
+            <!-- 버튼 -->
         </Grid.RowDefinitions>
 
         <!-- 제목 -->
-        <TextBlock Grid.Row="0" Text="새 프로젝트" 
-                   FontSize="20" FontWeight="Bold"
-                   Foreground="#1F1F1F" Margin="0,0,0,24"/>
-
-        <!-- 프로젝트 이름 -->
-        <StackPanel Grid.Row="1" Margin="0,0,0,16">
-            <TextBlock Text="프로젝트 이름 *" FontSize="13"
-                       Foreground="#6B7280" Margin="0,0,0,6"/>
-            <TextBox Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}"
-                     Height="36" Padding="10,8"
-                     BorderBrush="#E5E7EB" BorderThickness="1"/>
-        </StackPanel>
-
-        <!-- 프로젝트 유형 -->
-        <StackPanel Grid.Row="2" Margin="0,0,0,16">
-            <TextBlock Text="프로젝트 유형" FontSize="13"
-                       Foreground="#6B7280" Margin="0,0,0,6"/>
-            <ComboBox ItemsSource="{Binding ProjectTypes}"
-                      SelectedItem="{Binding SelectedType}"
-                      Height="36" Padding="10,8"
-                      BorderBrush="#E5E7EB" BorderThickness="1"/>
-        </StackPanel>
-
-        <!-- 시작일 / 마감일 -->
-        <Grid Grid.Row="3" Margin="0,0,0,16">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="16"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
-
-            <!-- 시작일 -->
-            <StackPanel Grid.Column="0">
-                <TextBlock Text="시작일" FontSize="13"
-                           Foreground="#6B7280" Margin="0,0,0,6"/>
-                <DatePicker SelectedDate="{Binding StartDate}"
-                            Height="36" BorderBrush="#E5E7EB"/>
+        <Border Grid.Row="0" Padding="32,24,32,0">
+            <StackPanel>
+                <TextBlock Text="새 프로젝트 만들기"
+                       FontSize="20" FontWeight="Bold"
+                       Foreground="#1F1F1F"/>
+                <TextBlock Text="프로젝트를 시작하고, 끝까지 완주하세요."
+                       FontSize="13" Foreground="#9CA3AF"
+                       Margin="0,4,0,0"/>
             </StackPanel>
+        </Border>
 
-            <!-- 마감일 -->
-            <StackPanel Grid.Column="2">
-                <TextBlock Text="마감일" FontSize="13"
-                           Foreground="#6B7280" Margin="0,0,0,6"/>
-                <DatePicker SelectedDate="{Binding Deadline}"
-                            Height="36" BorderBrush="#E5E7EB"/>
-            </StackPanel>
-        </Grid>
+        <!-- 스크롤 영역 — 내용이 많아서 스크롤 가능하게 -->
+        <ScrollViewer Grid.Row="1" Padding="32,20,32,0"
+                  VerticalScrollBarVisibility="Auto">
+            <StackPanel>
 
-        <!-- GitHub URL -->
-        <StackPanel Grid.Row="4" Margin="0,0,0,16">
-            <TextBlock Text="GitHub URL (선택)" FontSize="13"
+                <!-- ① 프로젝트 기본 정보 -->
+                <TextBlock Text="① 프로젝트 기본 정보"
+                       FontSize="14" FontWeight="Bold"
+                       Foreground="#1F1F1F" Margin="0,0,0,16"/>
+
+                <!-- 프로젝트 이름 -->
+                <TextBlock Text="프로젝트명 *" FontSize="13"
                        Foreground="#6B7280" Margin="0,0,0,6"/>
-            <TextBox Text="{Binding GitHubUrl, UpdateSourceTrigger=PropertyChanged}"
+                <TextBox Text="{Binding ProjectName, UpdateSourceTrigger=PropertyChanged}"
                      Height="36" Padding="10,8"
-                     BorderBrush="#E5E7EB" BorderThickness="1"/>
-        </StackPanel>
-
-        <!-- 설명 -->
-        <StackPanel Grid.Row="5" Margin="0,0,0,16">
-            <TextBlock Text="설명 (선택)" FontSize="13"
-                       Foreground="#6B7280" Margin="0,0,0,6"/>
-            <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
-                     Height="72" Padding="10,8"
                      BorderBrush="#E5E7EB" BorderThickness="1"
-                     TextWrapping="Wrap" AcceptsReturn="True"/>
-        </StackPanel>
+                     Margin="0,0,0,16"/>
+
+                <!-- 부제 / 설명 -->
+                <TextBlock Text="부제 / 설명" FontSize="13"
+                       Foreground="#6B7280" Margin="0,0,0,6"/>
+                <TextBox Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                     Height="36" Padding="10,8"
+                     BorderBrush="#E5E7EB" BorderThickness="1"
+                     Margin="0,0,0,16"/>
+
+                <!-- 시작일 / 마감일 -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel Grid.Column="0">
+                        <TextBlock Text="시작일 *" FontSize="13"
+                               Foreground="#6B7280" Margin="0,0,0,6"/>
+                        <DatePicker SelectedDate="{Binding StartDate}"
+                                Height="36" BorderBrush="#E5E7EB"/>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="2">
+                        <TextBlock Text="마감일 *" FontSize="13"
+                               Foreground="#6B7280" Margin="0,0,0,6"/>
+                        <DatePicker SelectedDate="{Binding Deadline}"
+                                Height="36" BorderBrush="#E5E7EB"/>
+                    </StackPanel>
+                </Grid>
+
+                <!-- GitHub URL -->
+                <TextBlock Text="GitHub 링크 (선택)" FontSize="13"
+                       Foreground="#6B7280" Margin="0,0,0,6"/>
+                <TextBox Text="{Binding GitHubUrl, UpdateSourceTrigger=PropertyChanged}"
+                     Height="36" Padding="10,8"
+                     BorderBrush="#E5E7EB" BorderThickness="1"
+                     Margin="0,0,0,16"/>
+
+                <!-- 개발 배경 -->
+                <TextBlock Text="개발 배경 (한 줄 설명) *" FontSize="13"
+                       Foreground="#6B7280" Margin="0,0,0,6"/>
+                <TextBox Text="{Binding Background, UpdateSourceTrigger=PropertyChanged}"
+                     Height="36" Padding="10,8"
+                     BorderBrush="#E5E7EB" BorderThickness="1"
+                     Margin="0,0,0,24"/>
+
+                <!-- ② 기술 스택 선택 -->
+                <TextBlock Text="② 기술 스택 선택 (복수 선택 가능)"
+           FontSize="14" FontWeight="Bold"
+           Foreground="#1F1F1F" Margin="0,0,0,16"/>
+
+                <ItemsControl ItemsSource="{Binding TechStacks}"
+              Margin="0,0,0,24">
+                    <ItemsControl.ItemsPanel>
+                        <!-- WrapPanel — 공간 부족하면 자동 줄바꿈 -->
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <ToggleButton Content="{Binding Name}"
+                          IsChecked="{Binding IsSelected}"
+                          Margin="0,0,8,8"
+                          Padding="12,6"
+                          BorderThickness="1"
+                          BorderBrush="#E5E7EB"
+                          Background="White"
+                          Cursor="Hand"/>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+
+                <!-- ③ 프로젝트 유형 선택 -->
+                <TextBlock Text="③ 프로젝트 유형 선택"
+           FontSize="14" FontWeight="Bold"
+           Foreground="#1F1F1F" Margin="0,0,0,16"/>
+
+                <UniformGrid Rows="1" Columns="5" Margin="0,0,0,24">
+
+                    <!-- 소프트웨어 개발 -->
+                    <RadioButton Style="{StaticResource TypeCardStyle}"
+                 GroupName="ProjectType"
+                 IsChecked="{Binding SelectedType, 
+                 Converter={StaticResource EqualityConverter}, 
+                 ConverterParameter=소프트웨어개발}">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="💻" FontSize="24"
+                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="소프트웨어 개발" FontSize="11"
+                       TextWrapping="Wrap" TextAlignment="Center"
+                       Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!-- 디자인 -->
+                    <RadioButton Style="{StaticResource TypeCardStyle}"
+                 GroupName="ProjectType"
+                 IsChecked="{Binding SelectedType,
+                 Converter={StaticResource EqualityConverter},
+                 ConverterParameter=디자인}">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="🎨" FontSize="24"
+                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="디자인 프로젝트" FontSize="11"
+                       TextWrapping="Wrap" TextAlignment="Center"
+                       Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!-- 학교 과제 -->
+                    <RadioButton Style="{StaticResource TypeCardStyle}"
+                 GroupName="ProjectType"
+                 IsChecked="{Binding SelectedType,
+                 Converter={StaticResource EqualityConverter},
+                 ConverterParameter=학교과제}">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="📚" FontSize="24"
+                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="학교 과제" FontSize="11"
+                       TextWrapping="Wrap" TextAlignment="Center"
+                       Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!-- 직장 업무 -->
+                    <RadioButton Style="{StaticResource TypeCardStyle}"
+                 GroupName="ProjectType"
+                 IsChecked="{Binding SelectedType,
+                 Converter={StaticResource EqualityConverter},
+                 ConverterParameter=직장업무}">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="💼" FontSize="24"
+                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="직장 업무" FontSize="11"
+                       TextWrapping="Wrap" TextAlignment="Center"
+                       Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                    <!-- 개인 목표 -->
+                    <RadioButton Style="{StaticResource TypeCardStyle}"
+                 GroupName="ProjectType"
+                 IsChecked="{Binding SelectedType,
+                 Converter={StaticResource EqualityConverter},
+                 ConverterParameter=개인목표}">
+                        <StackPanel HorizontalAlignment="Center">
+                            <TextBlock Text="🎯" FontSize="24"
+                       HorizontalAlignment="Center"/>
+                            <TextBlock Text="개인 목표" FontSize="11"
+                       TextWrapping="Wrap" TextAlignment="Center"
+                       Margin="0,6,0,0"/>
+                        </StackPanel>
+                    </RadioButton>
+
+                </UniformGrid>
+
+                <!-- ④ 여기에 이어서 추가 예정 -->
+
+            </StackPanel>
+        </ScrollViewer>
 
         <!-- 확인 / 취소 버튼 -->
-        <Grid Grid.Row="7">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="*"/>
-                <ColumnDefinition Width="12"/>
-                <ColumnDefinition Width="*"/>
-            </Grid.ColumnDefinitions>
+        <Border Grid.Row="2" Padding="32,16">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="12"/>
+                    <ColumnDefinition Width="*"/>
+                </Grid.ColumnDefinitions>
 
-            <!-- 취소 -->
-            <Button Grid.Column="0" Content="취소"
+                <Button Grid.Column="0" Content="취소"
                     Height="40" BorderThickness="1"
                     BorderBrush="#E5E7EB" Background="White"
                     Command="{Binding CancelCommand}"
                     Cursor="Hand"/>
 
-            <!-- 확인 -->
-            <Button Grid.Column="2" Content="확인"
+                <Button Grid.Column="2" Content="🚀 프로젝트 시작하기"
                     Height="40" BorderThickness="0"
                     Background="#7C3AED" Foreground="White"
                     Command="{Binding ConfirmCommand}"
                     Cursor="Hand"/>
-        </Grid>
+            </Grid>
+        </Border>
 
     </Grid>
 </Window>

@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using System.Security.Cryptography;
 using Microsoft.Data.Sqlite;
 using Workpace.Models;
 
@@ -32,7 +33,8 @@ namespace Workpace.Services
                     StartDate TEXT,
                     Deadline TEXT,
                     Description TEXT,
-                    GitHubUrl TEXT
+                    GitHubUrl TEXT,
+                    Background TEXT
                 );
                 CREATE TABLE IF NOT EXISTS Tasks (
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -83,8 +85,8 @@ namespace Workpace.Services
             conn.Open();
 
             var sql = @"
-                INSERT INTO Projects (Name, Type, StartDate, Deadline, Description, GitHubUrl)
-                VALUES (@Name, @Type, @StartDate, @Deadline, @Description, @GitHubUrl);
+                INSERT INTO Projects (Name, Type, StartDate, Deadline, Description, GitHubUrl, Background)
+                VALUES (@Name, @Type, @StartDate, @Deadline, @Description, @GitHubUrl, @Background);
                 SELECT last_insert_rowid();
             ";
 
@@ -96,6 +98,7 @@ namespace Workpace.Services
             cmd.Parameters.AddWithValue("@Deadline", project.Deadline.ToString("yyyy-MM-dd"));
             cmd.Parameters.AddWithValue("@Description", project.Description);
             cmd.Parameters.AddWithValue("@GitHubUrl", project.GitHubUrl);
+            cmd.Parameters.AddWithValue("@Background", project.Background);
 
             // ExecuteScalar — 단일 값 하나를 반환받을 때 사용
             var result = cmd.ExecuteScalar();
@@ -128,6 +131,7 @@ namespace Workpace.Services
                     Deadline = DateTime.Parse(reader.GetString(reader.GetOrdinal("Deadline"))),
                     Description = reader.IsDBNull(reader.GetOrdinal("Description")) ? "" : reader.GetString(reader.GetOrdinal("Description")),
                     GitHubUrl = reader.IsDBNull(reader.GetOrdinal("GitHubUrl")) ? "" : reader.GetString(reader.GetOrdinal("GitHubUrl")),
+                    Background = reader.IsDBNull(reader.GetOrdinal("Background")) ? "" : reader.GetString(reader.GetOrdinal("Background")),
                 });
             }
 
