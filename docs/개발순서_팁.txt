@@ -1,0 +1,17 @@
+1. 실무에서 개발 순서
+
+1) 일반적으로 데이터 → 로직 → 화면 순서
+1. Model      → 데이터 구조 먼저 확정
+2. Service    → DB 작업 구현
+3. ViewModel  → 로직 구현
+4. View       → 화면 마지막에
+
+2. 작업할 때 한 파일을 어느 정도 완성하고 넘어가는 편
+
+3. 예시
+1. WorkTask.cs       → 모델 확인 (이미 있음)
+2. DatabaseService   → AddTask() 추가
+3. AddTaskDialogViewModel → 입력값 관리
+4. AddTaskDialog.xaml → 입력 UI
+5. ProjectViewModel  → AddTask() 커맨드
+6. ProjectView.xaml  → 버튼 추가
