@@ -1,6 +1,9 @@
-﻿using System.IO;
-using System.Security.Cryptography;
+﻿using DocumentFormat.OpenXml.Office2010.Excel;
+using DocumentFormat.OpenXml.Wordprocessing;
 using Microsoft.Data.Sqlite;
+using Microsoft.VisualBasic;
+using System.IO;
+using System.Security.Cryptography;
 using Workpace.Models;
 
 namespace Workpace.Services
@@ -16,7 +19,7 @@ namespace Workpace.Services
             _connectionString = $"Data Source={dbPath}";
             InitializeDatabase();
         }
-
+        
         // ───────────────────────────────────────
         // DB 초기화 — 앱 실행 시 테이블이 없으면 자동 생성
         // ───────────────────────────────────────
@@ -99,6 +102,32 @@ namespace Workpace.Services
             cmd.Parameters.AddWithValue("@Description", project.Description);
             cmd.Parameters.AddWithValue("@GitHubUrl", project.GitHubUrl);
             cmd.Parameters.AddWithValue("@Background", project.Background);
+
+            // ExecuteScalar — 단일 값 하나를 반환받을 때 사용
+            var result = cmd.ExecuteScalar();
+            return Convert.ToInt32(result);
+        }
+
+        // 이부분부터 다시 수정하기
+        public int AddTask(WorkTask workTask)
+        {
+            using var conn = new SqliteConnection(_connectionString);
+            conn.Open();
+
+            var sql = @"
+                INSERT INTO WorkTasks (Title, Status, Priority, DueDate, Stage, Progress)
+                VALUES (@Title, @Status, @Priority, @DueDate, @Stage, @Progress);
+                SELECT last_insert_rowid();
+            ";
+
+            using var cmd = new SqliteCommand(sql, conn);
+            // @파라미터 방식을 쓰는 이유 — SQL Injection 방지 + 특수문자 자동 처리
+            cmd.Parameters.AddWithValue("@Title", workTask.Title);
+            cmd.Parameters.AddWithValue("@Status", workTask.Status);
+            cmd.Parameters.AddWithValue("@Priority", workTask.Priority);
+            cmd.Parameters.AddWithValue("@DueDate", workTask.DueDate?.ToString("yyyy-MM-dd"));
+            cmd.Parameters.AddWithValue("@Stage", workTask.Stage);
+            cmd.Parameters.AddWithValue("@Progress", workTask.Progress);
 
             // ExecuteScalar — 단일 값 하나를 반환받을 때 사용
             var result = cmd.ExecuteScalar();
@@ -210,7 +239,7 @@ namespace Workpace.Services
             using var reader = cmd.ExecuteReader();
 
             var tasks = new List<WorkTask>();
-
+            
             while (reader.Read())
             {
                 tasks.Add(new WorkTask
