@@ -115,13 +115,14 @@ namespace Workpace.Services
             conn.Open();
 
             var sql = @"
-                INSERT INTO WorkTasks (Title, Status, Priority, DueDate, Stage, Progress)
-                VALUES (@Title, @Status, @Priority, @DueDate, @Stage, @Progress);
+                INSERT INTO Tasks (ProjectId, Title, Status, Priority, DueDate, Stage, Progress)
+                VALUES (@ProjectId, @Title, @Status, @Priority, @DueDate, @Stage, @Progress);
                 SELECT last_insert_rowid();
             ";
 
             using var cmd = new SqliteCommand(sql, conn);
             // @파라미터 방식을 쓰는 이유 — SQL Injection 방지 + 특수문자 자동 처리
+            cmd.Parameters.AddWithValue("@ProjectId", workTask.ProjectId);
             cmd.Parameters.AddWithValue("@Title", workTask.Title);
             cmd.Parameters.AddWithValue("@Status", workTask.Status);
             cmd.Parameters.AddWithValue("@Priority", workTask.Priority);

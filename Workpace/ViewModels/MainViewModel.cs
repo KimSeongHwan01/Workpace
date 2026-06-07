@@ -13,7 +13,7 @@ namespace Workpace.ViewModels
     {
         // DatabaseService 인스턴스 — DB 작업은 전부 여기를 통해서 함
         private readonly DatabaseService _db;
-        
+
         private readonly ProjectViewModel _projectVM;
 
         // ───────────────────────────────────────
