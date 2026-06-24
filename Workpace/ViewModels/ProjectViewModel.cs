@@ -5,6 +5,7 @@ using System.Collections.ObjectModel;
 using Workpace.Messages;
 using Workpace.Models;
 using Workpace.Services;
+using Workpace.Views;
 
 namespace Workpace.ViewModels
 {
@@ -211,6 +212,74 @@ namespace Workpace.ViewModels
             TodoTasks.Clear();
             InProgressTasks.Clear();
             DoneTasks.Clear();
+        }
+
+        // ───────────────────────────────────────
+        // 작업 추가 커맨드
+        // CommandParameter로 어느 컬럼에 추가할지 Status를 받아옴
+        // 예: "할일", "진행중", "완료"
+        // ───────────────────────────────────────
+        [RelayCommand]
+        private void AddTask(string status)
+        {
+            if (CurrentProject == null) return;
+
+            var dialog = new AddTaskDialog(CurrentProject.Id);
+
+            if (dialog.ShowDialog() == true)
+            {
+                var newTask = dialog.Result;
+                if (newTask == null) return;
+
+                // CommandParameter로 받은 status를 Task에 적용
+                // 어느 컬럼 버튼을 눌렀는지에 따라 달라짐
+                newTask.Status = status;
+
+                var newId = _db.AddTask(newTask);
+                newTask.Id = newId;
+
+                // Status에 따라 알맞은 칸반 컬럼에 추가
+                switch (newTask.Status)
+                {
+                    case "할일": TodoTasks.Add(newTask); break;
+                    case "진행중": InProgressTasks.Add(newTask); break;
+                    case "완료": DoneTasks.Add(newTask); break;
+                }
+
+                _allTasks.Add(newTask);
+                CalculateProgress();
+            }
+        }
+
+        // ───────────────────────────────────────
+        // Task 삭제 커맨드
+        // 카드 우클릭 메뉴에서 삭제 클릭 시 실행됨
+        // 삭제할 Task 객체를 CommandParameter로 받아옴
+        // ───────────────────────────────────────
+        [RelayCommand]
+        private void DeleteTask(WorkTask task)
+        {
+            if (task == null) return;
+
+            // DB에서 삭제
+            _db.DeleteTask(task.Id);
+
+            // 칸반 보드 컬럼에서 제거
+            // Status에 따라 어느 컬렉션에서 지울지 결정
+            switch (task.Status)
+            {
+                case "할일": TodoTasks.Remove(task); break;
+                case "진행중": InProgressTasks.Remove(task); break;
+                case "완료": DoneTasks.Remove(task); break;
+            }
+
+            // 전체 원본 목록에서도 제거
+            // 탭 필터링 기준이 되는 목록이라서 여기서도 지워야 함
+            _allTasks.Remove(task);
+
+            // 진행률 다시 계산
+            // Task 수가 줄었으니까 진행률이 바뀔 수 있음
+            CalculateProgress();
         }
     }
 }

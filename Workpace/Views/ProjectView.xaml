@@ -189,25 +189,48 @@
                 <TextBlock Text="할일" FontSize="14" FontWeight="Bold"
                    Foreground="#1F1F1F" Margin="0,0,0,12"/>
                 <ListBox ItemsSource="{Binding TodoTasks}"
-                 Background="Transparent"
-                 BorderThickness="0">
+                         Background="Transparent"
+                         BorderThickness="0"
+                         MaxHeight="400">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border Background="White" CornerRadius="8"
-                            Padding="16" Margin="0,0,0,8"
-                            BorderBrush="#E5E7EB" BorderThickness="1">
+                                Padding="16" Margin="0,0,0,8"
+                                BorderBrush="#E5E7EB" BorderThickness="1"
+                                Tag="{Binding DataContext,
+                                RelativeSource={RelativeSource AncestorType=ListBox}}">
+                                <Border.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="삭제"
+                                            Command="{Binding PlacementTarget.Tag.DeleteTaskCommand,
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                            CommandParameter="{Binding PlacementTarget.DataContext,
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                            Foreground="#EF4444"/>
+                                    </ContextMenu>
+                                </Border.ContextMenu>
                                 <StackPanel>
                                     <TextBlock Text="{Binding Title}"
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="#1F1F1F"/>
+                                        FontSize="14" FontWeight="Medium"
+                                        Foreground="#1F1F1F"/>
                                     <TextBlock Text="{Binding Priority}"
-                                       FontSize="12" Foreground="#9CA3AF"
-                                       Margin="0,4,0,0"/>
+                                        FontSize="12" Foreground="#9CA3AF"
+                                        Margin="0,4,0,0"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+                <Button Content="+ 작업 추가"
+                    Command="{Binding AddTaskCommand}"
+                    CommandParameter="할일"
+                    Margin="0,8,0,0"
+                    Height="36"
+                    Background="Transparent"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    Foreground="#9CA3AF"
+                    Cursor="Hand"/>
             </StackPanel>
 
             <!-- 진행중 컬럼 -->
@@ -215,25 +238,48 @@
                 <TextBlock Text="진행중" FontSize="14" FontWeight="Bold"
                    Foreground="#1F1F1F" Margin="0,0,0,12"/>
                 <ListBox ItemsSource="{Binding InProgressTasks}"
-                 Background="Transparent"
-                 BorderThickness="0">
+                         Background="Transparent"
+                         BorderThickness="0"
+                         MaxHeight="400">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border Background="White" CornerRadius="8"
-                            Padding="16" Margin="0,0,0,8"
-                            BorderBrush="#E5E7EB" BorderThickness="1">
+                                Padding="16" Margin="0,0,0,8"
+                                BorderBrush="#E5E7EB" BorderThickness="1"
+                                Tag="{Binding DataContext,
+                                RelativeSource={RelativeSource AncestorType=ListBox}}">
+                                <Border.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="삭제"
+                                            Command="{Binding PlacementTarget.Tag.DeleteTaskCommand,
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                            CommandParameter="{Binding PlacementTarget.DataContext,
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                            Foreground="#EF4444"/>
+                                    </ContextMenu>
+                                </Border.ContextMenu>
                                 <StackPanel>
                                     <TextBlock Text="{Binding Title}"
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="#1F1F1F"/>
+                                        FontSize="14" FontWeight="Medium"
+                                        Foreground="#1F1F1F"/>
                                     <TextBlock Text="{Binding Priority}"
-                                       FontSize="12" Foreground="#9CA3AF"
-                                       Margin="0,4,0,0"/>
+                                        FontSize="12" Foreground="#9CA3AF"
+                                        Margin="0,4,0,0"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+                <Button Content="+ 작업 추가"
+                    Command="{Binding AddTaskCommand}"
+                    CommandParameter="진행중"
+                    Margin="0,8,0,0"
+                    Height="36"
+                    Background="Transparent"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    Foreground="#9CA3AF"
+                    Cursor="Hand"/>
             </StackPanel>
 
             <!-- 완료 컬럼 -->
@@ -241,27 +287,49 @@
                 <TextBlock Text="완료" FontSize="14" FontWeight="Bold"
                    Foreground="#1F1F1F" Margin="0,0,0,12"/>
                 <ListBox ItemsSource="{Binding DoneTasks}"
-                 Background="Transparent"
-                 BorderThickness="0">
+                         Background="Transparent"
+                         BorderThickness="0"
+                         MaxHeight="400">
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <Border Background="White" CornerRadius="8"
-                            Padding="16" Margin="0,0,0,8"
-                            BorderBrush="#E5E7EB" BorderThickness="1">
+                                Padding="16" Margin="0,0,0,8"
+                                BorderBrush="#E5E7EB" BorderThickness="1"
+                                Tag="{Binding DataContext,
+                                RelativeSource={RelativeSource AncestorType=ListBox}}">
+                                <Border.ContextMenu>
+                                    <ContextMenu>
+                                        <MenuItem Header="삭제"
+                                            Command="{Binding PlacementTarget.Tag.DeleteTaskCommand,
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                            CommandParameter="{Binding PlacementTarget.DataContext,
+                                            RelativeSource={RelativeSource AncestorType=ContextMenu}}"
+                                            Foreground="#EF4444"/>
+                                    </ContextMenu>
+                                </Border.ContextMenu>
                                 <StackPanel>
                                     <TextBlock Text="{Binding Title}"
-                                       FontSize="14" FontWeight="Medium"
-                                       Foreground="#1F1F1F"/>
+                                        FontSize="14" FontWeight="Medium"
+                                        Foreground="#1F1F1F"/>
                                     <TextBlock Text="{Binding Priority}"
-                                       FontSize="12" Foreground="#9CA3AF"
-                                       Margin="0,4,0,0"/>
+                                        FontSize="12" Foreground="#9CA3AF"
+                                        Margin="0,4,0,0"/>
                                 </StackPanel>
                             </Border>
                         </DataTemplate>
                     </ListBox.ItemTemplate>
                 </ListBox>
+                <Button Content="+ 작업 추가"
+                    Command="{Binding AddTaskCommand}"
+                    CommandParameter="완료"
+                    Margin="0,8,0,0"
+                    Height="36"
+                    Background="Transparent"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    Foreground="#9CA3AF"
+                    Cursor="Hand"/>
             </StackPanel>
-
         </Grid>
     </Grid>
 </UserControl>

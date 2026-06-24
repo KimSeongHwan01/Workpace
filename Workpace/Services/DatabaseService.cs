@@ -126,13 +126,38 @@ namespace Workpace.Services
             cmd.Parameters.AddWithValue("@Title", workTask.Title);
             cmd.Parameters.AddWithValue("@Status", workTask.Status);
             cmd.Parameters.AddWithValue("@Priority", workTask.Priority);
-            cmd.Parameters.AddWithValue("@DueDate", workTask.DueDate?.ToString("yyyy-MM-dd"));
+            cmd.Parameters.AddWithValue("@DueDate", workTask.DueDate.HasValue
+                ? workTask.DueDate.Value.ToString("yyyy-MM-dd")
+                : DBNull.Value);
             cmd.Parameters.AddWithValue("@Stage", workTask.Stage);
             cmd.Parameters.AddWithValue("@Progress", workTask.Progress);
 
             // ExecuteScalar — 단일 값 하나를 반환받을 때 사용
             var result = cmd.ExecuteScalar();
             return Convert.ToInt32(result);
+        }
+
+        // ───────────────────────────────────────
+        // DELETE — Task 삭제
+        // Task 삭제 시 연결된 Issues도 같이 삭제
+        // FK 제약조건 때문에 자식 테이블(Issues) 먼저 지워야 함
+        // ───────────────────────────────────────
+        public void DeleteTask(int taskId)
+        {
+            using var conn = new SqliteConnection(_connectionString);
+            conn.Open();
+
+            // Issues 먼저 삭제
+            var deleteIssues = "DELETE FROM Issues WHERE TaskId = @TaskId";
+            using var cmdIssues = new SqliteCommand(deleteIssues, conn);
+            cmdIssues.Parameters.AddWithValue("@TaskId", taskId);
+            cmdIssues.ExecuteNonQuery();
+
+            // 그 다음 Task 삭제
+            var deleteTask = "DELETE FROM Tasks WHERE Id = @Id";
+            using var cmdTask = new SqliteCommand(deleteTask, conn);
+            cmdTask.Parameters.AddWithValue("@Id", taskId);
+            cmdTask.ExecuteNonQuery();
         }
 
         // ───────────────────────────────────────
