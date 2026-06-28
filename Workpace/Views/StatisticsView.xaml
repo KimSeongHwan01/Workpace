@@ -1,0 +1,489 @@
+﻿<UserControl
+    x:Class="Workpace.Views.StatisticsView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:lvc="clr-namespace:LiveChartsCore.SkiaSharpView.WPF;assembly=LiveChartsCore.SkiaSharpView.WPF">
+
+    <ScrollViewer VerticalScrollBarVisibility="Auto">
+        <StackPanel Margin="32">
+
+            <!--  헤더: 통계 + 프로젝트 드롭다운  -->
+            <DockPanel Margin="0,0,0,24">
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="24"
+                    FontWeight="Bold"
+                    Foreground="#1F1F1F"
+                    Text="통계" />
+                <ComboBox
+                    Width="200"
+                    Height="36"
+                    Margin="16,0,0,0"
+                    VerticalAlignment="Center"
+                    DisplayMemberPath="Name"
+                    ItemsSource="{Binding Projects}"
+                    SelectedItem="{Binding SelectedProject}" />
+            </DockPanel>
+
+            <!--  요약 카드 3개  -->
+            <TextBlock
+                Margin="0,0,0,12"
+                FontSize="16"
+                FontWeight="Bold"
+                Foreground="#1F1F1F"
+                Text="프로젝트 진행 현황" />
+            <Grid Margin="0,0,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!--  완료 작업  -->
+                <Border
+                    Grid.Column="0"
+                    Padding="24"
+                    Background="White"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <DockPanel>
+                        <Border
+                            Width="48"
+                            Height="48"
+                            Background="#ECFDF5"
+                            CornerRadius="24"
+                            DockPanel.Dock="Left">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="22"
+                                Text="✅" />
+                        </Border>
+                        <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="#6B7280"
+                                Text="완료 작업" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="28"
+                                    FontWeight="Bold"
+                                    Foreground="#10B981"
+                                    Text="{Binding DoneTaskCount}" />
+                                <TextBlock
+                                    Margin="4,0,0,0"
+                                    VerticalAlignment="Bottom"
+                                    FontSize="14"
+                                    Foreground="#6B7280"
+                                    Text="개" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!--  진행 중  -->
+                <Border
+                    Grid.Column="2"
+                    Padding="24"
+                    Background="White"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <DockPanel>
+                        <Border
+                            Width="48"
+                            Height="48"
+                            Background="#EFF6FF"
+                            CornerRadius="24"
+                            DockPanel.Dock="Left">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="22"
+                                Text="⏰" />
+                        </Border>
+                        <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="#6B7280"
+                                Text="진행 중" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="28"
+                                    FontWeight="Bold"
+                                    Foreground="#3B82F6"
+                                    Text="{Binding InProgressTaskCount}" />
+                                <TextBlock
+                                    Margin="4,0,0,0"
+                                    VerticalAlignment="Bottom"
+                                    FontSize="14"
+                                    Foreground="#6B7280"
+                                    Text="개" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+
+                <!--  전체 기간  -->
+                <Border
+                    Grid.Column="4"
+                    Padding="24"
+                    Background="White"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <DockPanel>
+                        <Border
+                            Width="48"
+                            Height="48"
+                            Background="#F5F3FF"
+                            CornerRadius="24"
+                            DockPanel.Dock="Left">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="22"
+                                Text="📅" />
+                        </Border>
+                        <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="#6B7280"
+                                Text="전체 기간" />
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock
+                                    FontSize="28"
+                                    FontWeight="Bold"
+                                    Foreground="{StaticResource PrimaryBrush}"
+                                    Text="{Binding TotalDays}" />
+                                <TextBlock
+                                    Margin="4,0,0,0"
+                                    VerticalAlignment="Bottom"
+                                    FontSize="14"
+                                    Foreground="#6B7280"
+                                    Text="일" />
+                            </StackPanel>
+                        </StackPanel>
+                    </DockPanel>
+                </Border>
+            </Grid>
+
+            <!--  막대그래프 + 단계별 진행률  -->
+            <Grid Margin="0,0,0,24">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="16" />
+                    <ColumnDefinition Width="*" />
+                </Grid.ColumnDefinitions>
+
+                <!--  이번 주 완료 작업 막대그래프  -->
+                <Border
+                    Grid.Column="0"
+                    Padding="24"
+                    Background="White"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,16"
+                            FontSize="15"
+                            FontWeight="Bold"
+                            Foreground="#1F1F1F"
+                            Text="이번 주 완료 작업" />
+                        <lvc:CartesianChart
+                            Height="200"
+                            Series="{Binding WeeklySeries}"
+                            TooltipPosition="Hidden"
+                            XAxes="{Binding WeeklyXAxes}" />
+                    </StackPanel>
+                </Border>
+
+                <!--  단계별 진행률  -->
+                <Border
+                    Grid.Column="2"
+                    Padding="24"
+                    Background="White"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    CornerRadius="12">
+                    <StackPanel>
+                        <TextBlock
+                            Margin="0,0,0,16"
+                            FontSize="15"
+                            FontWeight="Bold"
+                            Foreground="#1F1F1F"
+                            Text="단계별 진행률" />
+
+                        <!--  기획  -->
+                        <DockPanel Margin="0,0,0,12">
+                            <TextBlock
+                                Width="50"
+                                VerticalAlignment="Center"
+                                FontSize="13"
+                                Foreground="#374151"
+                                Text="기획" />
+                            <TextBlock
+                                Width="40"
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Right"
+                                FontSize="13"
+                                Foreground="#6B7280"
+                                Text="{Binding PlanProgress, StringFormat={}{0}%}"
+                                TextAlignment="Right" />
+                            <ProgressBar
+                                Height="8"
+                                Background="#E5E7EB"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                Maximum="100"
+                                Minimum="0"
+                                Value="{Binding PlanProgress}" />
+                        </DockPanel>
+
+                        <!--  설계  -->
+                        <DockPanel Margin="0,0,0,12">
+                            <TextBlock
+                                Width="50"
+                                VerticalAlignment="Center"
+                                FontSize="13"
+                                Foreground="#374151"
+                                Text="설계" />
+                            <TextBlock
+                                Width="40"
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Right"
+                                FontSize="13"
+                                Foreground="#6B7280"
+                                Text="{Binding DesignProgress, StringFormat={}{0}%}"
+                                TextAlignment="Right" />
+                            <ProgressBar
+                                Height="8"
+                                Background="#E5E7EB"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                Maximum="100"
+                                Minimum="0"
+                                Value="{Binding DesignProgress}" />
+                        </DockPanel>
+
+                        <!--  개발  -->
+                        <DockPanel Margin="0,0,0,12">
+                            <TextBlock
+                                Width="50"
+                                VerticalAlignment="Center"
+                                FontSize="13"
+                                Foreground="#374151"
+                                Text="개발" />
+                            <TextBlock
+                                Width="40"
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Right"
+                                FontSize="13"
+                                Foreground="#6B7280"
+                                Text="{Binding DevProgress, StringFormat={}{0}%}"
+                                TextAlignment="Right" />
+                            <ProgressBar
+                                Height="8"
+                                Background="#E5E7EB"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                Maximum="100"
+                                Minimum="0"
+                                Value="{Binding DevProgress}" />
+                        </DockPanel>
+
+                        <!--  테스트  -->
+                        <DockPanel Margin="0,0,0,12">
+                            <TextBlock
+                                Width="50"
+                                VerticalAlignment="Center"
+                                FontSize="13"
+                                Foreground="#374151"
+                                Text="테스트" />
+                            <TextBlock
+                                Width="40"
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Right"
+                                FontSize="13"
+                                Foreground="#6B7280"
+                                Text="{Binding TestProgress, StringFormat={}{0}%}"
+                                TextAlignment="Right" />
+                            <ProgressBar
+                                Height="8"
+                                Background="#E5E7EB"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                Maximum="100"
+                                Minimum="0"
+                                Value="{Binding TestProgress}" />
+                        </DockPanel>
+
+                        <!--  완료  -->
+                        <DockPanel>
+                            <TextBlock
+                                Width="50"
+                                VerticalAlignment="Center"
+                                FontSize="13"
+                                Foreground="#374151"
+                                Text="완료" />
+                            <TextBlock
+                                Width="40"
+                                VerticalAlignment="Center"
+                                DockPanel.Dock="Right"
+                                FontSize="13"
+                                Foreground="#6B7280"
+                                Text="{Binding DoneProgress, StringFormat={}{0}%}"
+                                TextAlignment="Right" />
+                            <ProgressBar
+                                Height="8"
+                                Background="#E5E7EB"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                Maximum="100"
+                                Minimum="0"
+                                Value="{Binding DoneProgress}" />
+                        </DockPanel>
+                    </StackPanel>
+                </Border>
+            </Grid>
+
+            <Border
+                Margin="0,0,0,24"
+                Padding="24"
+                Background="White"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1"
+                CornerRadius="12">
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,12"
+                        FontSize="15"
+                        FontWeight="Bold"
+                        Foreground="#1F1F1F"
+                        Text="활동 기록" />
+
+                    <ScrollViewer HorizontalScrollBarVisibility="Auto" VerticalScrollBarVisibility="Disabled">
+                        <StackPanel>
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="28" />
+                                    <ColumnDefinition Width="Auto" />
+                                </Grid.ColumnDefinitions>
+
+                                <!--  요일 라벨 — 각 14px 높이로 딱 맞춤  -->
+                                <StackPanel Grid.Column="0" Margin="0,18,4,0">
+                                    <TextBlock
+                                        Height="14"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Foreground="#9CA3AF"
+                                        Text="월" />
+                                    <TextBlock
+                                        Height="14"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Foreground="#9CA3AF"
+                                        Text="화" />
+                                    <TextBlock
+                                        Height="14"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Foreground="#9CA3AF"
+                                        Text="수" />
+                                    <TextBlock
+                                        Height="14"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Foreground="#9CA3AF"
+                                        Text="목" />
+                                    <TextBlock
+                                        Height="14"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Foreground="#9CA3AF"
+                                        Text="금" />
+                                    <TextBlock
+                                        Height="14"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Foreground="#9CA3AF"
+                                        Text="토" />
+                                    <TextBlock
+                                        Height="14"
+                                        VerticalAlignment="Center"
+                                        FontSize="10"
+                                        Foreground="#9CA3AF"
+                                        Text="일" />
+                                </StackPanel>
+
+                                <StackPanel Grid.Column="1">
+
+                                    <!--  월 헤더 — 코드비하인드에서 직접 그림  -->
+                                    <Canvas x:Name="MonthHeaderCanvas" Height="18" />
+
+                                    <!--  히트맵 셀  -->
+                                    <Canvas Width="{Binding HeatmapWidth}" Height="{Binding HeatmapHeight}">
+                                        <ItemsControl ItemsSource="{Binding HeatmapCells}">
+                                            <ItemsControl.ItemsPanel>
+                                                <ItemsPanelTemplate>
+                                                    <Canvas />
+                                                </ItemsPanelTemplate>
+                                            </ItemsControl.ItemsPanel>
+                                            <ItemsControl.ItemTemplate>
+                                                <DataTemplate>
+                                                    <Border
+                                                        Width="12"
+                                                        Height="12"
+                                                        CornerRadius="2"
+                                                        ToolTip="{Binding Date, StringFormat=yyyy-MM-dd}">
+                                                        <Border.Background>
+                                                            <SolidColorBrush Color="{Binding HasActivity, Converter={StaticResource BoolToHeatmapColorConverter}}" />
+                                                        </Border.Background>
+                                                        <Border.RenderTransform>
+                                                            <TranslateTransform X="{Binding Col, Converter={StaticResource ColToPixelConverter}}" Y="{Binding Row, Converter={StaticResource RowToPixelConverter}}" />
+                                                        </Border.RenderTransform>
+                                                    </Border>
+                                                </DataTemplate>
+                                            </ItemsControl.ItemTemplate>
+                                        </ItemsControl>
+                                    </Canvas>
+
+                                </StackPanel>
+                            </Grid>
+
+                            <!--  스트릭 요약  -->
+                            <StackPanel Margin="0,12,0,0" Orientation="Horizontal">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="13"
+                                    Foreground="#374151"
+                                    Text="연속 집중 " />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="13"
+                                    FontWeight="Bold"
+                                    Foreground="#EA580C"
+                                    Text="{Binding CurrentStreak, StringFormat={}{0}일}" />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="16"
+                                    Text=" 🔥  " />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="13"
+                                    Foreground="#6B7280"
+                                    Text="최고 기록: " />
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="13"
+                                    FontWeight="Bold"
+                                    Foreground="#374151"
+                                    Text="{Binding BestStreak, StringFormat={}{0}일}" />
+                            </StackPanel>
+
+                        </StackPanel>
+                    </ScrollViewer>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

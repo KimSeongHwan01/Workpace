@@ -1,0 +1,299 @@
+﻿<UserControl
+    x:Class="Workpace.Views.PortfolioView"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:wv2="clr-namespace:Microsoft.Web.WebView2.Wpf;assembly=Microsoft.Web.WebView2.Wpf"
+    d:DesignHeight="768"
+    d:DesignWidth="1200"
+    mc:Ignorable="d">
+
+    <Grid Margin="32">
+        <Grid.ColumnDefinitions>
+            <!--  왼쪽: 설정 영역  -->
+            <ColumnDefinition Width="420" />
+            <!--  간격  -->
+            <ColumnDefinition Width="24" />
+            <!--  오른쪽: 미리보기  -->
+            <ColumnDefinition Width="*" />
+        </Grid.ColumnDefinitions>
+
+        <!--  ▼ 왼쪽 영역  -->
+        <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+            <StackPanel>
+
+                <!--  제목  -->
+                <TextBlock
+                    Margin="0,0,0,24"
+                    FontSize="24"
+                    FontWeight="Bold"
+                    Foreground="#1F1F1F"
+                    Text="포트폴리오 추출" />
+
+                <!--  프로젝트 요약 카드 영역  -->
+                <TextBlock
+                    Margin="0,0,0,12"
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Foreground="#1F1F1F"
+                    Text="프로젝트 요약" />
+
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto" />
+                        <RowDefinition Height="8" />
+                        <RowDefinition Height="Auto" />
+                    </Grid.RowDefinitions>
+
+                    <!--  프로젝트 기간 카드  -->
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="0"
+                        Padding="16"
+                        Background="White"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        CornerRadius="10">
+                        <StackPanel>
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="#6B7280"
+                                Text="📅 프로젝트 기간" />
+                            <TextBlock
+                                Margin="0,4,0,2"
+                                FontSize="24"
+                                FontWeight="Bold"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                Text="{Binding TotalDays}" />
+                            <TextBlock
+                                FontSize="11"
+                                Foreground="#9CA3AF"
+                                Text="{Binding DateRange}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!--  완료 작업 카드  -->
+                    <Border
+                        Grid.Row="0"
+                        Grid.Column="2"
+                        Padding="16"
+                        Background="White"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        CornerRadius="10">
+                        <StackPanel>
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="#6B7280"
+                                Text="✅ 완료 작업" />
+                            <TextBlock
+                                Margin="0,4,0,0"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                Text="{Binding DoneTasksText}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!--  완료율 카드  -->
+                    <Border
+                        Grid.Row="2"
+                        Grid.Column="0"
+                        Padding="16"
+                        Background="White"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        CornerRadius="10">
+                        <StackPanel>
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="#6B7280"
+                                Text="🎯 완료율" />
+                            <TextBlock
+                                Margin="0,4,0,0"
+                                FontSize="24"
+                                FontWeight="Bold"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                Text="{Binding CompletionRateText}" />
+                        </StackPanel>
+                    </Border>
+
+                    <!--  트러블슈팅 카드  -->
+                    <Border
+                        Grid.Row="2"
+                        Grid.Column="2"
+                        Padding="16"
+                        Background="White"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        CornerRadius="10">
+                        <StackPanel>
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="#6B7280"
+                                Text="🔧 트러블슈팅" />
+                            <TextBlock
+                                Margin="0,4,0,0"
+                                FontSize="24"
+                                FontWeight="Bold"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                Text="{Binding TroubleshootingText}" />
+                        </StackPanel>
+                    </Border>
+                </Grid>
+
+                <!--  포함할 섹션  -->
+                <TextBlock
+                    Margin="0,0,0,12"
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Foreground="#1F1F1F"
+                    Text="포함할 섹션" />
+
+                <Border
+                    Margin="0,0,0,16"
+                    Padding="16"
+                    Background="White"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    CornerRadius="10">
+                    <Grid>
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                            <RowDefinition Height="Auto" />
+                        </Grid.RowDefinitions>
+
+                        <CheckBox
+                            Grid.Row="0"
+                            Grid.Column="0"
+                            Margin="0,0,0,8"
+                            Content="프로젝트 기본 정보"
+                            IsChecked="{Binding IncludeBasicInfo}" />
+                        <CheckBox
+                            Grid.Row="0"
+                            Grid.Column="1"
+                            Margin="0,0,0,8"
+                            Content="주요 기능"
+                            IsChecked="{Binding IncludeMainFeatures}" />
+                        <CheckBox
+                            Grid.Row="1"
+                            Grid.Column="0"
+                            Margin="0,0,0,8"
+                            Content="프로젝트 개요"
+                            IsChecked="{Binding IncludeOverview}" />
+                        <CheckBox
+                            Grid.Row="1"
+                            Grid.Column="1"
+                            Margin="0,0,0,8"
+                            Content="트러블슈팅"
+                            IsChecked="{Binding IncludeTroubleshooting}" />
+                        <CheckBox
+                            Grid.Row="2"
+                            Grid.Column="0"
+                            Content="기술 스택"
+                            IsChecked="{Binding IncludeTechStack}" />
+                        <CheckBox
+                            Grid.Row="2"
+                            Grid.Column="1"
+                            Content="프로젝트 성과"
+                            IsChecked="{Binding IncludeResults}" />
+                    </Grid>
+                </Border>
+
+                <!--  다운로드 / 텍스트 복사 버튼  -->
+                <TextBlock
+                    Margin="0,0,0,12"
+                    FontSize="14"
+                    FontWeight="Bold"
+                    Foreground="#1F1F1F"
+                    Text="내보내기" />
+
+                <Grid Margin="0,0,0,8">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="*" />
+                    </Grid.ColumnDefinitions>
+
+                    <!--  PDF 다운로드 버튼  -->
+                    <Button
+                        Grid.Column="0"
+                        Height="48"
+                        Background="{StaticResource PrimaryBrush}"
+                        BorderThickness="0"
+                        Command="{Binding DownloadPdfCommand}"
+                        Cursor="Hand"
+                        FontSize="14"
+                        FontWeight="Medium"
+                        Foreground="White">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontSize="14" Text="⬇ " />
+                            <TextBlock Text="PDF 다운로드" />
+                        </StackPanel>
+                    </Button>
+
+                    <!--  텍스트 복사 버튼  -->
+                    <Button
+                        Grid.Column="2"
+                        Height="48"
+                        Background="White"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        Command="{Binding CopyTextCommand}"
+                        Cursor="Hand"
+                        FontSize="14"
+                        Foreground="#374151">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock FontSize="14" Text="📋 " />
+                            <TextBlock Text="텍스트 복사" />
+                        </StackPanel>
+                    </Button>
+                </Grid>
+
+            </StackPanel>
+        </ScrollViewer>
+
+        <!--  ▼ 오른쪽: PDF 미리보기  -->
+        <Border
+            Grid.Column="2"
+            Background="White"
+            BorderBrush="#E5E7EB"
+            BorderThickness="1"
+            CornerRadius="12">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto" />
+                    <RowDefinition Height="*" />
+                </Grid.RowDefinitions>
+
+                <!--  미리보기 헤더  -->
+                <Border
+                    Grid.Row="0"
+                    Padding="16,12"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="0,0,0,1">
+                    <TextBlock
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#1F1F1F"
+                        Text="미리보기" />
+                </Border>
+
+                <!--  WebView2 PDF 미리보기  -->
+                <wv2:WebView2 x:Name="PdfPreview" Grid.Row="1" />
+            </Grid>
+        </Border>
+
+    </Grid>
+</UserControl>

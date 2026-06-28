@@ -2,6 +2,7 @@
 using CommunityToolkit.Mvvm.Input;
 using CommunityToolkit.Mvvm.Messaging;
 using System.Collections.ObjectModel;
+using System.Windows;
 using Workpace.Messages;
 using Workpace.Models;
 using Workpace.Services;
@@ -14,7 +15,16 @@ namespace Workpace.ViewModels
         // DatabaseService 인스턴스 — DB 작업은 전부 여기를 통해서 함
         private readonly DatabaseService _db;
 
-        private readonly ProjectViewModel _projectVM;
+        public ProjectViewModel ProjectViewModel { get; }
+
+        // ProjectViewModel의 CoreTaskCount를 사이드바에 노출
+        // ProjectViewModel이 바뀌면 이 값도 같이 바뀌도록 연결
+        public int CoreTaskCount => ProjectViewModel.CoreTaskCount;
+
+        // ProjectViewModel의 CurrentStreak을 사이드바에 노출
+        public int CurrentStreak => ProjectViewModel.CurrentStreak;
+
+        private readonly PortfolioViewModel _portfolioVM;
 
         // ───────────────────────────────────────
         // ObservableCollection — 일반 List와 달리
@@ -32,21 +42,30 @@ namespace Workpace.ViewModels
         [ObservableProperty]
         private Project? selectedProject;
 
-        // 아직 기능 없는 빈 커맨드 — 나중에 채울 예정
-        [RelayCommand]
-        private void GoToWorkspace() { }
-
-        [RelayCommand]
-        private void GoToStatistics() { }
-
-        [RelayCommand]
-        private void GoToSettings() { }
+        // 핵심 기능 Task 목록을 사이드바에 노출
+        public System.Collections.ObjectModel.ObservableCollection<WorkTask> CoreTasks
+            => ProjectViewModel.CoreTasks;
 
         public MainViewModel(ProjectViewModel projectVM)
         {
-            _projectVM = projectVM;
+            ProjectViewModel = projectVM;
+            _portfolioVM = new PortfolioViewModel();
             _db = new DatabaseService();
             LoadProjects(); // 앱 시작 시 DB에서 프로젝트 목록 불러오기
+
+            // 앱 실행 시 바로 스트릭 계산
+            ProjectViewModel.CurrentStreak = _db.GetCurrentStreak();
+
+            // ProjectViewModel의 CoreTaskCount가 바뀌면
+            // MainViewModel도 UI에 변경을 알려줌
+            ProjectViewModel.PropertyChanged += (s, e) =>
+            {
+                if (e.PropertyName == nameof(ProjectViewModel.CoreTaskCount))
+                    OnPropertyChanged(nameof(CoreTaskCount));
+
+                if (e.PropertyName == nameof(ProjectViewModel.CurrentStreak))
+                    OnPropertyChanged(nameof(CurrentStreak));
+            };
         }
 
         // ───────────────────────────────────────
@@ -61,6 +80,53 @@ namespace Workpace.ViewModels
             {
                 Projects.Add(project);
             }
+        }
+
+        [RelayCommand]
+        private void GoToStatistics()
+        {
+            // 통계 화면으로 전환
+            // 매번 새로 만들지 않고 기존 인스턴스 재사용
+            _statisticsVM.RefreshProjects();
+
+            var view = new StatisticsView();
+            view.DataContext = _statisticsVM;
+            CurrentView = view;
+        }
+
+        // SettingsViewModel 인스턴스 — 한 번만 만들어서 재사용
+        private readonly SettingsViewModel _settingsVM = new();
+
+        // StatisticsViewModel 인스턴스 — 한 번만 만들어서 재사용
+        private readonly StatisticsViewModel _statisticsVM = new();
+
+        [RelayCommand]
+        private void GoToSettings()
+        {
+            var view = new SettingsView();
+            view.DataContext = _settingsVM;
+            CurrentView = view;
+        }
+
+        // ───────────────────────────────────────
+        // 포트폴리오 추출 화면으로 전환
+        // 현재 선택된 프로젝트가 있어야 함
+        // ───────────────────────────────────────
+        [RelayCommand]
+        private void GoToPortfolio()
+        {
+            if (SelectedProject == null)
+            {
+                MessageBox.Show("프로젝트를 먼저 선택해주세요.", "알림",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+                return;
+            }
+
+            _portfolioVM.SetProject(SelectedProject);
+
+            var view = new PortfolioView();
+            view.DataContext = _portfolioVM;
+            CurrentView = view;
         }
 
         // ───────────────────────────────────────
@@ -123,13 +189,24 @@ namespace Workpace.ViewModels
             {
                 // ProjectView 생성 시 DataContext를 ProjectViewModel로 설정
                 var view = new ProjectView();
-                view.DataContext = _projectVM;
+                view.DataContext = ProjectViewModel;
                 CurrentView = view;
             }
             else
             {
                 CurrentView = null;
             }
+        }
+
+        // ───────────────────────────────────────
+        // 같은 프로젝트 재클릭 시 프로젝트 화면으로 전환
+        // 포트폴리오 화면 등 다른 화면에서 돌아올 때 사용
+        // ───────────────────────────────────────
+        public void OnProjectReselected(Project project)
+        {
+            var view = new ProjectView();
+            view.DataContext = ProjectViewModel;
+            CurrentView = view;
         }
     }
 }

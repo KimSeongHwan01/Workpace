@@ -1,53 +1,59 @@
-﻿<Application x:Class="Workpace.App"
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:local="clr-namespace:Workpace.Converters"
-             StartupUri="Views/MainWindow.xaml">
+﻿<Application
+    x:Class="Workpace.App"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="clr-namespace:Workpace.Converters"
+    StartupUri="Views/MainWindow.xaml">
     <Application.Resources>
-        <!-- 브랜드 색상 -->
+        <!--  브랜드 색상  -->
         <Color x:Key="PrimaryColor">#7C3AED</Color>
         <Color x:Key="BackgroundColor">#F8F7FF</Color>
         <Color x:Key="WarningColor">#EF4444</Color>
         <Color x:Key="SuccessColor">#10B981</Color>
 
-        <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}"/>
-        <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}"/>
-        <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}"/>
-        <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}"/>
+        <SolidColorBrush x:Key="PrimaryBrush" Color="{StaticResource PrimaryColor}" />
+        <SolidColorBrush x:Key="BackgroundBrush" Color="{StaticResource BackgroundColor}" />
+        <SolidColorBrush x:Key="WarningBrush" Color="{StaticResource WarningColor}" />
+        <SolidColorBrush x:Key="SuccessBrush" Color="{StaticResource SuccessColor}" />
 
-        <!-- 기본 카드 스타일 -->
+        <!--  기본 카드 스타일  -->
         <Style x:Key="CardStyle" TargetType="Border">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="CornerRadius" Value="12"/>
+            <Setter Property="Background" Value="White" />
+            <Setter Property="CornerRadius" Value="12" />
             <Setter Property="Effect">
                 <Setter.Value>
-                    <DropShadowEffect Color="#000000" Opacity="0.06"
-                                      BlurRadius="16" ShadowDepth="2"/>
+                    <DropShadowEffect
+                        BlurRadius="16"
+                        Opacity="0.06"
+                        ShadowDepth="2"
+                        Color="#000000" />
                 </Setter.Value>
             </Setter>
         </Style>
 
-        <!-- App.xaml Resources 안에 추가 -->
+        <!--  App.xaml Resources 안에 추가  -->
         <Style x:Key="NavButtonStyle" TargetType="Button">
-            <Setter Property="Background" Value="Transparent"/>
-            <Setter Property="BorderThickness" Value="0"/>
-            <Setter Property="Height" Value="40"/>
-            <Setter Property="HorizontalContentAlignment" Value="Left"/>
-            <Setter Property="Padding" Value="12,0"/>
-            <Setter Property="FontSize" Value="14"/>
-            <Setter Property="Foreground" Value="#374151"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Height" Value="40" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="Padding" Value="12,0" />
+            <Setter Property="FontSize" Value="14" />
+            <Setter Property="Foreground" Value="#374151" />
+            <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="Button">
-                        <Border Background="{TemplateBinding Background}"
-                        CornerRadius="8" Padding="{TemplateBinding Padding}">
-                            <ContentPresenter VerticalAlignment="Center"/>
+                        <Border
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="8">
+                            <ContentPresenter VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
-                            <!-- 마우스 올리면 배경색 변경 -->
+                            <!--  마우스 올리면 배경색 변경  -->
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#F3F4F6"/>
+                                <Setter Property="Background" Value="#F3F4F6" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>
@@ -55,37 +61,47 @@
             </Setter>
         </Style>
 
-        <!-- Converter 등록 -->
-        <local:EqualityConverter x:Key="EqualityConverter"/>
+        <!--  Converter 등록  -->
+        <local:EqualityConverter x:Key="EqualityConverter" />
+        <BooleanToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+        <local:InverseBoolToVisibilityConverter x:Key="InverseBoolToVisibilityConverter" />
+        <local:BoolToLockIconConverter x:Key="BoolToLockIconConverter" />
+        <local:BoolToLockColorConverter x:Key="BoolToLockColorConverter" />
+        <local:BoolToHeatmapColorConverter x:Key="BoolToHeatmapColorConverter" />
+        <local:ColToPixelConverter x:Key="ColToPixelConverter" />
+        <local:RowToPixelConverter x:Key="RowToPixelConverter" />
+        <local:DoubleToLeftMarginConverter x:Key="DoubleToLeftMarginConverter" />
+        <local:BoolToStageColorConverter x:Key="BoolToStageColorConverter" />
+        <local:BoolToStageForegroundConverter x:Key="BoolToStageForegroundConverter" />
 
-        <!-- 프로젝트 유형 카드 스타일 -->
+        <!--  프로젝트 유형 카드 스타일  -->
         <Style x:Key="TypeCardStyle" TargetType="RadioButton">
-            <Setter Property="Background" Value="White"/>
-            <Setter Property="BorderBrush" Value="#E5E7EB"/>
-            <Setter Property="BorderThickness" Value="1"/>
-            <Setter Property="Margin" Value="4"/>
-            <Setter Property="Padding" Value="8"/>
-            <Setter Property="Cursor" Value="Hand"/>
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#E5E7EB" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Margin" Value="4" />
+            <Setter Property="Padding" Value="8" />
+            <Setter Property="Cursor" Value="Hand" />
             <Setter Property="Template">
                 <Setter.Value>
                     <ControlTemplate TargetType="RadioButton">
-                        <Border Background="{TemplateBinding Background}"
-                        BorderBrush="{TemplateBinding BorderBrush}"
-                        BorderThickness="{TemplateBinding BorderThickness}"
-                        CornerRadius="8"
-                        Padding="{TemplateBinding Padding}">
-                            <ContentPresenter HorizontalAlignment="Center"
-                                      VerticalAlignment="Center"/>
+                        <Border
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                         </Border>
                         <ControlTemplate.Triggers>
-                            <!-- 선택됐을 때 보라색 테두리 -->
+                            <!--  선택됐을 때 보라색 테두리  -->
                             <Trigger Property="IsChecked" Value="True">
-                                <Setter Property="BorderBrush" Value="#7C3AED"/>
-                                <Setter Property="Background" Value="#F5F3FF"/>
+                                <Setter Property="BorderBrush" Value="#7C3AED" />
+                                <Setter Property="Background" Value="#F5F3FF" />
                             </Trigger>
-                            <!-- 마우스 올리면 배경색 변경 -->
+                            <!--  마우스 올리면 배경색 변경  -->
                             <Trigger Property="IsMouseOver" Value="True">
-                                <Setter Property="Background" Value="#F9FAFB"/>
+                                <Setter Property="Background" Value="#F9FAFB" />
                             </Trigger>
                         </ControlTemplate.Triggers>
                     </ControlTemplate>

@@ -29,6 +29,15 @@ namespace Workpace.ViewModels
         [ObservableProperty]
         private string background = "";
 
+        [ObservableProperty]
+        private string techReason = "";
+
+        [ObservableProperty]
+        private string role = "";
+
+        [ObservableProperty]
+        private string architecture = "";
+
         // 기술 스택 목록 — 선택 가능한 전체 목록
         public List<TechStack> TechStacks { get; } = new()
         {
@@ -101,7 +110,10 @@ namespace Workpace.ViewModels
                 Deadline = Deadline,
                 Description = Description,
                 GitHubUrl = GitHubUrl,
-                Background = Background
+                Background = Background,
+                TechReason = TechReason,
+                Role = Role,
+                Architecture = Architecture,
             };
 
             // 창 닫기

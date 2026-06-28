@@ -1,4 +1,7 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
+using Workpace.Models;
 using Workpace.ViewModels;
 
 namespace Workpace.Views
@@ -18,6 +21,20 @@ namespace Workpace.Views
 
             // MainViewModel 생성 시 ProjectViewModel 전달
             DataContext = new MainViewModel(ProjectVM);
+        }
+
+        // ───────────────────────────────────────
+        // 사이드바 프로젝트 재클릭 감지
+        // 같은 프로젝트를 다시 클릭하면 프로젝트 화면으로 돌아옴
+        // ───────────────────────────────────────
+        private void ProjectListBox_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
+        {
+            var listBox = sender as ListBox;
+            if (listBox?.SelectedItem is Project project)
+            {
+                var vm = DataContext as MainViewModel;
+                vm?.OnProjectReselected(project);
+            }
         }
     }
 }
