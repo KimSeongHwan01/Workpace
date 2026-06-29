@@ -14,6 +14,6 @@ namespace Workpace.Models
         [ObservableProperty] private string stage = "기획";
         [ObservableProperty] private int progress = 0;
         [ObservableProperty] private bool isCore = false;
-        public string CoreLockedAt { get; set; } = string.Empty; // 핵심 기능으로 잠근 시각
+        [ObservableProperty] private string coreLockedAt = string.Empty;
     }
 }

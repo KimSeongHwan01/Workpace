@@ -733,7 +733,7 @@ namespace Workpace.Services
             // 단계별 전체/완료 카운트
             var total = new Dictionary<string, int>();
             var done = new Dictionary<string, int>();
-            var stages = new[] { "기획", "설계", "개발", "테스트", "완료" };
+            var stages = new[] { "기획", "설계", "개발", "테스트", "배포" };
 
             foreach (var s in stages) { total[s] = 0; done[s] = 0; }
 

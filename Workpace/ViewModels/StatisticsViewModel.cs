@@ -178,7 +178,7 @@ namespace Workpace.ViewModels
             DesignProgress = progress["설계"];
             DevProgress = progress["개발"];
             TestProgress = progress["테스트"];
-            DoneProgress = progress["완료"];
+            DoneProgress = progress["배포"];
         }
 
         // ───────────────────────────────────────

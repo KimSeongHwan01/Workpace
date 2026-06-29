@@ -30,10 +30,17 @@ namespace Workpace.Views
         private void ProjectListBox_MouseLeftButtonUp(object sender, MouseButtonEventArgs e)
         {
             var listBox = sender as ListBox;
-            if (listBox?.SelectedItem is Project project)
+            if (listBox?.SelectedItem is not Project project) return;
+
+            var vm = DataContext as MainViewModel;
+            if (vm == null) return;
+
+            // 핵심 수정 — CurrentView가 이미 ProjectView인지 확인
+            // 새 프로젝트 클릭 시: OnSelectedProjectChanged가 이미 처리했으므로 건드리지 않음
+            // 같은 프로젝트 재클릭 시: CurrentView가 ProjectView가 아닐 수 있으므로 복귀 처리
+            if (vm.CurrentView is not Workpace.Views.ProjectView)
             {
-                var vm = DataContext as MainViewModel;
-                vm?.OnProjectReselected(project);
+                vm.OnProjectReselected(project);
             }
         }
     }

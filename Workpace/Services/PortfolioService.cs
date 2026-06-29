@@ -221,7 +221,7 @@ namespace Workpace.Services
                 else
                 {
                     // Stage 순서 정의 — 기획부터 완료 순으로 정렬
-                    var stageOrder = new[] { "기획", "설계", "개발", "테스트", "완료" };
+                    var stageOrder = new[] { "기획", "설계", "개발", "테스트", "배포" };
 
                     // Stage별로 그룹핑
                     var grouped = data.DoneTaskList
@@ -431,7 +431,7 @@ namespace Workpace.Services
             }
             else
             {
-                var stageOrder = new[] { "기획", "설계", "개발", "테스트", "완료" };
+                var stageOrder = new[] { "기획", "설계", "개발", "테스트", "배포" };
                 var grouped = data.DoneTaskList
                     .GroupBy(t => t.Stage)
                     .OrderBy(g => Array.IndexOf(stageOrder, g.Key));

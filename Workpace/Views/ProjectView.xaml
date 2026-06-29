@@ -178,7 +178,7 @@
                         Margin="8,0"
                         Fill="{Binding IsStage4Done, Converter={StaticResource BoolToStageColorConverter}}" />
 
-                    <!--  배포 (기존 완료 → 배포로 변경)  -->
+                    <!--  배포  -->
                     <Ellipse
                         Width="28"
                         Height="28"
@@ -222,8 +222,8 @@
                         Content="테스트" />
                     <Button
                         Command="{Binding FilterCommand}"
-                        CommandParameter="완료"
-                        Content="완료" />
+                        CommandParameter="배포"
+                        Content="배포" />
                 </StackPanel>
             </Border>
 
@@ -243,12 +243,19 @@
                     AllowDrop="True"
                     Drop="Column_Drop"
                     Tag="할일">
-                    <TextBlock
-                        Margin="0,0,0,12"
-                        FontSize="14"
-                        FontWeight="Bold"
-                        Foreground="#1F1F1F"
-                        Text="할일" />
+                    <StackPanel Margin="0,0,0,12" Orientation="Horizontal">
+                        <TextBlock
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="#1F1F1F"
+                            Text="할일" />
+                        <TextBlock
+                            Margin="6,0,0,0"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="#9CA3AF"
+                            Text="{Binding TodoTasks.Count}" />
+                    </StackPanel>
                     <ListBox
                         MaxHeight="400"
                         HorizontalContentAlignment="Stretch"
@@ -329,12 +336,19 @@
                     AllowDrop="True"
                     Drop="Column_Drop"
                     Tag="진행중">
-                    <TextBlock
-                        Margin="0,0,0,12"
-                        FontSize="14"
-                        FontWeight="Bold"
-                        Foreground="#1F1F1F"
-                        Text="진행중" />
+                    <StackPanel Margin="0,0,0,12" Orientation="Horizontal">
+                        <TextBlock
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="#1F1F1F"
+                            Text="진행중" />
+                        <TextBlock
+                            Margin="6,0,0,0"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="#9CA3AF"
+                            Text="{Binding InProgressTasks.Count}" />
+                    </StackPanel>
                     <ListBox
                         MaxHeight="400"
                         HorizontalContentAlignment="Stretch"
@@ -415,12 +429,19 @@
                     AllowDrop="True"
                     Drop="Column_Drop"
                     Tag="완료">
-                    <TextBlock
-                        Margin="0,0,0,12"
-                        FontSize="14"
-                        FontWeight="Bold"
-                        Foreground="#1F1F1F"
-                        Text="완료" />
+                    <StackPanel Margin="0,0,0,12" Orientation="Horizontal">
+                        <TextBlock
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="#1F1F1F"
+                            Text="완료" />
+                        <TextBlock
+                            Margin="6,0,0,0"
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="#9CA3AF"
+                            Text="{Binding DoneTasks.Count}" />
+                    </StackPanel>
                     <ListBox
                         MaxHeight="400"
                         HorizontalContentAlignment="Stretch"

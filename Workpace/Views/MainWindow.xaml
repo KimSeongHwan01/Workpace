@@ -154,7 +154,7 @@
                                         Margin="0,2,0,0"
                                         FontSize="12"
                                         Foreground="#9CA3AF"
-                                        Text="진행중" />
+                                        Text="{Binding SidebarStatusText}" />
                                 </StackPanel>
                             </Border>
                         </DataTemplate>

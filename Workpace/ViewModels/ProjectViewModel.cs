@@ -113,8 +113,8 @@ namespace Workpace.ViewModels
 
             // 순서대로 계산 — 모든 프로퍼티가 채워지면 화면 전체 갱신
             CalculateDDay();
-            CalculateProgress();
             LoadTasks(CurrentProject.Id);
+            CalculateProgress();
 
             CurrentStreak = _db.GetCurrentStreak();
         }
@@ -147,9 +147,8 @@ namespace Workpace.ViewModels
             if (CurrentProject == null) return;
 
             // 전체 Task, 완료 Task 가져오기
-            var allTasks = _db.GetTasksByProject(CurrentProject.Id);
-            var totalCount = allTasks.Count;
-            var doneCount = allTasks.Count(t => t.Status == "완료");
+            var totalCount = _allTasks.Count;
+            var doneCount = _allTasks.Count(t => t.Status == "완료");
 
             // 현재 진행률 계산
             CurrentProgress = totalCount > 0
@@ -163,8 +162,8 @@ namespace Workpace.ViewModels
             TargetProgress = totalDays > 0
                 ? Math.Round((double)elapsedDays / totalDays * 100, 1)
                 : 0;
-            // 목표 진행률은 100% 초과 안 되게 제한
-            TargetProgress = Math.Min(TargetProgress, 100);
+            // 0~100 범위로 제한 (음수 및 100% 초과 모두 방지)
+            TargetProgress = Math.Clamp(TargetProgress, 0, 100);
             TargetProgressText = $"{TargetProgress}%";
 
             IsBehindSchedule = CurrentProgress < TargetProgress;
@@ -185,7 +184,7 @@ namespace Workpace.ViewModels
             IsStage2Done = _allTasks.Any(t => t.Stage == "설계") && _allTasks.Where(t => t.Stage == "설계").All(t => t.Status == "완료");
             IsStage3Done = _allTasks.Any(t => t.Stage == "개발") && _allTasks.Where(t => t.Stage == "개발").All(t => t.Status == "완료");
             IsStage4Done = _allTasks.Any(t => t.Stage == "테스트") && _allTasks.Where(t => t.Stage == "테스트").All(t => t.Status == "완료");
-            IsStage5Done = _allTasks.Any(t => t.Stage == "완료") && _allTasks.Where(t => t.Stage == "완료").All(t => t.Status == "완료");
+            IsStage5Done = _allTasks.Any(t => t.Stage == "배포") && _allTasks.Where(t => t.Stage == "배포").All(t => t.Status == "완료");
 
             // 핵심 기능 개수 갱신
             CoreTaskCount = _allTasks.Count(t => t.IsCore);
@@ -712,34 +711,17 @@ namespace Workpace.ViewModels
             // IsCore가 false인데 3개 이상이면 추가 차단
             if (!task.IsCore && _allTasks.Count(t => t.IsCore) >= 3)
             {
-                // 마감일 자동 연장 계산 — 핵심 기능 1개당 3일 추가
-                var extraDays = 3;
-                var newDeadline = CurrentProject!.Deadline.AddDays(extraDays);
-
                 var result = MessageBox.Show(
-                    $"핵심 기능은 3개까지만 지정할 수 있어요.\n\n" +
-                    $"'{task.Title}'을 핵심 기능으로 추가하면\n" +
-                    $"마감일이 {extraDays}일 늘어나요.\n\n" +
-                    $"새 마감일: {newDeadline:yyyy-MM-dd}\n\n" +
+                    $"핵심 기능은 3개까지 권장해요.\n\n" +
+                    $"'{task.Title}'을 추가하면 마감 내 완료가 어려워질 수 있어요.\n\n" +
                     $"그래도 추가할까요?",
-                    "스코프 잠금 경고",
+                    "스코프 경고",
                     MessageBoxButton.YesNo,
                     MessageBoxImage.Warning);
 
                 if (result == MessageBoxResult.No) return;
 
-                // 마감일 연장 적용
-                CurrentProject.Deadline = newDeadline;
-                _db.UpdateProject(CurrentProject);
-                CalculateDDay();
-            }
-
-            // 잠금 해제할 때 — 4개 이상인 상태에서 해제하면 마감일 -3일 복원
-            else if (task.IsCore && _allTasks.Count(t => t.IsCore) > 3)
-            {
-                CurrentProject!.Deadline = CurrentProject.Deadline.AddDays(-3);
-                _db.UpdateProject(CurrentProject);
-                CalculateDDay();
+                // 마감일 건드리지 않음 — 페이스 경고가 자동으로 악화됨
             }
 
             // IsCore 반전
@@ -752,6 +734,8 @@ namespace Workpace.ViewModels
                 task.CoreLockedAt = string.Empty;
 
             _db.UpdateTask(task);
+
+            CalculateProgress();
 
             // 잠근 순서대로 정렬해서 추가
             CoreTaskCount = _allTasks.Count(t => t.IsCore);

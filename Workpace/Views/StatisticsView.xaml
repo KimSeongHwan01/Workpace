@@ -318,14 +318,14 @@
                                 Value="{Binding TestProgress}" />
                         </DockPanel>
 
-                        <!--  완료  -->
+                        <!--  배포  -->
                         <DockPanel>
                             <TextBlock
                                 Width="50"
                                 VerticalAlignment="Center"
                                 FontSize="13"
                                 Foreground="#374151"
-                                Text="완료" />
+                                Text="배포" />
                             <TextBlock
                                 Width="40"
                                 VerticalAlignment="Center"

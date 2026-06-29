@@ -56,16 +56,21 @@ namespace Workpace.ViewModels
             // 앱 실행 시 바로 스트릭 계산
             ProjectViewModel.CurrentStreak = _db.GetCurrentStreak();
 
-            // ProjectViewModel의 CoreTaskCount가 바뀌면
-            // MainViewModel도 UI에 변경을 알려줌
-            ProjectViewModel.PropertyChanged += (s, e) =>
-            {
-                if (e.PropertyName == nameof(ProjectViewModel.CoreTaskCount))
-                    OnPropertyChanged(nameof(CoreTaskCount));
+            ProjectViewModel.PropertyChanged += OnProjectViewModelPropertyChanged;
+        }
 
-                if (e.PropertyName == nameof(ProjectViewModel.CurrentStreak))
-                    OnPropertyChanged(nameof(CurrentStreak));
-            };
+        // PropertyChanged 핸들러를 메서드로 분리
+        // 람다로 쓰면 -= 로 해제할 수 없어서 메모리 누수 위험
+        private void OnProjectViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ProjectViewModel.CoreTaskCount))
+                OnPropertyChanged(nameof(CoreTaskCount));
+
+            if (e.PropertyName == nameof(ProjectViewModel.CurrentStreak))
+                OnPropertyChanged(nameof(CurrentStreak));
+
+            if (e.PropertyName == nameof(ProjectViewModel.CurrentProgress))
+                RefreshSelectedProjectProgress();
         }
 
         // ───────────────────────────────────────
@@ -73,11 +78,18 @@ namespace Workpace.ViewModels
         // ───────────────────────────────────────
         private void LoadProjects()
         {
-            Projects.Clear(); // 기존 목록 초기화
-
+            Projects.Clear();
             var list = _db.GetAllProjects();
             foreach (var project in list)
             {
+                // 현재 진행률 계산 (완료 Task / 전체 Task × 100)
+                var tasks = _db.GetTasksByProject(project.Id);
+                var total = tasks.Count;
+                var done = tasks.Count(t => t.Status == "완료");
+                project.CurrentProgress = total > 0
+                    ? Math.Round((double)done / total * 100, 1)
+                    : 0;
+
                 Projects.Add(project);
             }
         }
@@ -207,6 +219,22 @@ namespace Workpace.ViewModels
             var view = new ProjectView();
             view.DataContext = ProjectViewModel;
             CurrentView = view;
+        }
+
+        // 현재 선택된 프로젝트의 사이드바 진행률 갱신
+        private void RefreshSelectedProjectProgress()
+        {
+            if (SelectedProject == null) return;
+
+            var tasks = _db.GetTasksByProject(SelectedProject.Id);
+            var total = tasks.Count;
+            var done = tasks.Count(t => t.Status == "완료");
+
+            // Project가 INotifyPropertyChanged를 구현하므로
+            // 값만 바꾸면 사이드바 UI가 자동으로 갱신됨
+            SelectedProject.CurrentProgress = total > 0
+                ? Math.Round((double)done / total * 100, 1)
+                : 0;
         }
     }
 }
