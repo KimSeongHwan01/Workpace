@@ -91,6 +91,9 @@ namespace Workpace.ViewModels
         // DB에서 불러온 전체 Task 목록 — 탭 필터링할 때 원본으로 사용
         private List<WorkTask> _allTasks = new();
 
+        // 코드비하인드에서 드래그 후 Task 선택에 사용
+        public IEnumerable<WorkTask> AllTasks => _allTasks;
+
         public ProjectViewModel()
         {
             _db = new DatabaseService();
@@ -299,6 +302,9 @@ namespace Workpace.ViewModels
                 CurrentStreak = _db.GetCurrentStreak();
 
                 CalculateProgress();
+
+                //Task 추가 후 현재 탭 기준으로 재필터링
+                ApplyFilter();
             }
         }
 

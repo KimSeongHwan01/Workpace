@@ -129,24 +129,27 @@ namespace Workpace.Views
         // ───────────────────────────────────────
         private void Column_Drop(object sender, DragEventArgs e)
         {
-            // DataObject에서 Task Id 꺼내기
             if (!e.Data.GetDataPresent("WorkTask")) return;
             var taskIdStr = e.Data.GetData("WorkTask") as string;
             if (taskIdStr == null) return;
 
-            // 드롭된 컬럼의 Tag에서 새 Status 읽기
-            // Tag="할일" / "진행중" / "완료" 로 설정해뒀음
             var column = sender as StackPanel;
             var newStatus = column?.Tag as string;
             if (newStatus == null) return;
 
-            // ViewModel의 MoveTaskCommand 호출
-            // DataContext는 ProjectViewModel
             var vm = DataContext as ProjectViewModel;
             if (vm == null) return;
 
-            // "taskId|newStatus" 형태로 전달
             vm.MoveTaskCommand.Execute($"{taskIdStr}|{newStatus}");
+
+            // 드래그로 이동한 Task를 자동 선택 — 작업 상세 패널 갱신
+            // MoveTaskCommand 실행 후 _allTasks에서 해당 Task 찾아서 선택
+            if (int.TryParse(taskIdStr, out int taskId))
+            {
+                var movedTask = vm.AllTasks.FirstOrDefault(t => t.Id == taskId);
+                if (movedTask != null)
+                    vm.SelectTaskCommand.Execute(movedTask);
+            }
         }
 
         // ───────────────────────────────────────
