@@ -73,6 +73,8 @@
         <local:DoubleToLeftMarginConverter x:Key="DoubleToLeftMarginConverter" />
         <local:BoolToStageColorConverter x:Key="BoolToStageColorConverter" />
         <local:BoolToStageForegroundConverter x:Key="BoolToStageForegroundConverter" />
+        <local:PriorityToBackgroundConverter x:Key="PriorityToBackgroundConverter" />
+        <local:PriorityToForegroundConverter x:Key="PriorityToForegroundConverter" />
 
         <!--  프로젝트 유형 카드 스타일  -->
         <Style x:Key="TypeCardStyle" TargetType="RadioButton">

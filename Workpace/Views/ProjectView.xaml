@@ -1,4 +1,4 @@
-﻿<UserControl
+<UserControl
     x:Class="Workpace.Views.ProjectView"
     xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
     xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
@@ -7,16 +7,208 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     d:DesignHeight="450"
     d:DesignWidth="800"
+    FontFamily="Malgun Gothic"
     mc:Ignorable="d">
 
-    <!--  최상위 Grid: 칸반영역 | 상세패널 2컬럼  -->
-    <Grid Margin="32">
+    <UserControl.Resources>
+
+        <!--
+            ───────────────────────────────────────
+            ProgressBar 둥근 모서리 스타일
+            기본 Template을 재정의해서 둥근 모서리 적용
+            PART_Indicator 이름은 WPF 내부에서 찾는 이름이라 반드시 유지
+            ───────────────────────────────────────
+        -->
+        <Style x:Key="RoundProgressBarStyle" TargetType="ProgressBar">
+            <Setter Property="Height" Value="8" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ProgressBar">
+                        <!--  전체 배경 트랙  -->
+                        <Border
+                            x:Name="PART_Track"
+                            Background="#E5E7EB"
+                            CornerRadius="4">
+                            <!--  채워지는 부분 — HorizontalAlignment="Left"로 왼쪽부터 차오름  -->
+                            <Border
+                                x:Name="PART_Indicator"
+                                HorizontalAlignment="Left"
+                                Background="{TemplateBinding Foreground}"
+                                CornerRadius="4" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--
+            ───────────────────────────────────────
+            탭 필터 버튼 스타일
+            비활성: 투명 배경, 회색 글씨
+            활성: 흰 배경 + 그림자 + 보라 글씨
+            ───────────────────────────────────────
+        -->
+        <Style x:Key="TabFilterButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="32" />
+            <Setter Property="Padding" Value="16,0" />
+            <Setter Property="Margin" Value="2,4,2,4" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontFamily" Value="Malgun Gothic" />
+            <Setter Property="FontWeight" Value="Normal" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Foreground" Value="#6B7280" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Root"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <!--  호버 시 살짝 밝아지는 효과 — 활성 탭은 코드비하인드에서 스타일 교체  -->
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="#E9E9EF" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  활성 탭 스타일 — 흰 배경 + 보라 글씨 + 그림자  -->
+        <Style
+            x:Key="TabFilterButtonActiveStyle"
+            BasedOn="{StaticResource TabFilterButtonStyle}"
+            TargetType="Button">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Root"
+                            Padding="{TemplateBinding Padding}"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="6">
+                            <Border.Effect>
+                                <DropShadowEffect
+                                    BlurRadius="6"
+                                    Direction="270"
+                                    Opacity="0.1"
+                                    ShadowDepth="2"
+                                    Color="#000000" />
+                            </Border.Effect>
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--
+            ───────────────────────────────────────
+            칸반 카드 스타일
+            ───────────────────────────────────────
+        -->
+        <Style x:Key="KanbanCardStyle" TargetType="Border">
+            <Setter Property="Background" Value="White" />
+            <Setter Property="BorderBrush" Value="#F0F0F0" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Margin" Value="0,0,0,8" />
+            <Setter Property="Padding" Value="14,12" />
+            <Setter Property="Effect">
+                <Setter.Value>
+                    <DropShadowEffect
+                        BlurRadius="8"
+                        Direction="270"
+                        Opacity="0.07"
+                        ShadowDepth="2"
+                        Color="#000000" />
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  컬럼 개수 배지  -->
+        <Style x:Key="CountBadgeStyle" TargetType="Border">
+            <Setter Property="Background" Value="#F3F4F6" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="8,2" />
+            <Setter Property="Margin" Value="6,0,0,0" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+
+        <!--  + 작업 추가 버튼  -->
+        <Style x:Key="AddTaskButtonStyle" TargetType="Button">
+            <Setter Property="Height" Value="36" />
+            <Setter Property="Margin" Value="0,4,0,0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="#E5E7EB" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="Foreground" Value="#9CA3AF" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="FontFamily" Value="Malgun Gothic" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Root"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Root" Property="Background" Value="#F9FAFB" />
+                                <Setter TargetName="Root" Property="BorderBrush" Value="#D1D5DB" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+        <!--  ListBox 스타일 — 선택 하이라이트 제거  -->
+        <Style x:Key="KanbanListBoxStyle" TargetType="ListBox">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="ScrollViewer.HorizontalScrollBarVisibility" Value="Disabled" />
+        </Style>
+
+        <!--  ListBoxItem — 기본 선택 효과 완전 제거  -->
+        <Style x:Key="KanbanListBoxItemStyle" TargetType="ListBoxItem">
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="ListBoxItem">
+                        <ContentPresenter />
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+
+    </UserControl.Resources>
+
+    <Grid Margin="32,24,32,24">
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="*" />
             <ColumnDefinition Width="Auto" />
         </Grid.ColumnDefinitions>
 
-        <!--  ▼ 왼쪽: 기존 칸반 영역 전체  -->
+        <!--  ▼ 왼쪽: 칸반 영역  -->
         <Grid Grid.Column="0">
             <Grid.RowDefinitions>
                 <RowDefinition Height="Auto" />
@@ -26,79 +218,97 @@
                 <RowDefinition Height="*" />
             </Grid.RowDefinitions>
 
-            <!--  1. 헤더 영역  -->
+            <!--  1. 헤더  -->
             <StackPanel
                 Grid.Row="0"
-                Margin="0,0,0,16"
+                Margin="0,0,0,20"
                 VerticalAlignment="Center"
                 Orientation="Horizontal">
                 <TextBlock
                     VerticalAlignment="Center"
-                    FontSize="24"
+                    FontFamily="Malgun Gothic"
+                    FontSize="26"
                     FontWeight="Bold"
-                    Foreground="#1F1F1F"
+                    Foreground="#111827"
                     Text="{Binding CurrentProject.Name}" />
                 <Border
                     Margin="12,0,0,0"
-                    Padding="10,4"
+                    Padding="12,5"
                     VerticalAlignment="Center"
-                    Background="#F3F4F6"
-                    CornerRadius="6">
+                    Background="White"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    CornerRadius="8">
                     <TextBlock
+                        FontFamily="Malgun Gothic"
                         FontSize="13"
-                        FontWeight="Medium"
+                        FontWeight="SemiBold"
                         Foreground="{StaticResource PrimaryBrush}"
                         Text="{Binding DDayText}" />
                 </Border>
             </StackPanel>
 
-            <!--  2. 진행률 영역  -->
-            <StackPanel Grid.Row="1" Margin="0,0,0,16">
-                <DockPanel Margin="0,0,0,6">
+            <!--  2. 진행률  -->
+            <StackPanel Grid.Row="1" Margin="0,0,0,20">
+                <!--  현재 진행률  -->
+                <DockPanel Margin="0,0,0,8">
                     <TextBlock
-                        Width="80"
+                        Width="76"
+                        VerticalAlignment="Center"
+                        FontFamily="Malgun Gothic"
                         FontSize="13"
                         Foreground="#6B7280"
                         Text="현재 진행률:" />
                     <TextBlock
-                        Width="40"
+                        Width="38"
                         DockPanel.Dock="Right"
+                        FontFamily="Malgun Gothic"
                         FontSize="13"
-                        Foreground="#1F1F1F"
+                        FontWeight="Medium"
+                        Foreground="#111827"
                         Text="{Binding CurrentProgressText}"
                         TextAlignment="Right" />
+                    <!--  RoundProgressBarStyle로 둥근 모서리 + 정상적으로 차오르는 바  -->
                     <ProgressBar
-                        Height="8"
-                        Background="#E5E7EB"
+                        VerticalAlignment="Center"
                         Foreground="{StaticResource PrimaryBrush}"
                         Maximum="100"
                         Minimum="0"
+                        Style="{StaticResource RoundProgressBarStyle}"
                         Value="{Binding CurrentProgress}" />
                 </DockPanel>
-                <DockPanel Margin="0,0,0,6">
+                <!--  목표 진행률  -->
+                <DockPanel Margin="0,0,0,8">
                     <TextBlock
-                        Width="80"
+                        Width="76"
+                        VerticalAlignment="Center"
+                        FontFamily="Malgun Gothic"
                         FontSize="13"
                         Foreground="#6B7280"
                         Text="목표 진행률:" />
                     <TextBlock
-                        Width="40"
+                        Width="38"
                         DockPanel.Dock="Right"
+                        FontFamily="Malgun Gothic"
                         FontSize="13"
-                        Foreground="#1F1F1F"
+                        FontWeight="Medium"
+                        Foreground="#111827"
                         Text="{Binding TargetProgressText}"
                         TextAlignment="Right" />
                     <ProgressBar
-                        Height="8"
-                        Background="#E5E7EB"
+                        VerticalAlignment="Center"
                         Foreground="#9CA3AF"
                         Maximum="100"
                         Minimum="0"
+                        Style="{StaticResource RoundProgressBarStyle}"
                         Value="{Binding TargetProgress}" />
                 </DockPanel>
+                <!--  페이스 경고  -->
                 <TextBlock
-                    Margin="0,4,0,0"
+                    Margin="0,2,0,0"
+                    FontFamily="Malgun Gothic"
                     FontSize="13"
+                    FontWeight="Medium"
                     Foreground="#EF4444"
                     Text="{Binding PaceWarningText}" />
             </StackPanel>
@@ -106,126 +316,194 @@
             <!--  3. 단계 표시  -->
             <StackPanel
                 Grid.Row="2"
-                Margin="0,0,0,20"
+                Margin="0,0,0,24"
+                VerticalAlignment="Center"
                 Orientation="Horizontal">
-                <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
 
-                    <!--  기획  -->
-                    <Ellipse
-                        Width="28"
-                        Height="28"
-                        Fill="{Binding IsStage1Done, Converter={StaticResource BoolToStageColorConverter}}" />
+                <!--  기획  -->
+                <Border
+                    Width="30"
+                    Height="30"
+                    Background="{Binding IsStage1Done, Converter={StaticResource BoolToStageColorConverter}}"
+                    CornerRadius="15">
                     <TextBlock
-                        Margin="6,0,0,0"
+                        HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         FontSize="12"
-                        Foreground="{Binding IsStage1Done, Converter={StaticResource BoolToStageForegroundConverter}}"
-                        Text="기획" />
-                    <Rectangle
-                        Width="40"
-                        Height="2"
-                        Margin="8,0"
-                        Fill="{Binding IsStage1Done, Converter={StaticResource BoolToStageColorConverter}}" />
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="✓" />
+                </Border>
+                <TextBlock
+                    Margin="7,0,0,0"
+                    VerticalAlignment="Center"
+                    FontFamily="Malgun Gothic"
+                    FontSize="12"
+                    FontWeight="Medium"
+                    Foreground="{Binding IsStage1Done, Converter={StaticResource BoolToStageForegroundConverter}}"
+                    Text="기획" />
+                <Rectangle
+                    Width="36"
+                    Height="2"
+                    Margin="10,0"
+                    Fill="{Binding IsStage1Done, Converter={StaticResource BoolToStageColorConverter}}" />
 
-                    <!--  설계  -->
-                    <Ellipse
-                        Width="28"
-                        Height="28"
-                        Fill="{Binding IsStage2Done, Converter={StaticResource BoolToStageColorConverter}}" />
+                <!--  설계  -->
+                <Border
+                    Width="30"
+                    Height="30"
+                    Background="{Binding IsStage2Done, Converter={StaticResource BoolToStageColorConverter}}"
+                    CornerRadius="15">
                     <TextBlock
-                        Margin="6,0,0,0"
+                        HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         FontSize="12"
-                        Foreground="{Binding IsStage2Done, Converter={StaticResource BoolToStageForegroundConverter}}"
-                        Text="설계" />
-                    <Rectangle
-                        Width="40"
-                        Height="2"
-                        Margin="8,0"
-                        Fill="{Binding IsStage2Done, Converter={StaticResource BoolToStageColorConverter}}" />
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="✓" />
+                </Border>
+                <TextBlock
+                    Margin="7,0,0,0"
+                    VerticalAlignment="Center"
+                    FontFamily="Malgun Gothic"
+                    FontSize="12"
+                    FontWeight="Medium"
+                    Foreground="{Binding IsStage2Done, Converter={StaticResource BoolToStageForegroundConverter}}"
+                    Text="설계" />
+                <Rectangle
+                    Width="36"
+                    Height="2"
+                    Margin="10,0"
+                    Fill="{Binding IsStage2Done, Converter={StaticResource BoolToStageColorConverter}}" />
 
-                    <!--  개발  -->
-                    <Ellipse
-                        Width="28"
-                        Height="28"
-                        Fill="{Binding IsStage3Done, Converter={StaticResource BoolToStageColorConverter}}" />
+                <!--  개발  -->
+                <Border
+                    Width="30"
+                    Height="30"
+                    Background="{Binding IsStage3Done, Converter={StaticResource BoolToStageColorConverter}}"
+                    CornerRadius="15">
                     <TextBlock
-                        Margin="6,0,0,0"
+                        HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         FontSize="12"
-                        Foreground="{Binding IsStage3Done, Converter={StaticResource BoolToStageForegroundConverter}}"
-                        Text="개발" />
-                    <Rectangle
-                        Width="40"
-                        Height="2"
-                        Margin="8,0"
-                        Fill="{Binding IsStage3Done, Converter={StaticResource BoolToStageColorConverter}}" />
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="✓" />
+                </Border>
+                <TextBlock
+                    Margin="7,0,0,0"
+                    VerticalAlignment="Center"
+                    FontFamily="Malgun Gothic"
+                    FontSize="12"
+                    FontWeight="Medium"
+                    Foreground="{Binding IsStage3Done, Converter={StaticResource BoolToStageForegroundConverter}}"
+                    Text="개발" />
+                <Rectangle
+                    Width="36"
+                    Height="2"
+                    Margin="10,0"
+                    Fill="{Binding IsStage3Done, Converter={StaticResource BoolToStageColorConverter}}" />
 
-                    <!--  테스트  -->
-                    <Ellipse
-                        Width="28"
-                        Height="28"
-                        Fill="{Binding IsStage4Done, Converter={StaticResource BoolToStageColorConverter}}" />
+                <!--  테스트  -->
+                <Border
+                    Width="30"
+                    Height="30"
+                    Background="{Binding IsStage4Done, Converter={StaticResource BoolToStageColorConverter}}"
+                    CornerRadius="15">
                     <TextBlock
-                        Margin="6,0,0,0"
+                        HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         FontSize="12"
-                        Foreground="{Binding IsStage4Done, Converter={StaticResource BoolToStageForegroundConverter}}"
-                        Text="테스트" />
-                    <Rectangle
-                        Width="40"
-                        Height="2"
-                        Margin="8,0"
-                        Fill="{Binding IsStage4Done, Converter={StaticResource BoolToStageColorConverter}}" />
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="✓" />
+                </Border>
+                <TextBlock
+                    Margin="7,0,0,0"
+                    VerticalAlignment="Center"
+                    FontFamily="Malgun Gothic"
+                    FontSize="12"
+                    FontWeight="Medium"
+                    Foreground="{Binding IsStage4Done, Converter={StaticResource BoolToStageForegroundConverter}}"
+                    Text="테스트" />
+                <Rectangle
+                    Width="36"
+                    Height="2"
+                    Margin="10,0"
+                    Fill="{Binding IsStage4Done, Converter={StaticResource BoolToStageColorConverter}}" />
 
-                    <!--  배포  -->
-                    <Ellipse
-                        Width="28"
-                        Height="28"
-                        Fill="{Binding IsStage5Done, Converter={StaticResource BoolToStageColorConverter}}" />
+                <!--  배포  -->
+                <Border
+                    Width="30"
+                    Height="30"
+                    Background="{Binding IsStage5Done, Converter={StaticResource BoolToStageColorConverter}}"
+                    CornerRadius="15">
                     <TextBlock
-                        Margin="6,0,0,0"
+                        HorizontalAlignment="Center"
                         VerticalAlignment="Center"
                         FontSize="12"
-                        Foreground="{Binding IsStage5Done, Converter={StaticResource BoolToStageForegroundConverter}}"
-                        Text="배포" />
-
-                </StackPanel>
+                        FontWeight="Bold"
+                        Foreground="White"
+                        Text="✓" />
+                </Border>
+                <TextBlock
+                    Margin="7,0,0,0"
+                    VerticalAlignment="Center"
+                    FontFamily="Malgun Gothic"
+                    FontSize="12"
+                    FontWeight="Medium"
+                    Foreground="{Binding IsStage5Done, Converter={StaticResource BoolToStageForegroundConverter}}"
+                    Text="배포" />
             </StackPanel>
 
             <!--  4. 탭 필터  -->
-            <Border
-                Grid.Row="3"
-                Margin="0,0,0,16"
-                BorderBrush="#E5E7EB"
-                BorderThickness="0,0,0,1">
-                <StackPanel Orientation="Horizontal">
-                    <Button
-                        Command="{Binding FilterCommand}"
-                        CommandParameter="전체"
-                        Content="전체" />
-                    <Button
-                        Command="{Binding FilterCommand}"
-                        CommandParameter="기획"
-                        Content="기획" />
-                    <Button
-                        Command="{Binding FilterCommand}"
-                        CommandParameter="설계"
-                        Content="설계" />
-                    <Button
-                        Command="{Binding FilterCommand}"
-                        CommandParameter="개발"
-                        Content="개발" />
-                    <Button
-                        Command="{Binding FilterCommand}"
-                        CommandParameter="테스트"
-                        Content="테스트" />
-                    <Button
-                        Command="{Binding FilterCommand}"
-                        CommandParameter="배포"
-                        Content="배포" />
-                </StackPanel>
-            </Border>
+            <Grid Grid.Row="3" Margin="0,0,0,20">
+                <!--  회색 배경 컨테이너 안에 탭 버튼들 배치 — pill 형태 탭 UI  -->
+                <Border
+                    Padding="4,0"
+                    HorizontalAlignment="Left"
+                    Background="#F3F4F6"
+                    CornerRadius="10">
+                    <StackPanel Orientation="Horizontal">
+                        <Button
+                            x:Name="TabAll"
+                            Command="{Binding FilterCommand}"
+                            CommandParameter="전체"
+                            Content="전체"
+                            Style="{StaticResource TabFilterButtonActiveStyle}" />
+                        <Button
+                            x:Name="TabPlan"
+                            Command="{Binding FilterCommand}"
+                            CommandParameter="기획"
+                            Content="기획"
+                            Style="{StaticResource TabFilterButtonStyle}" />
+                        <Button
+                            x:Name="TabDesign"
+                            Command="{Binding FilterCommand}"
+                            CommandParameter="설계"
+                            Content="설계"
+                            Style="{StaticResource TabFilterButtonStyle}" />
+                        <Button
+                            x:Name="TabDev"
+                            Command="{Binding FilterCommand}"
+                            CommandParameter="개발"
+                            Content="개발"
+                            Style="{StaticResource TabFilterButtonStyle}" />
+                        <Button
+                            x:Name="TabTest"
+                            Command="{Binding FilterCommand}"
+                            CommandParameter="테스트"
+                            Content="테스트"
+                            Style="{StaticResource TabFilterButtonStyle}" />
+                        <Button
+                            x:Name="TabDeploy"
+                            Command="{Binding FilterCommand}"
+                            CommandParameter="배포"
+                            Content="배포"
+                            Style="{StaticResource TabFilterButtonStyle}" />
+                    </StackPanel>
+                </Border>
+            </Grid>
 
             <!--  5. 칸반 보드  -->
             <Grid Grid.Row="4">
@@ -243,38 +521,44 @@
                     AllowDrop="True"
                     Drop="Column_Drop"
                     Tag="할일">
-                    <StackPanel Margin="0,0,0,12" Orientation="Horizontal">
-                        <TextBlock
-                            FontSize="14"
-                            FontWeight="Bold"
-                            Foreground="#1F1F1F"
-                            Text="할일" />
-                        <TextBlock
-                            Margin="6,0,0,0"
-                            FontSize="14"
-                            FontWeight="Bold"
-                            Foreground="#9CA3AF"
-                            Text="{Binding TodoTasks.Count}" />
-                    </StackPanel>
+                    <DockPanel Margin="0,0,0,14">
+                        <StackPanel Orientation="Horizontal">
+                            <Border
+                                Width="4"
+                                Height="16"
+                                Margin="0,0,8,0"
+                                VerticalAlignment="Center"
+                                Background="#9CA3AF"
+                                CornerRadius="2" />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontFamily="Malgun Gothic"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="#374151"
+                                Text="할 일" />
+                            <Border Style="{StaticResource CountBadgeStyle}">
+                                <TextBlock
+                                    FontFamily="Malgun Gothic"
+                                    FontSize="12"
+                                    FontWeight="Medium"
+                                    Foreground="#6B7280"
+                                    Text="{Binding TodoTasks.Count}" />
+                            </Border>
+                        </StackPanel>
+                    </DockPanel>
+
                     <ListBox
-                        MaxHeight="400"
-                        HorizontalContentAlignment="Stretch"
-                        Background="Transparent"
-                        BorderThickness="0"
+                        MaxHeight="480"
+                        ItemContainerStyle="{StaticResource KanbanListBoxItemStyle}"
                         ItemsSource="{Binding TodoTasks}"
                         PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
                         PreviewMouseLeftButtonUp="ListBox_PreviewMouseLeftButtonUp"
-                        PreviewMouseMove="ListBox_PreviewMouseMove">
+                        PreviewMouseMove="ListBox_PreviewMouseMove"
+                        Style="{StaticResource KanbanListBoxStyle}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Border
-                                    Margin="0,0,0,8"
-                                    Padding="16"
-                                    Background="White"
-                                    BorderBrush="#E5E7EB"
-                                    BorderThickness="1"
-                                    CornerRadius="8"
-                                    Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}">
+                                <Border Style="{StaticResource KanbanCardStyle}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}">
                                     <Border.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem
@@ -285,12 +569,10 @@
                                         </ContextMenu>
                                     </Border.ContextMenu>
                                     <StackPanel>
-                                        <!--  카드 상단: 제목 + 🔒 토글 버튼  -->
-                                        <DockPanel Margin="0,0,0,4">
-                                            <!--  🔒 핵심 기능 토글 버튼  -->
-                                            <!--  IsCore=true면 보라색, false면 회색으로 표시  -->
+                                        <!--  제목 + 🔒  -->
+                                        <DockPanel Margin="0,0,0,8">
                                             <Button
-                                                Padding="4,0"
+                                                Padding="2,0"
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Command="{Binding DataContext.ToggleCoreCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -298,36 +580,56 @@
                                                 Content="{Binding IsCore, Converter={StaticResource BoolToLockIconConverter}}"
                                                 Cursor="Hand"
                                                 DockPanel.Dock="Right"
-                                                FontSize="14"
+                                                FontSize="13"
                                                 Foreground="{Binding IsCore, Converter={StaticResource BoolToLockColorConverter}}" />
                                             <TextBlock
                                                 VerticalAlignment="Center"
+                                                FontFamily="Malgun Gothic"
                                                 FontSize="14"
                                                 FontWeight="Medium"
-                                                Foreground="#1F1F1F"
+                                                Foreground="#111827"
                                                 Text="{Binding Title}"
                                                 TextWrapping="Wrap" />
                                         </DockPanel>
-                                        <TextBlock
-                                            FontSize="12"
-                                            Foreground="#9CA3AF"
-                                            Text="{Binding Priority}" />
+                                        <!--  우선순위 배지 — Converter로 색상 자동 적용  -->
+                                        <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                            <Border
+                                                Padding="7,3"
+                                                Background="{Binding Priority, Converter={StaticResource PriorityToBackgroundConverter}}"
+                                                CornerRadius="4">
+                                                <TextBlock
+                                                    FontFamily="Malgun Gothic"
+                                                    FontSize="11"
+                                                    FontWeight="Medium"
+                                                    Foreground="{Binding Priority, Converter={StaticResource PriorityToForegroundConverter}}"
+                                                    Text="{Binding Priority}" />
+                                            </Border>
+                                        </StackPanel>
+                                        <!--  마감일  -->
+                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                            <TextBlock
+                                                Margin="0,0,4,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="11"
+                                                Foreground="#9CA3AF"
+                                                Text="📅" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                FontFamily="Malgun Gothic"
+                                                FontSize="11"
+                                                Foreground="#9CA3AF"
+                                                Text="{Binding DueDate, StringFormat=M월 d일}" />
+                                        </StackPanel>
                                     </StackPanel>
                                 </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
                     <Button
-                        Height="36"
-                        Margin="0,8,0,0"
-                        Background="Transparent"
-                        BorderBrush="#E5E7EB"
-                        BorderThickness="1"
                         Command="{Binding AddTaskCommand}"
                         CommandParameter="할일"
                         Content="+ 작업 추가"
-                        Cursor="Hand"
-                        Foreground="#9CA3AF" />
+                        Style="{StaticResource AddTaskButtonStyle}" />
                 </StackPanel>
 
                 <!--  진행중 컬럼  -->
@@ -336,38 +638,44 @@
                     AllowDrop="True"
                     Drop="Column_Drop"
                     Tag="진행중">
-                    <StackPanel Margin="0,0,0,12" Orientation="Horizontal">
-                        <TextBlock
-                            FontSize="14"
-                            FontWeight="Bold"
-                            Foreground="#1F1F1F"
-                            Text="진행중" />
-                        <TextBlock
-                            Margin="6,0,0,0"
-                            FontSize="14"
-                            FontWeight="Bold"
-                            Foreground="#9CA3AF"
-                            Text="{Binding InProgressTasks.Count}" />
-                    </StackPanel>
+                    <DockPanel Margin="0,0,0,14">
+                        <StackPanel Orientation="Horizontal">
+                            <Border
+                                Width="4"
+                                Height="16"
+                                Margin="0,0,8,0"
+                                VerticalAlignment="Center"
+                                Background="{StaticResource PrimaryBrush}"
+                                CornerRadius="2" />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontFamily="Malgun Gothic"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="#374151"
+                                Text="진행 중" />
+                            <Border Style="{StaticResource CountBadgeStyle}">
+                                <TextBlock
+                                    FontFamily="Malgun Gothic"
+                                    FontSize="12"
+                                    FontWeight="Medium"
+                                    Foreground="#6B7280"
+                                    Text="{Binding InProgressTasks.Count}" />
+                            </Border>
+                        </StackPanel>
+                    </DockPanel>
+
                     <ListBox
-                        MaxHeight="400"
-                        HorizontalContentAlignment="Stretch"
-                        Background="Transparent"
-                        BorderThickness="0"
+                        MaxHeight="480"
+                        ItemContainerStyle="{StaticResource KanbanListBoxItemStyle}"
                         ItemsSource="{Binding InProgressTasks}"
                         PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
                         PreviewMouseLeftButtonUp="ListBox_PreviewMouseLeftButtonUp"
-                        PreviewMouseMove="ListBox_PreviewMouseMove">
+                        PreviewMouseMove="ListBox_PreviewMouseMove"
+                        Style="{StaticResource KanbanListBoxStyle}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Border
-                                    Margin="0,0,0,8"
-                                    Padding="16"
-                                    Background="White"
-                                    BorderBrush="#E5E7EB"
-                                    BorderThickness="1"
-                                    CornerRadius="8"
-                                    Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}">
+                                <Border Style="{StaticResource KanbanCardStyle}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}">
                                     <Border.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem
@@ -378,12 +686,9 @@
                                         </ContextMenu>
                                     </Border.ContextMenu>
                                     <StackPanel>
-                                        <!--  카드 상단: 제목 + 🔒 토글 버튼  -->
-                                        <DockPanel Margin="0,0,0,4">
-                                            <!--  🔒 핵심 기능 토글 버튼  -->
-                                            <!--  IsCore=true면 보라색, false면 회색으로 표시  -->
+                                        <DockPanel Margin="0,0,0,8">
                                             <Button
-                                                Padding="4,0"
+                                                Padding="2,0"
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Command="{Binding DataContext.ToggleCoreCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -391,36 +696,54 @@
                                                 Content="{Binding IsCore, Converter={StaticResource BoolToLockIconConverter}}"
                                                 Cursor="Hand"
                                                 DockPanel.Dock="Right"
-                                                FontSize="14"
+                                                FontSize="13"
                                                 Foreground="{Binding IsCore, Converter={StaticResource BoolToLockColorConverter}}" />
                                             <TextBlock
                                                 VerticalAlignment="Center"
+                                                FontFamily="Malgun Gothic"
                                                 FontSize="14"
                                                 FontWeight="Medium"
-                                                Foreground="#1F1F1F"
+                                                Foreground="#111827"
                                                 Text="{Binding Title}"
                                                 TextWrapping="Wrap" />
                                         </DockPanel>
-                                        <TextBlock
-                                            FontSize="12"
-                                            Foreground="#9CA3AF"
-                                            Text="{Binding Priority}" />
+                                        <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                            <Border
+                                                Padding="7,3"
+                                                Background="{Binding Priority, Converter={StaticResource PriorityToBackgroundConverter}}"
+                                                CornerRadius="4">
+                                                <TextBlock
+                                                    FontFamily="Malgun Gothic"
+                                                    FontSize="11"
+                                                    FontWeight="Medium"
+                                                    Foreground="{Binding Priority, Converter={StaticResource PriorityToForegroundConverter}}"
+                                                    Text="{Binding Priority}" />
+                                            </Border>
+                                        </StackPanel>
+                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                            <TextBlock
+                                                Margin="0,0,4,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="11"
+                                                Foreground="#9CA3AF"
+                                                Text="📅" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                FontFamily="Malgun Gothic"
+                                                FontSize="11"
+                                                Foreground="#9CA3AF"
+                                                Text="{Binding DueDate, StringFormat=M월 d일}" />
+                                        </StackPanel>
                                     </StackPanel>
                                 </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
                     <Button
-                        Height="36"
-                        Margin="0,8,0,0"
-                        Background="Transparent"
-                        BorderBrush="#E5E7EB"
-                        BorderThickness="1"
                         Command="{Binding AddTaskCommand}"
                         CommandParameter="진행중"
                         Content="+ 작업 추가"
-                        Cursor="Hand"
-                        Foreground="#9CA3AF" />
+                        Style="{StaticResource AddTaskButtonStyle}" />
                 </StackPanel>
 
                 <!--  완료 컬럼  -->
@@ -429,38 +752,44 @@
                     AllowDrop="True"
                     Drop="Column_Drop"
                     Tag="완료">
-                    <StackPanel Margin="0,0,0,12" Orientation="Horizontal">
-                        <TextBlock
-                            FontSize="14"
-                            FontWeight="Bold"
-                            Foreground="#1F1F1F"
-                            Text="완료" />
-                        <TextBlock
-                            Margin="6,0,0,0"
-                            FontSize="14"
-                            FontWeight="Bold"
-                            Foreground="#9CA3AF"
-                            Text="{Binding DoneTasks.Count}" />
-                    </StackPanel>
+                    <DockPanel Margin="0,0,0,14">
+                        <StackPanel Orientation="Horizontal">
+                            <Border
+                                Width="4"
+                                Height="16"
+                                Margin="0,0,8,0"
+                                VerticalAlignment="Center"
+                                Background="#10B981"
+                                CornerRadius="2" />
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontFamily="Malgun Gothic"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="#374151"
+                                Text="완료" />
+                            <Border Style="{StaticResource CountBadgeStyle}">
+                                <TextBlock
+                                    FontFamily="Malgun Gothic"
+                                    FontSize="12"
+                                    FontWeight="Medium"
+                                    Foreground="#6B7280"
+                                    Text="{Binding DoneTasks.Count}" />
+                            </Border>
+                        </StackPanel>
+                    </DockPanel>
+
                     <ListBox
-                        MaxHeight="400"
-                        HorizontalContentAlignment="Stretch"
-                        Background="Transparent"
-                        BorderThickness="0"
+                        MaxHeight="480"
+                        ItemContainerStyle="{StaticResource KanbanListBoxItemStyle}"
                         ItemsSource="{Binding DoneTasks}"
                         PreviewMouseLeftButtonDown="ListBox_PreviewMouseLeftButtonDown"
                         PreviewMouseLeftButtonUp="ListBox_PreviewMouseLeftButtonUp"
-                        PreviewMouseMove="ListBox_PreviewMouseMove">
+                        PreviewMouseMove="ListBox_PreviewMouseMove"
+                        Style="{StaticResource KanbanListBoxStyle}">
                         <ListBox.ItemTemplate>
                             <DataTemplate>
-                                <Border
-                                    Margin="0,0,0,8"
-                                    Padding="16"
-                                    Background="White"
-                                    BorderBrush="#E5E7EB"
-                                    BorderThickness="1"
-                                    CornerRadius="8"
-                                    Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}">
+                                <Border Style="{StaticResource KanbanCardStyle}" Tag="{Binding DataContext, RelativeSource={RelativeSource AncestorType=ListBox}}">
                                     <Border.ContextMenu>
                                         <ContextMenu>
                                             <MenuItem
@@ -471,12 +800,9 @@
                                         </ContextMenu>
                                     </Border.ContextMenu>
                                     <StackPanel>
-                                        <!--  카드 상단: 제목 + 🔒 토글 버튼  -->
-                                        <DockPanel Margin="0,0,0,4">
-                                            <!--  🔒 핵심 기능 토글 버튼  -->
-                                            <!--  IsCore=true면 보라색, false면 회색으로 표시  -->
+                                        <DockPanel Margin="0,0,0,8">
                                             <Button
-                                                Padding="4,0"
+                                                Padding="2,0"
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Command="{Binding DataContext.ToggleCoreCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
@@ -484,36 +810,57 @@
                                                 Content="{Binding IsCore, Converter={StaticResource BoolToLockIconConverter}}"
                                                 Cursor="Hand"
                                                 DockPanel.Dock="Right"
-                                                FontSize="14"
+                                                FontSize="13"
                                                 Foreground="{Binding IsCore, Converter={StaticResource BoolToLockColorConverter}}" />
+                                            <!--  완료된 카드는 제목에 취소선 + 회색  -->
                                             <TextBlock
                                                 VerticalAlignment="Center"
+                                                FontFamily="Malgun Gothic"
                                                 FontSize="14"
                                                 FontWeight="Medium"
-                                                Foreground="#1F1F1F"
+                                                Foreground="#9CA3AF"
                                                 Text="{Binding Title}"
+                                                TextDecorations="Strikethrough"
                                                 TextWrapping="Wrap" />
                                         </DockPanel>
-                                        <TextBlock
-                                            FontSize="12"
-                                            Foreground="#9CA3AF"
-                                            Text="{Binding Priority}" />
+                                        <!--  완료 배지 고정  -->
+                                        <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
+                                            <Border
+                                                Padding="7,3"
+                                                Background="#D1FAE5"
+                                                CornerRadius="4">
+                                                <TextBlock
+                                                    FontFamily="Malgun Gothic"
+                                                    FontSize="11"
+                                                    FontWeight="Medium"
+                                                    Foreground="#065F46"
+                                                    Text="완료" />
+                                            </Border>
+                                        </StackPanel>
+                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                            <TextBlock
+                                                Margin="0,0,4,0"
+                                                VerticalAlignment="Center"
+                                                FontSize="11"
+                                                Foreground="#9CA3AF"
+                                                Text="📅" />
+                                            <TextBlock
+                                                VerticalAlignment="Center"
+                                                FontFamily="Malgun Gothic"
+                                                FontSize="11"
+                                                Foreground="#9CA3AF"
+                                                Text="{Binding DueDate, StringFormat=M월 d일}" />
+                                        </StackPanel>
                                     </StackPanel>
                                 </Border>
                             </DataTemplate>
                         </ListBox.ItemTemplate>
                     </ListBox>
                     <Button
-                        Height="36"
-                        Margin="0,8,0,0"
-                        Background="Transparent"
-                        BorderBrush="#E5E7EB"
-                        BorderThickness="1"
                         Command="{Binding AddTaskCommand}"
                         CommandParameter="완료"
                         Content="+ 작업 추가"
-                        Cursor="Hand"
-                        Foreground="#9CA3AF" />
+                        Style="{StaticResource AddTaskButtonStyle}" />
                 </StackPanel>
             </Grid>
         </Grid>
@@ -522,25 +869,33 @@
         <!--  ▼ 오른쪽: 작업 상세 패널  -->
         <Border
             Grid.Column="1"
-            Width="280"
-            Margin="16,0,0,0"
-            Padding="0"
+            Width="300"
+            Margin="20,0,0,0"
             VerticalAlignment="Top"
             Background="White"
             BorderBrush="#E5E7EB"
             BorderThickness="1"
-            CornerRadius="12"
+            CornerRadius="14"
             Visibility="{Binding IsDetailPanelVisible, Converter={StaticResource BoolToVisibilityConverter}}">
+            <Border.Effect>
+                <DropShadowEffect
+                    BlurRadius="20"
+                    Direction="270"
+                    Opacity="0.08"
+                    ShadowDepth="4"
+                    Color="#000000" />
+            </Border.Effect>
             <ScrollViewer VerticalScrollBarVisibility="Auto">
-                <StackPanel Margin="24">
+                <StackPanel Margin="20">
 
-                    <!--  헤더: 작업 상세 + 닫기 버튼  -->
-                    <DockPanel Margin="0,0,0,20">
+                    <!--  패널 헤더  -->
+                    <DockPanel Margin="0,0,0,4">
                         <TextBlock
                             VerticalAlignment="Center"
-                            FontSize="16"
+                            FontFamily="Malgun Gothic"
+                            FontSize="15"
                             FontWeight="Bold"
-                            Foreground="#1F1F1F"
+                            Foreground="#111827"
                             Text="작업 상세" />
                         <Button
                             Background="Transparent"
@@ -549,14 +904,14 @@
                             Content="✕"
                             Cursor="Hand"
                             DockPanel.Dock="Right"
-                            FontSize="16"
+                            FontSize="14"
                             Foreground="#9CA3AF" />
                     </DockPanel>
 
-                    <!--  수정 버튼 (보기 모드일 때만 표시)  -->
+                    <!--  수정 버튼  -->
                     <Button
-                        Margin="0,0,0,12"
-                        Padding="8,4"
+                        Margin="0,8,0,16"
+                        Padding="10,5"
                         HorizontalAlignment="Right"
                         Background="Transparent"
                         BorderBrush="#E5E7EB"
@@ -564,6 +919,7 @@
                         Command="{Binding StartEditCommand}"
                         Content="✏ 수정"
                         Cursor="Hand"
+                        FontFamily="Malgun Gothic"
                         FontSize="12"
                         Foreground="#6B7280"
                         Visibility="{Binding IsEditMode, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
@@ -573,93 +929,132 @@
 
                         <!--  제목  -->
                         <TextBlock
-                            Margin="0,0,0,4"
-                            FontSize="12"
+                            Margin="0,0,0,2"
+                            FontFamily="Malgun Gothic"
+                            FontSize="11"
                             Foreground="#9CA3AF"
                             Text="제목" />
                         <TextBlock
                             Margin="0,0,0,16"
+                            FontFamily="Malgun Gothic"
                             FontSize="15"
-                            FontWeight="Medium"
-                            Foreground="#1F1F1F"
+                            FontWeight="SemiBold"
+                            Foreground="#111827"
                             Text="{Binding SelectedTask.Title}"
                             TextWrapping="Wrap" />
 
-                        <!--  상태  -->
-                        <TextBlock
-                            Margin="0,0,0,4"
-                            FontSize="12"
-                            Foreground="#9CA3AF"
-                            Text="상태" />
-                        <TextBlock
-                            Margin="0,0,0,16"
-                            FontSize="14"
-                            Foreground="#1F1F1F"
-                            Text="{Binding SelectedTask.Status}" />
+                        <!--  상태 + 우선순위 나란히  -->
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock
+                                    Margin="0,0,0,4"
+                                    FontFamily="Malgun Gothic"
+                                    FontSize="11"
+                                    Foreground="#9CA3AF"
+                                    Text="상태" />
+                                <Border
+                                    Padding="8,4"
+                                    HorizontalAlignment="Left"
+                                    Background="#F3F4F6"
+                                    CornerRadius="6">
+                                    <TextBlock
+                                        FontFamily="Malgun Gothic"
+                                        FontSize="12"
+                                        FontWeight="Medium"
+                                        Foreground="#374151"
+                                        Text="{Binding SelectedTask.Status}" />
+                                </Border>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock
+                                    Margin="0,0,0,4"
+                                    FontFamily="Malgun Gothic"
+                                    FontSize="11"
+                                    Foreground="#9CA3AF"
+                                    Text="우선순위" />
+                                <Border
+                                    Padding="8,4"
+                                    HorizontalAlignment="Left"
+                                    Background="{Binding SelectedTask.Priority, Converter={StaticResource PriorityToBackgroundConverter}}"
+                                    CornerRadius="6">
+                                    <TextBlock
+                                        FontFamily="Malgun Gothic"
+                                        FontSize="12"
+                                        FontWeight="Medium"
+                                        Foreground="{Binding SelectedTask.Priority, Converter={StaticResource PriorityToForegroundConverter}}"
+                                        Text="{Binding SelectedTask.Priority}" />
+                                </Border>
+                            </StackPanel>
+                        </Grid>
 
-                        <!--  우선순위  -->
-                        <TextBlock
-                            Margin="0,0,0,4"
-                            FontSize="12"
-                            Foreground="#9CA3AF"
-                            Text="우선순위" />
-                        <TextBlock
-                            Margin="0,0,0,16"
-                            FontSize="14"
-                            Foreground="#1F1F1F"
-                            Text="{Binding SelectedTask.Priority}" />
-
-                        <!--  단계  -->
-                        <TextBlock
-                            Margin="0,0,0,4"
-                            FontSize="12"
-                            Foreground="#9CA3AF"
-                            Text="단계" />
-                        <TextBlock
-                            Margin="0,0,0,16"
-                            FontSize="14"
-                            Foreground="#1F1F1F"
-                            Text="{Binding SelectedTask.Stage}" />
-
-                        <!--  마감일  -->
-                        <TextBlock
-                            Margin="0,0,0,4"
-                            FontSize="12"
-                            Foreground="#9CA3AF"
-                            Text="마감일" />
-                        <TextBlock
-                            Margin="0,0,0,16"
-                            FontSize="14"
-                            Foreground="#1F1F1F"
-                            Text="{Binding SelectedTask.DueDate, StringFormat=yyyy-MM-dd}" />
+                        <!--  단계 + 마감일 나란히  -->
+                        <Grid Margin="0,0,0,4">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*" />
+                                <ColumnDefinition Width="*" />
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock
+                                    Margin="0,0,0,4"
+                                    FontFamily="Malgun Gothic"
+                                    FontSize="11"
+                                    Foreground="#9CA3AF"
+                                    Text="단계" />
+                                <TextBlock
+                                    FontFamily="Malgun Gothic"
+                                    FontSize="13"
+                                    Foreground="#374151"
+                                    Text="{Binding SelectedTask.Stage}" />
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock
+                                    Margin="0,0,0,4"
+                                    FontFamily="Malgun Gothic"
+                                    FontSize="11"
+                                    Foreground="#9CA3AF"
+                                    Text="마감일" />
+                                <TextBlock
+                                    FontFamily="Malgun Gothic"
+                                    FontSize="13"
+                                    Foreground="#374151"
+                                    Text="{Binding SelectedTask.DueDate, StringFormat=yyyy-MM-dd}" />
+                            </StackPanel>
+                        </Grid>
                     </StackPanel>
 
                     <!--  ── 수정 모드 ──  -->
                     <StackPanel Visibility="{Binding IsEditMode, Converter={StaticResource BoolToVisibilityConverter}}">
-
-                        <!--  제목  -->
                         <TextBlock
                             Margin="0,0,0,4"
-                            FontSize="12"
+                            FontFamily="Malgun Gothic"
+                            FontSize="11"
                             Foreground="#9CA3AF"
                             Text="제목" />
                         <TextBox
-                            Height="32"
+                            Height="34"
                             Margin="0,0,0,12"
-                            Padding="8,6"
+                            Padding="10,6"
                             BorderBrush="#E5E7EB"
                             BorderThickness="1"
+                            FontFamily="Malgun Gothic"
+                            FontSize="13"
                             Text="{Binding EditTitle, UpdateSourceTrigger=PropertyChanged}" />
 
-                        <!--  우선순위  -->
                         <TextBlock
                             Margin="0,0,0,4"
-                            FontSize="12"
+                            FontFamily="Malgun Gothic"
+                            FontSize="11"
                             Foreground="#9CA3AF"
                             Text="우선순위" />
                         <ComboBox
-                            Height="32"
+                            Height="34"
                             Margin="0,0,0,12"
+                            FontFamily="Malgun Gothic"
+                            FontSize="13"
                             SelectedValue="{Binding EditPriority}"
                             SelectedValuePath="Content">
                             <ComboBoxItem Content="높음" />
@@ -667,37 +1062,38 @@
                             <ComboBoxItem Content="낮음" />
                         </ComboBox>
 
-                        <!--  단계  -->
                         <TextBlock
                             Margin="0,0,0,4"
-                            FontSize="12"
+                            FontFamily="Malgun Gothic"
+                            FontSize="11"
                             Foreground="#9CA3AF"
                             Text="단계" />
                         <ComboBox
-                            Height="32"
+                            Height="34"
                             Margin="0,0,0,12"
+                            FontFamily="Malgun Gothic"
+                            FontSize="13"
                             SelectedValue="{Binding EditStage}"
                             SelectedValuePath="Content">
                             <ComboBoxItem Content="기획" />
                             <ComboBoxItem Content="설계" />
                             <ComboBoxItem Content="개발" />
                             <ComboBoxItem Content="테스트" />
-                            <ComboBoxItem Content="완료" />
+                            <ComboBoxItem Content="배포" />
                         </ComboBox>
 
-                        <!--  마감일  -->
                         <TextBlock
                             Margin="0,0,0,4"
-                            FontSize="12"
+                            FontFamily="Malgun Gothic"
+                            FontSize="11"
                             Foreground="#9CA3AF"
                             Text="마감일" />
                         <DatePicker
-                            Height="32"
+                            Height="34"
                             Margin="0,0,0,16"
                             SelectedDate="{Binding EditDueDate}" />
 
-                        <!--  저장 / 취소 버튼  -->
-                        <Grid Margin="0,0,0,16">
+                        <Grid Margin="0,0,0,4">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="*" />
                                 <ColumnDefinition Width="8" />
@@ -712,15 +1108,20 @@
                                 Command="{Binding CancelEditCommand}"
                                 Content="취소"
                                 Cursor="Hand"
+                                FontFamily="Malgun Gothic"
+                                FontSize="13"
                                 Foreground="#6B7280" />
                             <Button
                                 Grid.Column="2"
                                 Height="36"
-                                Background="#7C3AED"
+                                Background="{StaticResource PrimaryBrush}"
                                 BorderThickness="0"
                                 Command="{Binding SaveEditCommand}"
                                 Content="저장"
                                 Cursor="Hand"
+                                FontFamily="Malgun Gothic"
+                                FontSize="13"
+                                FontWeight="Medium"
                                 Foreground="White" />
                         </Grid>
                     </StackPanel>
@@ -728,44 +1129,43 @@
                     <!--  구분선  -->
                     <Rectangle
                         Height="1"
-                        Margin="0,4,0,16"
-                        Fill="#E5E7EB" />
+                        Margin="0,16,0,16"
+                        Fill="#F3F4F6" />
 
-                    <!--  연결된 파일 헤더  -->
-                    <DockPanel Margin="0,0,0,12">
+                    <!--  연결된 파일  -->
+                    <DockPanel Margin="0,0,0,10">
                         <TextBlock
                             VerticalAlignment="Center"
-                            FontSize="14"
+                            FontFamily="Malgun Gothic"
+                            FontSize="13"
                             FontWeight="Bold"
-                            Foreground="#1F1F1F"
+                            Foreground="#111827"
                             Text="연결된 파일" />
                         <TextBlock
                             Margin="6,0,0,0"
                             VerticalAlignment="Center"
+                            FontFamily="Malgun Gothic"
                             FontSize="12"
                             Foreground="#9CA3AF"
                             Text="{Binding CurrentFiles.Count, StringFormat=({0}개)}" />
                     </DockPanel>
 
-                    <!--  파일 목록  -->
                     <ItemsControl ItemsSource="{Binding CurrentFiles}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border
                                     Margin="0,0,0,6"
-                                    Padding="10"
+                                    Padding="10,8"
                                     Background="#F9FAFB"
                                     BorderBrush="#E5E7EB"
                                     BorderThickness="1"
                                     CornerRadius="8">
                                     <DockPanel>
-                                        <!--  파일 아이콘  -->
                                         <TextBlock
                                             Margin="0,0,8,0"
                                             VerticalAlignment="Center"
-                                            FontSize="14"
+                                            FontSize="13"
                                             Text="📄" />
-                                        <!--  삭제 버튼  -->
                                         <Button
                                             Background="Transparent"
                                             BorderThickness="0"
@@ -776,10 +1176,10 @@
                                             DockPanel.Dock="Right"
                                             FontSize="11"
                                             Foreground="#EF4444" />
-                                        <!--  파일 이름 — 클릭하면 열기  -->
                                         <TextBlock
                                             VerticalAlignment="Center"
                                             Cursor="Hand"
+                                            FontFamily="Malgun Gothic"
                                             FontSize="12"
                                             Foreground="#374151"
                                             Text="{Binding FileName}"
@@ -797,9 +1197,8 @@
                         </ItemsControl.ItemTemplate>
                     </ItemsControl>
 
-                    <!--  파일 추가 버튼  -->
                     <Button
-                        Height="36"
+                        Height="34"
                         Margin="0,4,0,0"
                         Background="Transparent"
                         BorderBrush="#E5E7EB"
@@ -807,46 +1206,49 @@
                         Command="{Binding AddFileCommand}"
                         Content="+ 파일 추가"
                         Cursor="Hand"
+                        FontFamily="Malgun Gothic"
+                        FontSize="12"
                         Foreground="#9CA3AF" />
 
                     <!--  구분선  -->
                     <Rectangle
                         Height="1"
                         Margin="0,16,0,16"
-                        Fill="#E5E7EB" />
+                        Fill="#F3F4F6" />
 
-                    <!--  이슈 기록 헤더  -->
-                    <DockPanel Margin="0,0,0,12">
+                    <!--  이슈 기록  -->
+                    <DockPanel Margin="0,0,0,10">
                         <TextBlock
                             VerticalAlignment="Center"
-                            FontSize="14"
+                            FontFamily="Malgun Gothic"
+                            FontSize="13"
                             FontWeight="Bold"
-                            Foreground="#1F1F1F"
+                            Foreground="#111827"
                             Text="이슈 기록" />
                         <TextBlock
                             Margin="6,0,0,0"
                             VerticalAlignment="Center"
+                            FontFamily="Malgun Gothic"
                             FontSize="12"
                             Foreground="#9CA3AF"
                             Text="{Binding CurrentIssues.Count, StringFormat=({0}건)}" />
                     </DockPanel>
 
-                    <!--  기존 이슈 목록  -->
                     <ItemsControl ItemsSource="{Binding CurrentIssues}">
                         <ItemsControl.ItemTemplate>
                             <DataTemplate>
                                 <Border
                                     Margin="0,0,0,8"
                                     Padding="12"
-                                    Background="#FFF7ED"
-                                    BorderBrush="#FED7AA"
+                                    Background="#FFFBF0"
+                                    BorderBrush="#FDE68A"
                                     BorderThickness="1"
                                     CornerRadius="8">
                                     <StackPanel>
-                                        <!--  날짜 + 삭제 버튼  -->
                                         <DockPanel Margin="0,0,0,6">
                                             <TextBlock
                                                 VerticalAlignment="Center"
+                                                FontFamily="Malgun Gothic"
                                                 FontSize="11"
                                                 Foreground="#9CA3AF"
                                                 Text="{Binding CreatedAt, StringFormat=yyyy.MM.dd}" />
@@ -858,43 +1260,41 @@
                                                 Content="삭제"
                                                 Cursor="Hand"
                                                 DockPanel.Dock="Right"
+                                                FontFamily="Malgun Gothic"
                                                 FontSize="11"
                                                 Foreground="#EF4444" />
                                         </DockPanel>
-                                        <!--  문제  -->
                                         <TextBlock
                                             Margin="0,0,0,2"
+                                            FontFamily="Malgun Gothic"
                                             FontSize="12"
                                             Foreground="#92400E"
                                             TextWrapping="Wrap">
-                                            <Run FontWeight="Bold" Text="문제: " />
-                                            <Run Text="{Binding Problem}" />
+                                            <Run FontWeight="Bold" Text="문제: " /><Run Text="{Binding Problem}" />
                                         </TextBlock>
-                                        <!--  원인  -->
                                         <TextBlock
                                             Margin="0,0,0,2"
+                                            FontFamily="Malgun Gothic"
                                             FontSize="12"
                                             Foreground="#92400E"
                                             TextWrapping="Wrap">
-                                            <Run FontWeight="Bold" Text="원인: " />
-                                            <Run Text="{Binding Cause}" />
+                                            <Run FontWeight="Bold" Text="원인: " /><Run Text="{Binding Cause}" />
                                         </TextBlock>
-                                        <!--  해결  -->
                                         <TextBlock
+                                            Margin="0,0,0,2"
+                                            FontFamily="Malgun Gothic"
                                             FontSize="12"
                                             Foreground="#92400E"
                                             TextWrapping="Wrap">
-                                            <Run FontWeight="Bold" Text="해결: " />
-                                            <Run Text="{Binding Solution}" />
+                                            <Run FontWeight="Bold" Text="해결: " /><Run Text="{Binding Solution}" />
                                         </TextBlock>
-                                        <!--  성과 / 배운 점  -->
                                         <TextBlock
                                             Margin="0,2,0,0"
+                                            FontFamily="Malgun Gothic"
                                             FontSize="12"
                                             Foreground="#92400E"
                                             TextWrapping="Wrap">
-                                            <Run FontWeight="Bold" Text="성과: " />
-                                            <Run Text="{Binding Result}" />
+                                            <Run FontWeight="Bold" Text="성과: " /><Run Text="{Binding Result}" />
                                         </TextBlock>
                                     </StackPanel>
                                 </Border>
@@ -905,47 +1305,52 @@
                     <!--  새 이슈 입력  -->
                     <Border
                         Margin="0,4,0,0"
-                        Padding="12"
+                        Padding="14"
                         Background="#F9FAFB"
                         BorderBrush="#E5E7EB"
                         BorderThickness="1"
-                        CornerRadius="8">
+                        CornerRadius="10">
                         <StackPanel>
                             <TextBlock
-                                Margin="0,0,0,8"
+                                Margin="0,0,0,10"
+                                FontFamily="Malgun Gothic"
                                 FontSize="12"
                                 FontWeight="Bold"
                                 Foreground="#6B7280"
                                 Text="+ 이슈 추가" />
-                            <!--  문제 입력  -->
                             <TextBlock
                                 Margin="0,0,0,2"
+                                FontFamily="Malgun Gothic"
                                 FontSize="11"
                                 Foreground="#9CA3AF"
                                 Text="문제" />
                             <TextBox
                                 Height="32"
-                                Margin="0,0,0,6"
+                                Margin="0,0,0,8"
                                 Padding="8,6"
                                 BorderBrush="#E5E7EB"
                                 BorderThickness="1"
+                                FontFamily="Malgun Gothic"
+                                FontSize="12"
                                 Text="{Binding NewIssueProblem, UpdateSourceTrigger=PropertyChanged}" />
-                            <!--  원인 입력  -->
                             <TextBlock
                                 Margin="0,0,0,2"
+                                FontFamily="Malgun Gothic"
                                 FontSize="11"
                                 Foreground="#9CA3AF"
                                 Text="원인" />
                             <TextBox
                                 Height="32"
-                                Margin="0,0,0,6"
+                                Margin="0,0,0,8"
                                 Padding="8,6"
                                 BorderBrush="#E5E7EB"
                                 BorderThickness="1"
+                                FontFamily="Malgun Gothic"
+                                FontSize="12"
                                 Text="{Binding NewIssueCause, UpdateSourceTrigger=PropertyChanged}" />
-                            <!--  해결 입력  -->
                             <TextBlock
                                 Margin="0,0,0,2"
+                                FontFamily="Malgun Gothic"
                                 FontSize="11"
                                 Foreground="#9CA3AF"
                                 Text="해결" />
@@ -955,28 +1360,34 @@
                                 Padding="8,6"
                                 BorderBrush="#E5E7EB"
                                 BorderThickness="1"
+                                FontFamily="Malgun Gothic"
+                                FontSize="12"
                                 Text="{Binding NewIssueSolution, UpdateSourceTrigger=PropertyChanged}" />
-                            <!--  성과 / 배운 점 입력  -->
                             <TextBlock
                                 Margin="0,0,0,2"
+                                FontFamily="Malgun Gothic"
                                 FontSize="11"
                                 Foreground="#9CA3AF"
                                 Text="성과 (선택)" />
                             <TextBox
                                 Height="32"
-                                Margin="0,0,0,8"
+                                Margin="0,0,0,12"
                                 Padding="8,6"
                                 BorderBrush="#E5E7EB"
                                 BorderThickness="1"
+                                FontFamily="Malgun Gothic"
+                                FontSize="12"
                                 Text="{Binding NewIssueResult, UpdateSourceTrigger=PropertyChanged}" />
-                            <!--  저장 버튼  -->
                             <Button
                                 Height="36"
-                                Background="#7C3AED"
+                                Background="{StaticResource PrimaryBrush}"
                                 BorderThickness="0"
                                 Command="{Binding AddIssueCommand}"
                                 Content="저장"
                                 Cursor="Hand"
+                                FontFamily="Malgun Gothic"
+                                FontSize="13"
+                                FontWeight="Medium"
                                 Foreground="White" />
                         </StackPanel>
                     </Border>

@@ -23,6 +23,56 @@ namespace Workpace.Views
         public ProjectView()
         {
             InitializeComponent();
+
+            // DataContext가 설정된 후 SelectedTab 변경 감지 시작
+            DataContextChanged += OnDataContextChanged;
+        }
+
+        private void OnDataContextChanged(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            // 이전 ViewModel 구독 해제
+            if (e.OldValue is ProjectViewModel oldVm)
+                oldVm.PropertyChanged -= OnViewModelPropertyChanged;
+
+            // 새 ViewModel 구독
+            if (e.NewValue is ProjectViewModel newVm)
+            {
+                newVm.PropertyChanged += OnViewModelPropertyChanged;
+                // 초기 탭 스타일 적용
+                UpdateTabStyles(newVm.SelectedTab);
+            }
+        }
+
+        private void OnViewModelPropertyChanged(object? sender, System.ComponentModel.PropertyChangedEventArgs e)
+        {
+            if (e.PropertyName == nameof(ProjectViewModel.SelectedTab))
+            {
+                var vm = sender as ProjectViewModel;
+                if (vm != null) UpdateTabStyles(vm.SelectedTab);
+            }
+        }
+
+        // 선택된 탭만 Active 스타일, 나머지는 기본 스타일로 교체
+        private void UpdateTabStyles(string selectedTab)
+        {
+            // 탭 이름 → 버튼 매핑
+            var tabMap = new Dictionary<string, Button>
+            {
+                { "전체", TabAll },
+                { "기획", TabPlan },
+                { "설계", TabDesign },
+                { "개발", TabDev },
+                { "테스트", TabTest },
+                { "배포", TabDeploy }
+            };
+
+            var activeStyle = (Style)FindResource("TabFilterButtonActiveStyle");
+            var defaultStyle = (Style)FindResource("TabFilterButtonStyle");
+
+            foreach (var (tab, button) in tabMap)
+            {
+                button.Style = tab == selectedTab ? activeStyle : defaultStyle;
+            }
         }
 
         // ───────────────────────────────────────
