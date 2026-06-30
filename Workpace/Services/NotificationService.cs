@@ -44,6 +44,11 @@ namespace Workpace.Services
             CheckProjectDeadlineAlerts();
             CheckTaskDeadlineAlerts();
 
+            // 스트릭 리마인더 기준 시각을 "지금"으로 맞춤
+            // 이걸 안 해주면 _lastStreakNotified가 DateTime.MinValue라서
+            // 앱을 켤 때마다 설정한 주기를 무시하고 1분 뒤 곧바로 첫 알림이 나가버림
+            _lastStreakNotified = DateTime.Now;
+
             _timer.Start();
         }
 
@@ -60,7 +65,10 @@ namespace Workpace.Services
             var now = DateTime.Now;
 
             // 마지막 발송 이후 설정한 주기(시간)가 지났는지 확인
-            var intervalPassed = (now - _lastStreakNotified).TotalHours >= profile.StreakReminderIntervalHours;
+            //var intervalPassed = (now - _lastStreakNotified).TotalHours >= profile.StreakReminderIntervalHours;
+
+            // ⚠️ 테스트용 — TotalHours를 TotalMinutes로 바꿔서 "시간" 대신 "분" 단위로 빠르게 확인
+            var intervalPassed = (now - _lastStreakNotified).TotalMinutes >= profile.StreakReminderIntervalHours;
 
             if (intervalPassed)
             {

@@ -20,10 +20,17 @@
                     Height="36"
                     Margin="16,0,0,0"
                     VerticalAlignment="Center"
-                    DisplayMemberPath="Name"
                     DockPanel.Dock="Left"
                     ItemsSource="{Binding Projects}"
-                    SelectedItem="{Binding SelectedProject}" />
+                    SelectedItem="{Binding SelectedProject}">
+                    <!--  DisplayMemberPath 대신 ItemTemplate 명시 — App.xaml의 커스텀 ComboBox  -->
+                    <!--  템플릿이 SelectionBoxItemTemplate을 ItemTemplate 기준으로만 자동 생성하기 때문  -->
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate>
+                            <TextBlock Text="{Binding Name}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
             </DockPanel>
 
             <!--  요약 카드 3개  -->

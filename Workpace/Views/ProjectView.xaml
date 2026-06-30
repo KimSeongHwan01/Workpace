@@ -1062,6 +1062,20 @@
                                     Foreground="#374151"
                                     Text="{Binding SelectedTask.Stage}" />
                             </Grid>
+
+                            <!--  설명 — 내용 없으면 칸 자체를 숨김  -->
+                            <StackPanel Margin="0,16,0,0" Visibility="{Binding SelectedTask.Description, Converter={StaticResource StringNotEmptyToVisibilityConverter}}">
+                                <TextBlock
+                                    Margin="0,0,0,6"
+                                    FontSize="12"
+                                    Foreground="#9CA3AF"
+                                    Text="설명" />
+                                <TextBlock
+                                    FontSize="13"
+                                    Foreground="#374151"
+                                    Text="{Binding SelectedTask.Description}"
+                                    TextWrapping="Wrap" />
+                            </StackPanel>
                         </StackPanel>
 
                         <!--  ── 수정 모드 ──  -->
@@ -1121,6 +1135,31 @@
                                 BorderThickness="1"
                                 FontSize="13"
                                 Text="{Binding EditTitle, UpdateSourceTrigger=PropertyChanged}">
+                                <TextBox.Resources>
+                                    <Style TargetType="Border">
+                                        <Setter Property="CornerRadius" Value="8" />
+                                    </Style>
+                                </TextBox.Resources>
+                            </TextBox>
+
+                            <!--  설명  -->
+                            <TextBlock
+                                Margin="0,0,0,6"
+                                FontSize="12"
+                                FontWeight="SemiBold"
+                                Foreground="#374151"
+                                Text="설명" />
+                            <TextBox
+                                Height="70"
+                                Margin="0,0,0,16"
+                                Padding="12,8"
+                                AcceptsReturn="True"
+                                BorderBrush="#E5E7EB"
+                                BorderThickness="1"
+                                FontSize="13"
+                                Text="{Binding EditDescription, UpdateSourceTrigger=PropertyChanged}"
+                                TextWrapping="Wrap"
+                                VerticalScrollBarVisibility="Auto">
                                 <TextBox.Resources>
                                     <Style TargetType="Border">
                                         <Setter Property="CornerRadius" Value="8" />

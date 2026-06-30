@@ -25,11 +25,13 @@
         <Border Grid.Row="0" Padding="32,24,32,0">
             <StackPanel>
                 <TextBlock
+                    x:Name="HeaderTitleText"
                     FontSize="20"
                     FontWeight="Bold"
                     Foreground="#1F1F1F"
                     Text="새 프로젝트 만들기" />
                 <TextBlock
+                    x:Name="HeaderSubtitleText"
                     Margin="0,4,0,0"
                     FontSize="13"
                     Foreground="#9CA3AF"
@@ -149,7 +151,7 @@
                     Foreground="#1F1F1F"
                     Text="② 기술 스택 선택 (복수 선택 가능)" />
 
-                <ItemsControl Margin="0,0,0,24" ItemsSource="{Binding TechStacks}">
+                <ItemsControl Margin="0,0,0,8" ItemsSource="{Binding TechStacks}">
                     <ItemsControl.ItemsPanel>
                         <!--  WrapPanel — 공간 부족하면 자동 줄바꿈  -->
                         <ItemsPanelTemplate>
@@ -170,6 +172,84 @@
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
+
+                <!--  + 기타 추가 버튼 — 입력 중이 아닐 때만 표시  -->
+                <Button
+                    Margin="0,0,0,24"
+                    Padding="12,6"
+                    HorizontalAlignment="Left"
+                    Background="White"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    Command="{Binding ShowAddTechStackCommand}"
+                    Content="+ 기타 추가"
+                    Cursor="Hand">
+                    <Button.Style>
+                        <Style TargetType="Button">
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsAddingTechStack}" Value="True">
+                                    <Setter Property="Visibility" Value="Collapsed" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Button.Style>
+                </Button>
+
+                <!--  기타 추가 입력창 — "+ 기타 추가" 클릭 시에만 표시  -->
+                <Grid Margin="0,0,0,24">
+                    <Grid.Style>
+                        <Style TargetType="Grid">
+                            <Setter Property="Visibility" Value="Collapsed" />
+                            <Style.Triggers>
+                                <DataTrigger Binding="{Binding IsAddingTechStack}" Value="True">
+                                    <Setter Property="Visibility" Value="Visible" />
+                                </DataTrigger>
+                            </Style.Triggers>
+                        </Style>
+                    </Grid.Style>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="Auto" />
+                        <ColumnDefinition Width="8" />
+                        <ColumnDefinition Width="Auto" />
+                    </Grid.ColumnDefinitions>
+
+                    <TextBox
+                        Grid.Column="0"
+                        Height="32"
+                        Padding="8,6"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        Text="{Binding NewTechStackInput, UpdateSourceTrigger=PropertyChanged}">
+                        <!--  Enter 키로도 추가되게  -->
+                        <TextBox.InputBindings>
+                            <KeyBinding Key="Enter" Command="{Binding AddCustomTechStackCommand}" />
+                        </TextBox.InputBindings>
+                    </TextBox>
+
+                    <Button
+                        Grid.Column="2"
+                        Height="32"
+                        Padding="14,0"
+                        Background="{StaticResource PrimaryBrush}"
+                        BorderThickness="0"
+                        Command="{Binding AddCustomTechStackCommand}"
+                        Content="추가"
+                        Cursor="Hand"
+                        Foreground="White" />
+
+                    <Button
+                        Grid.Column="4"
+                        Height="32"
+                        Padding="14,0"
+                        Background="White"
+                        BorderBrush="#E5E7EB"
+                        BorderThickness="1"
+                        Command="{Binding CancelAddTechStackCommand}"
+                        Content="취소"
+                        Cursor="Hand" />
+                </Grid>
 
                 <!--  ③ 프로젝트 유형 선택  -->
                 <TextBlock
@@ -376,6 +456,7 @@
                     Cursor="Hand" />
 
                 <Button
+                    x:Name="ConfirmButton"
                     Grid.Column="2"
                     Height="40"
                     Background="#7C3AED"

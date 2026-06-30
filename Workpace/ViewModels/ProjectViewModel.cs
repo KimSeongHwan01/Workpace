@@ -274,6 +274,7 @@ namespace Workpace.ViewModels
             if (CurrentProject == null) return;
 
             var dialog = new AddTaskDialog(CurrentProject.Id);
+            dialog.Owner = Application.Current.MainWindow; // 메인 창 기준 중앙 배치
 
             if (dialog.ShowDialog() == true)
             {
@@ -474,6 +475,9 @@ namespace Workpace.ViewModels
         private string editTitle = "";
 
         [ObservableProperty]
+        private string editDescription = "";
+
+        [ObservableProperty]
         private string editPriority = "";
 
         [ObservableProperty]
@@ -493,6 +497,7 @@ namespace Workpace.ViewModels
 
             // 원본 값을 임시 필드에 복사
             EditTitle = SelectedTask.Title;
+            EditDescription = SelectedTask.Description;
             EditPriority = SelectedTask.Priority;
             EditStage = SelectedTask.Stage;
             EditDueDate = SelectedTask.DueDate;
@@ -518,6 +523,7 @@ namespace Workpace.ViewModels
 
             // Task 원본에 반영
             SelectedTask.Title = EditTitle;
+            SelectedTask.Description = EditDescription;
             SelectedTask.Priority = EditPriority;
             SelectedTask.Stage = EditStage;
             SelectedTask.DueDate = EditDueDate;

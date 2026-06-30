@@ -11,9 +11,6 @@
         // 이메일
         public string Email { get; set; } = string.Empty;
 
-        // GitHub 프로필 URL
-        public string GitHub { get; set; } = string.Empty;
-
         // 블로그 URL
         public string Blog { get; set; } = string.Empty;
 

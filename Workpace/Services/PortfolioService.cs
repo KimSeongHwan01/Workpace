@@ -27,20 +27,6 @@ namespace Workpace.Services
             foreach (var task in tasks)
                 allIssues.AddRange(_db.GetIssuesByTask(task.Id));
 
-            // 일정 준수율 계산
-            // 현재 진행률이 목표 진행률보다 높거나 같으면 준수한 것
-            var totalDays = (project.Deadline - project.StartDate).Days;
-            var elapsedDays = Math.Min((DateTime.Today - project.StartDate).Days, totalDays);
-            var targetProgress = totalDays > 0
-                ? Math.Round((double)elapsedDays / totalDays * 100, 1)
-                : 0;
-            var currentProgress = tasks.Count > 0
-                ? Math.Round((double)doneTasks.Count / tasks.Count * 100, 1)
-                : 0;
-            var scheduleAdherence = currentProgress >= targetProgress
-                ? 100.0
-                : Math.Round(currentProgress / targetProgress * 100, 1);
-
             // 완료 Task별 연결 파일 수집
             var taskFiles = new Dictionary<int, List<TaskFile>>();
             foreach (var task in doneTasks)
@@ -61,7 +47,6 @@ namespace Workpace.Services
                     : 0,
                 Issues = allIssues,
                 DoneTaskList = doneTasks,
-                ScheduleAdherence = scheduleAdherence,
                 TaskFiles = taskFiles
             };
         }
@@ -122,7 +107,7 @@ namespace Workpace.Services
 
             // 부제 — Description이 있으면 표시, 없으면 기본 문구
             var subtitleText = string.IsNullOrWhiteSpace(data.Project.Description)
-                ? "개인 프로젝트 포트폴리오"
+                ? "부제가 입력되지 않았습니다."
                 : data.Project.Description;
             var subtitle = section.AddParagraph(subtitleText);
             subtitle.Format.Font.Size = 12;
@@ -136,10 +121,10 @@ namespace Workpace.Services
                     AddBody(section, $"👤 {data.UserProfile.Name}");
                 if (!string.IsNullOrWhiteSpace(data.UserProfile.Email))
                     AddBody(section, $"✉ {data.UserProfile.Email}");
-                if (!string.IsNullOrWhiteSpace(data.UserProfile.GitHub))
-                    AddBody(section, $"🔗 GitHub: {data.UserProfile.GitHub}");
                 if (!string.IsNullOrWhiteSpace(data.UserProfile.Blog))
                     AddBody(section, $"📝 Blog: {data.UserProfile.Blog}");
+                if (!string.IsNullOrWhiteSpace(data.UserProfile.LinkedIn))
+                    AddBody(section, $"💼 LinkedIn: {data.UserProfile.LinkedIn}");
                 if (!string.IsNullOrWhiteSpace(data.UserProfile.Bio))
                 {
                     var bio = section.AddParagraph(data.UserProfile.Bio);
@@ -173,10 +158,10 @@ namespace Workpace.Services
                     AddBody(section, $"아키텍처: {data.Project.Architecture}");
             }
 
-            // ── 프로젝트 개요 ───────────────────────────────
+            // ── 개발 배경 ───────────────────────────────
             if (includeOverview)
             {
-                AddHeading(section, "📌 프로젝트 개요");
+                AddHeading(section, "📌 개발 배경");
                 AddBody(section, string.IsNullOrWhiteSpace(data.Project.Background)
                     ? "개발 배경이 입력되지 않았습니다."
                     : data.Project.Background);
@@ -187,15 +172,19 @@ namespace Workpace.Services
             {
                 AddHeading(section, "🛠 기술 스택");
 
-                // Type 필드에 기술스택이 콤마로 저장되어 있으면 항목별로 분리
-                // 예: "C#, WPF, SQLite" → 각각 bullet으로 표시
-                if (!string.IsNullOrWhiteSpace(data.Project.Type))
+                // TechStack 필드에 선택된 기술 스택이 콤마로 저장되어 있음
+                // (Project.Type은 "소프트웨어개발" 같은 프로젝트 유형이라 기술 스택과는 다른 값 — 혼동 주의)
+                if (!string.IsNullOrWhiteSpace(data.Project.TechStack))
                 {
-                    var techs = data.Project.Type.Split(',')
+                    var techs = data.Project.TechStack.Split(',')
                         .Select(t => t.Trim())
                         .Where(t => !string.IsNullOrEmpty(t));
                     foreach (var tech in techs)
                         AddBody(section, $"• {tech}");
+                }
+                else
+                {
+                    AddBody(section, "기술 스택이 입력되지 않았습니다.");
                 }
 
                 // 기술 스택 선정 이유 — TechReason이 있을 때만
@@ -240,6 +229,14 @@ namespace Workpace.Services
                         {
                             AddBody(section, $"  • {task.Title}");
 
+                            // Task 설명이 있으면 한 줄 들여서 표시
+                            if (!string.IsNullOrWhiteSpace(task.Description))
+                            {
+                                var desc = section.AddParagraph($"    {task.Description}");
+                                desc.Format.Font.Color = Colors.Gray;
+                                desc.Format.SpaceAfter = 4;
+                            }
+
                             // 연결된 파일이 있으면 표시
                             if (data.TaskFiles.TryGetValue(task.Id, out var files))
                             {
@@ -279,12 +276,16 @@ namespace Workpace.Services
             }
 
             // ── 트러블슈팅 — Before & After 구조 ───────────
-            if (includeTroubleshooting && data.Issues.Count > 0)
+            if (includeTroubleshooting)
             {
                 AddHeading(section, "🔧 트러블슈팅");
 
-                foreach (var issue in data.Issues)
+                if (data.Issues.Count == 0)
                 {
+                    AddBody(section, "기록된 트러블슈팅이 없습니다.");
+                }
+                else foreach (var issue in data.Issues)
+                    {
                     // 문제 제목
                     var issueTitle = section.AddParagraph($"▸ {issue.Problem}");
                     issueTitle.Format.Font.Bold = true;
@@ -313,7 +314,6 @@ namespace Workpace.Services
                 AddBody(section, $"• 전체 작업: {data.TotalTasks}개");
                 AddBody(section, $"• 완료 작업: {data.DoneTasks}개");
                 AddBody(section, $"• 완료율: {data.CompletionRate}%");
-                AddBody(section, $"• 일정 준수율: {data.ScheduleAdherence}%");
                 AddBody(section, $"• 트러블슈팅 해결: {data.Issues.Count}건");
             }
 
@@ -376,10 +376,10 @@ namespace Workpace.Services
                     sb.AppendLine($"👤 {data.UserProfile.Name}");
                 if (!string.IsNullOrWhiteSpace(data.UserProfile.Email))
                     sb.AppendLine($"✉ {data.UserProfile.Email}");
-                if (!string.IsNullOrWhiteSpace(data.UserProfile.GitHub))
-                    sb.AppendLine($"GitHub: {data.UserProfile.GitHub}");
                 if (!string.IsNullOrWhiteSpace(data.UserProfile.Blog))
                     sb.AppendLine($"Blog: {data.UserProfile.Blog}");
+                if (!string.IsNullOrWhiteSpace(data.UserProfile.LinkedIn))
+                    sb.AppendLine($"LinkedIn: {data.UserProfile.LinkedIn}");
                 if (!string.IsNullOrWhiteSpace(data.UserProfile.Bio))
                     sb.AppendLine(data.UserProfile.Bio);
                 sb.AppendLine();
@@ -398,8 +398,8 @@ namespace Workpace.Services
                 sb.AppendLine($"아키텍처: {data.Project.Architecture}");
             sb.AppendLine();
 
-            // ── 프로젝트 개요 ───────────────────────────────
-            sb.AppendLine("[프로젝트 개요]");
+            // ── 개발 배경 ───────────────────────────────────
+            sb.AppendLine("[개발 배경]");
             sb.AppendLine(string.IsNullOrWhiteSpace(data.Project.Background)
                 ? "개발 배경이 입력되지 않았습니다."
                 : data.Project.Background);
@@ -407,14 +407,19 @@ namespace Workpace.Services
 
             // ── 기술 스택 + 선정 이유 ───────────────────────
             sb.AppendLine("[기술 스택]");
-            if (!string.IsNullOrWhiteSpace(data.Project.Type))
+            if (!string.IsNullOrWhiteSpace(data.Project.TechStack))
             {
-                var techs = data.Project.Type.Split(',')
+                var techs = data.Project.TechStack.Split(',')
                     .Select(t => t.Trim())
                     .Where(t => !string.IsNullOrEmpty(t));
                 foreach (var tech in techs)
                     sb.AppendLine($"• {tech}");
             }
+            else
+            {
+                sb.AppendLine("기술 스택이 입력되지 않았습니다.");
+            }
+
             if (!string.IsNullOrWhiteSpace(data.Project.TechReason))
             {
                 sb.AppendLine();
@@ -440,15 +445,24 @@ namespace Workpace.Services
                 {
                     sb.AppendLine($"[ {group.Key} ]");
                     foreach (var task in group)
+                    {
                         sb.AppendLine($"  • {task.Title}");
+                        if (!string.IsNullOrWhiteSpace(task.Description))
+                            sb.AppendLine($"    {task.Description}");
+                    }
                     sb.AppendLine();
                 }
             }
 
             // ── 트러블슈팅 ──────────────────────────────────
-            if (data.Issues.Count > 0)
+            sb.AppendLine("[트러블슈팅]");
+            if (data.Issues.Count == 0)
             {
-                sb.AppendLine("[트러블슈팅]");
+                sb.AppendLine("기록된 트러블슈팅이 없습니다.");
+                sb.AppendLine();
+            }
+            else
+            {
                 foreach (var issue in data.Issues)
                 {
                     sb.AppendLine($"▸ {issue.Problem}");
@@ -467,7 +481,6 @@ namespace Workpace.Services
             sb.AppendLine($"• 전체 작업: {data.TotalTasks}개");
             sb.AppendLine($"• 완료 작업: {data.DoneTasks}개");
             sb.AppendLine($"• 완료율: {data.CompletionRate}%");
-            sb.AppendLine($"• 일정 준수율: {data.ScheduleAdherence}%");
             sb.AppendLine($"• 트러블슈팅 해결: {data.Issues.Count}건");
 
             // ── 회고 ────────────────────────────────────────
@@ -560,9 +573,6 @@ namespace Workpace.Services
         public int TotalTasks { get; set; }
         public int DoneTasks { get; set; }
         public double CompletionRate { get; set; }
-
-        // 일정 준수율 — 현재 진행률 / 목표 진행률 × 100
-        public double ScheduleAdherence { get; set; }
 
         public List<Issue> Issues { get; set; } = new();
         public List<WorkTask> DoneTaskList { get; set; } = new();

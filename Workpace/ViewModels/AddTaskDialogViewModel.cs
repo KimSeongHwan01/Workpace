@@ -19,6 +19,8 @@ namespace Workpace.ViewModels
         [ObservableProperty]
         private string taskName = new WorkTask().Title;
         [ObservableProperty]
+        private string description = new WorkTask().Description;
+        [ObservableProperty]
         private string priority = new WorkTask().Priority;
         [ObservableProperty]
         private DateTime? duedate = new WorkTask().DueDate;
@@ -48,6 +50,7 @@ namespace Workpace.ViewModels
             {
                 ProjectId = _projectId,
                 Title = TaskName,
+                Description = Description,
                 Priority = Priority,
                 DueDate = Duedate,
                 Stage = Stage,

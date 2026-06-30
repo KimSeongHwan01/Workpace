@@ -42,6 +42,7 @@ namespace Workpace.Services
                     TechReason TEXT,
                     Role TEXT,
                     Architecture TEXT,
+                    TechStack TEXT,
                     RetrospectLearn TEXT,
                     RetrospectRegret TEXT,
                     RetrospectImprove TEXT
@@ -50,6 +51,7 @@ namespace Workpace.Services
                     Id INTEGER PRIMARY KEY AUTOINCREMENT,
                     ProjectId INTEGER,
                     Title TEXT NOT NULL,
+                    Description TEXT DEFAULT '',
                     Status TEXT DEFAULT '할일',
                     Priority TEXT DEFAULT '보통',
                     DueDate TEXT,
@@ -118,8 +120,8 @@ namespace Workpace.Services
             conn.Open();
 
             var sql = @"
-                INSERT INTO Projects (Name, Type, StartDate, Deadline, Description, GitHubUrl, Background, TechReason, Role, Architecture)
-                VALUES (@Name, @Type, @StartDate, @Deadline, @Description, @GitHubUrl, @Background, @TechReason, @Role, @Architecture);
+                INSERT INTO Projects (Name, Type, StartDate, Deadline, Description, GitHubUrl, Background, TechReason, Role, Architecture, TechStack)
+                VALUES (@Name, @Type, @StartDate, @Deadline, @Description, @GitHubUrl, @Background, @TechReason, @Role, @Architecture, @TechStack);
                 SELECT last_insert_rowid();
             ";
 
@@ -135,6 +137,7 @@ namespace Workpace.Services
             cmd.Parameters.AddWithValue("@TechReason", project.TechReason);
             cmd.Parameters.AddWithValue("@Role", project.Role);
             cmd.Parameters.AddWithValue("@Architecture", project.Architecture);
+            cmd.Parameters.AddWithValue("@TechStack", project.TechStack);
 
             // ExecuteScalar — 단일 값 하나를 반환받을 때 사용
             var result = cmd.ExecuteScalar();
@@ -147,8 +150,8 @@ namespace Workpace.Services
             conn.Open();
 
             var sql = @"
-                INSERT INTO Tasks (ProjectId, Title, Status, Priority, DueDate, Stage, Progress, IsCore)
-                VALUES (@ProjectId, @Title, @Status, @Priority, @DueDate, @Stage, @Progress, @IsCore);
+                INSERT INTO Tasks (ProjectId, Title, Description, Status, Priority, DueDate, Stage, Progress, IsCore)
+                VALUES (@ProjectId, @Title, @Description, @Status, @Priority, @DueDate, @Stage, @Progress, @IsCore);
                 SELECT last_insert_rowid();
             ";
 
@@ -156,6 +159,7 @@ namespace Workpace.Services
             // @파라미터 방식을 쓰는 이유 — SQL Injection 방지 + 특수문자 자동 처리
             cmd.Parameters.AddWithValue("@ProjectId", workTask.ProjectId);
             cmd.Parameters.AddWithValue("@Title", workTask.Title);
+            cmd.Parameters.AddWithValue("@Description", workTask.Description);
             cmd.Parameters.AddWithValue("@Status", workTask.Status);
             cmd.Parameters.AddWithValue("@Priority", workTask.Priority);
             cmd.Parameters.AddWithValue("@DueDate", workTask.DueDate.HasValue
@@ -182,6 +186,7 @@ namespace Workpace.Services
             var sql = @"
                 UPDATE Tasks
                 SET Title = @Title,
+                    Description = @Description,
                     Status = @Status,
                     Priority = @Priority,
                     DueDate = @DueDate,
@@ -195,6 +200,7 @@ namespace Workpace.Services
             using var cmd = new SqliteCommand(sql, conn);
             cmd.Parameters.AddWithValue("@Id", task.Id);
             cmd.Parameters.AddWithValue("@Title", task.Title);
+            cmd.Parameters.AddWithValue("@Description", task.Description);
             cmd.Parameters.AddWithValue("@Status", task.Status);
             cmd.Parameters.AddWithValue("@Priority", task.Priority);
             cmd.Parameters.AddWithValue("@DueDate", task.DueDate.HasValue
@@ -354,6 +360,7 @@ namespace Workpace.Services
                     TechReason = reader.IsDBNull(reader.GetOrdinal("TechReason")) ? "" : reader.GetString(reader.GetOrdinal("TechReason")),
                     Role = reader.IsDBNull(reader.GetOrdinal("Role")) ? "" : reader.GetString(reader.GetOrdinal("Role")),
                     Architecture = reader.IsDBNull(reader.GetOrdinal("Architecture")) ? "" : reader.GetString(reader.GetOrdinal("Architecture")),
+                    TechStack = reader.IsDBNull(reader.GetOrdinal("TechStack")) ? "" : reader.GetString(reader.GetOrdinal("TechStack")),
                     RetrospectLearn = reader.IsDBNull(reader.GetOrdinal("RetrospectLearn")) ? "" : reader.GetString(reader.GetOrdinal("RetrospectLearn")),
                     RetrospectRegret = reader.IsDBNull(reader.GetOrdinal("RetrospectRegret")) ? "" : reader.GetString(reader.GetOrdinal("RetrospectRegret")),
                     RetrospectImprove = reader.IsDBNull(reader.GetOrdinal("RetrospectImprove")) ? "" : reader.GetString(reader.GetOrdinal("RetrospectImprove")),
@@ -424,9 +431,11 @@ namespace Workpace.Services
                     Deadline = @Deadline,
                     Description = @Description,
                     GitHubUrl = @GitHubUrl,
+                    Background = @Background,
                     TechReason = @TechReason,
                     Role = @Role,
                     Architecture = @Architecture,
+                    TechStack = @TechStack,
                     RetrospectLearn = @RetrospectLearn,
                     RetrospectRegret = @RetrospectRegret,
                     RetrospectImprove = @RetrospectImprove
@@ -441,9 +450,11 @@ namespace Workpace.Services
             cmd.Parameters.AddWithValue("@Deadline", project.Deadline.ToString("yyyy-MM-dd"));
             cmd.Parameters.AddWithValue("@Description", project.Description);
             cmd.Parameters.AddWithValue("@GitHubUrl", project.GitHubUrl);
+            cmd.Parameters.AddWithValue("@Background", project.Background);
             cmd.Parameters.AddWithValue("@TechReason", project.TechReason);
             cmd.Parameters.AddWithValue("@Role", project.Role);
             cmd.Parameters.AddWithValue("@Architecture", project.Architecture);
+            cmd.Parameters.AddWithValue("@TechStack", project.TechStack);
             cmd.Parameters.AddWithValue("@RetrospectLearn", project.RetrospectLearn);
             cmd.Parameters.AddWithValue("@RetrospectRegret", project.RetrospectRegret);
             cmd.Parameters.AddWithValue("@RetrospectImprove", project.RetrospectImprove);
@@ -530,6 +541,7 @@ namespace Workpace.Services
                     Id = reader.GetInt32(reader.GetOrdinal("Id")),
                     ProjectId = reader.GetInt32(reader.GetOrdinal("ProjectId")),
                     Title = reader.GetString(reader.GetOrdinal("Title")),
+                    Description = reader.IsDBNull(reader.GetOrdinal("Description")) ? "" : reader.GetString(reader.GetOrdinal("Description")),
                     Status = reader.IsDBNull(reader.GetOrdinal("Status")) ? "할일" : reader.GetString(reader.GetOrdinal("Status")),
                     Priority = reader.IsDBNull(reader.GetOrdinal("Priority")) ? "보통" : reader.GetString(reader.GetOrdinal("Priority")),
                     Stage = reader.IsDBNull(reader.GetOrdinal("Stage")) ? "기획" : reader.GetString(reader.GetOrdinal("Stage")),
@@ -607,6 +619,26 @@ namespace Workpace.Services
         }
 
         // ───────────────────────────────────────
+        // 프로필이 없으면 기본값으로 한 번 생성
+        // 앱 최초 실행 시 UserProfile 행이 아예 없는 상태를 방지
+        // (없으면 알림 관련 토글들이 화면엔 ON으로 보여도 실제로는 동작 안 하는 문제가 있었음)
+        // ───────────────────────────────────────
+        public void EnsureUserProfileExists()
+        {
+            using var conn = new SqliteConnection(_connectionString);
+            conn.Open();
+
+            var sql = @"
+                INSERT INTO UserProfile (Id, StreakReminderEnabled, ProjectDeadlineAlertEnabled, TaskDeadlineAlertEnabled, StreakReminderIntervalHours)
+                VALUES (1, 1, 1, 1, 1)
+                ON CONFLICT(Id) DO NOTHING
+            ";
+
+            using var cmd = new SqliteCommand(sql, conn);
+            cmd.ExecuteNonQuery();
+        }
+
+        // ───────────────────────────────────────
         // READ — 사용자 프로필 불러오기
         // 앱에 프로필은 딱 하나만 존재 — LIMIT 1으로 첫 번째 행만 가져옴
         // ───────────────────────────────────────
@@ -626,7 +658,6 @@ namespace Workpace.Services
                 Id = reader.GetInt32(reader.GetOrdinal("Id")),
                 Name = reader.IsDBNull(reader.GetOrdinal("Name")) ? "" : reader.GetString(reader.GetOrdinal("Name")),
                 Email = reader.IsDBNull(reader.GetOrdinal("Email")) ? "" : reader.GetString(reader.GetOrdinal("Email")),
-                GitHub = reader.IsDBNull(reader.GetOrdinal("GitHub")) ? "" : reader.GetString(reader.GetOrdinal("GitHub")),
                 Blog = reader.IsDBNull(reader.GetOrdinal("Blog")) ? "" : reader.GetString(reader.GetOrdinal("Blog")),
                 LinkedIn = reader.IsDBNull(reader.GetOrdinal("LinkedIn")) ? "" : reader.GetString(reader.GetOrdinal("LinkedIn")),
                 Bio = reader.IsDBNull(reader.GetOrdinal("Bio")) ? "" : reader.GetString(reader.GetOrdinal("Bio")),
@@ -648,10 +679,10 @@ namespace Workpace.Services
             conn.Open();
 
             var sql = @"
-                INSERT INTO UserProfile (Id, Name, Email, GitHub, Blog, LinkedIn, Bio, StreakReminderEnabled, ProjectDeadlineAlertEnabled, TaskDeadlineAlertEnabled, StreakReminderIntervalHours)
-                VALUES (1, @Name, @Email, @GitHub, @Blog, @LinkedIn, @Bio, @StreakReminderEnabled, @ProjectDeadlineAlertEnabled, @TaskDeadlineAlertEnabled, @StreakReminderIntervalHours)
+                INSERT INTO UserProfile (Id, Name, Email, Blog, LinkedIn, Bio, StreakReminderEnabled, ProjectDeadlineAlertEnabled, TaskDeadlineAlertEnabled, StreakReminderIntervalHours)
+                VALUES (1, @Name, @Email, @Blog, @LinkedIn, @Bio, @StreakReminderEnabled, @ProjectDeadlineAlertEnabled, @TaskDeadlineAlertEnabled, @StreakReminderIntervalHours)
                 ON CONFLICT(Id) DO UPDATE SET
-                    Name = @Name, Email = @Email, GitHub = @GitHub, Blog = @Blog, LinkedIn = @LinkedIn, Bio = @Bio,
+                    Name = @Name, Email = @Email, Blog = @Blog, LinkedIn = @LinkedIn, Bio = @Bio,
                     StreakReminderEnabled = @StreakReminderEnabled,
                     ProjectDeadlineAlertEnabled = @ProjectDeadlineAlertEnabled,
                     TaskDeadlineAlertEnabled = @TaskDeadlineAlertEnabled,
@@ -661,7 +692,6 @@ namespace Workpace.Services
             using var cmd = new SqliteCommand(sql, conn);
             cmd.Parameters.AddWithValue("@Name", profile.Name);
             cmd.Parameters.AddWithValue("@Email", profile.Email);
-            cmd.Parameters.AddWithValue("@GitHub", profile.GitHub);
             cmd.Parameters.AddWithValue("@Blog", profile.Blog);
             cmd.Parameters.AddWithValue("@LinkedIn", profile.LinkedIn);
             cmd.Parameters.AddWithValue("@Bio", profile.Bio);
@@ -670,6 +700,59 @@ namespace Workpace.Services
             cmd.Parameters.AddWithValue("@TaskDeadlineAlertEnabled", profile.TaskDeadlineAlertEnabled ? 1 : 0);
             cmd.Parameters.AddWithValue("@StreakReminderIntervalHours", profile.StreakReminderIntervalHours);
 
+            cmd.ExecuteNonQuery();
+        }
+
+        // ───────────────────────────────────────
+        // 알림 토글 개별 즉시 저장 — 토글 변경 시점에 바로 호출됨
+        // 프로필을 한 번도 저장 안 한 상태(행이 없는 상태)일 수도 있어서
+        // UPSERT 패턴 사용 — 없으면 새로 만들고, 있으면 그 컬럼만 갈아끼움
+        // ───────────────────────────────────────
+        public void UpdateStreakReminderEnabled(bool enabled)
+        {
+            using var conn = new SqliteConnection(_connectionString);
+            conn.Open();
+
+            var sql = @"
+                INSERT INTO UserProfile (Id, StreakReminderEnabled)
+                VALUES (1, @Value)
+                ON CONFLICT(Id) DO UPDATE SET StreakReminderEnabled = @Value
+            ";
+
+            using var cmd = new SqliteCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@Value", enabled ? 1 : 0);
+            cmd.ExecuteNonQuery();
+        }
+
+        public void UpdateProjectDeadlineAlertEnabled(bool enabled)
+        {
+            using var conn = new SqliteConnection(_connectionString);
+            conn.Open();
+
+            var sql = @"
+                INSERT INTO UserProfile (Id, ProjectDeadlineAlertEnabled)
+                VALUES (1, @Value)
+                ON CONFLICT(Id) DO UPDATE SET ProjectDeadlineAlertEnabled = @Value
+            ";
+
+            using var cmd = new SqliteCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@Value", enabled ? 1 : 0);
+            cmd.ExecuteNonQuery();
+        }
+
+        public void UpdateTaskDeadlineAlertEnabled(bool enabled)
+        {
+            using var conn = new SqliteConnection(_connectionString);
+            conn.Open();
+
+            var sql = @"
+                INSERT INTO UserProfile (Id, TaskDeadlineAlertEnabled)
+                VALUES (1, @Value)
+                ON CONFLICT(Id) DO UPDATE SET TaskDeadlineAlertEnabled = @Value
+            ";
+
+            using var cmd = new SqliteCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@Value", enabled ? 1 : 0);
             cmd.ExecuteNonQuery();
         }
 

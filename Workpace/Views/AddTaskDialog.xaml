@@ -55,6 +55,23 @@
                     BorderThickness="1"
                     Text="{Binding TaskName, UpdateSourceTrigger=PropertyChanged}" />
 
+                <!--  작업 설명  -->
+                <TextBlock
+                    Margin="0,0,0,6"
+                    FontSize="13"
+                    Foreground="#6B7280"
+                    Text="작업 설명 (선택)" />
+                <TextBox
+                    Height="70"
+                    Margin="0,0,0,16"
+                    Padding="10,8"
+                    AcceptsReturn="True"
+                    BorderBrush="#E5E7EB"
+                    BorderThickness="1"
+                    Text="{Binding Description, UpdateSourceTrigger=PropertyChanged}"
+                    TextWrapping="Wrap"
+                    VerticalScrollBarVisibility="Auto" />
+
                 <!--  우선순위  -->
                 <TextBlock
                     Margin="0,0,0,6"

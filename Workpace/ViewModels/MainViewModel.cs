@@ -62,6 +62,10 @@ namespace Workpace.ViewModels
 
             ProjectViewModel.PropertyChanged += OnProjectViewModelPropertyChanged;
 
+            // 알림 서비스 시작 전, 프로필 행이 없으면 기본값으로 미리 생성
+            // (없으면 알림 토글들이 화면엔 켜져 있어도 실제로는 동작 안 함)
+            _db.EnsureUserProfileExists();
+
             // 알림 서비스 시작
             _notificationService = new NotificationService(_db);
             _notificationService.Start();
@@ -163,6 +167,8 @@ namespace Workpace.ViewModels
             // 다이얼로그 창 열기
             var dialog = new AddProjectDialog();
 
+            dialog.Owner = Application.Current.MainWindow;
+
             // ShowDialog() — 창이 닫힐 때까지 여기서 기다림
             // 확인 누르면 true, 취소 누르면 false 반환
             if (dialog.ShowDialog() == true)
@@ -179,6 +185,44 @@ namespace Workpace.ViewModels
 
                 // 사이드바 목록 맨 앞에 추가
                 Projects.Insert(0, newProject);
+            }
+        }
+
+        // ───────────────────────────────────────
+        // UPDATE — 프로젝트 수정 (연필 아이콘 클릭 시 호출)
+        // AddProjectDialog를 "수정 모드"로 열어서 기존 값을 채워줌
+        // ───────────────────────────────────────
+        [RelayCommand]
+        private void EditProject(Project project)
+        {
+            if (project == null) return;
+
+            // 기존 프로젝트 값을 채운 수정 모드 다이얼로그
+            var dialog = new AddProjectDialog(project);
+
+            dialog.Owner = Application.Current.MainWindow;
+
+            if (dialog.ShowDialog() == true)
+            {
+                var updated = dialog.Result;
+                if (updated == null) return;
+
+                // Id와 진행률(DB에 없는 계산값)은 기존 프로젝트 것을 그대로 유지
+                updated.Id = project.Id;
+                updated.CurrentProgress = project.CurrentProgress;
+
+                _db.UpdateProject(updated);
+
+                // 주의: Project.cs는 Name/Deadline 등 변경 시 PropertyChanged를 안 쏨
+                // (CurrentProgress만 INPC 연결되어 있음)
+                // → 같은 자리에서 객체 자체를 교체해야 ListBox가 새 값으로 다시 그려짐
+                var index = Projects.IndexOf(project);
+                if (index >= 0)
+                    Projects[index] = updated;
+
+                // 수정한 게 현재 선택된 프로젝트였다면 선택도 새 객체로 갈아끼움
+                if (SelectedProject?.Id == updated.Id)
+                    SelectedProject = updated;
             }
         }
 

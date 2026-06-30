@@ -91,6 +91,7 @@
         <local:PriorityToBackgroundConverter x:Key="PriorityToBackgroundConverter" />
         <local:PriorityToForegroundConverter x:Key="PriorityToForegroundConverter" />
         <local:FileIconConverter x:Key="FileIconConverter" />
+        <local:StringNotEmptyToVisibilityConverter x:Key="StringNotEmptyToVisibilityConverter" />
 
         <!--  프로젝트 유형 카드 스타일  -->
         <Style x:Key="TypeCardStyle" TargetType="RadioButton">

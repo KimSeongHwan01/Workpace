@@ -19,9 +19,6 @@ namespace Workpace.ViewModels
         private string email = "";
 
         [ObservableProperty]
-        private string gitHub = "";
-
-        [ObservableProperty]
         private string blog = "";
 
         [ObservableProperty]
@@ -43,12 +40,19 @@ namespace Workpace.ViewModels
         [ObservableProperty]
         private int streakReminderIntervalHours = 1;
 
+        // 프로필 로딩 중인지 여부
+        // LoadProfile()이 토글 값을 채우는 동안 On{Property}Changed가 같이 발동되는데
+        // 이건 "불러오는 것"이라 DB에 다시 쓰면 안 됨 → 이 플래그로 그 시점만 걸러냄
+        private bool _isLoading;
+
         public SettingsViewModel()
         {
             _db = new DatabaseService();
 
             // 앱 시작 시 저장된 프로필 불러오기
+            _isLoading = true;
             LoadProfile();
+            _isLoading = false;
         }
 
         // ───────────────────────────────────────
@@ -62,7 +66,6 @@ namespace Workpace.ViewModels
 
             Name = profile.Name;
             Email = profile.Email;
-            GitHub = profile.GitHub;
             Blog = profile.Blog;
             LinkedIn = profile.LinkedIn;
             Bio = profile.Bio;
@@ -90,7 +93,6 @@ namespace Workpace.ViewModels
             {
                 Name = Name,
                 Email = Email,
-                GitHub = GitHub,
                 Blog = Blog,
                 LinkedIn = LinkedIn,
                 Bio = Bio,
@@ -104,6 +106,28 @@ namespace Workpace.ViewModels
 
             MessageBox.Show("프로필이 저장되었습니다.", "저장 완료",
                 MessageBoxButton.OK, MessageBoxImage.Information);
+        }
+
+        // ───────────────────────────────────────
+        // 알림 토글 — 값이 바뀌는 즉시 DB에 그 항목만 저장
+        // 프로필 "저장" 버튼과 완전히 분리된 동작
+        // ───────────────────────────────────────
+        partial void OnStreakReminderEnabledChanged(bool value)
+        {
+            if (_isLoading) return;
+            _db.UpdateStreakReminderEnabled(value);
+        }
+
+        partial void OnProjectDeadlineAlertEnabledChanged(bool value)
+        {
+            if (_isLoading) return;
+            _db.UpdateProjectDeadlineAlertEnabled(value);
+        }
+
+        partial void OnTaskDeadlineAlertEnabledChanged(bool value)
+        {
+            if (_isLoading) return;
+            _db.UpdateTaskDeadlineAlertEnabled(value);
         }
     }
 }

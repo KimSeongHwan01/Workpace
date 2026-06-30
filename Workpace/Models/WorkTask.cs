@@ -8,6 +8,7 @@ namespace Workpace.Models
         [ObservableProperty] private int id;
         [ObservableProperty] private int projectId;
         [ObservableProperty] private string title = string.Empty;
+        [ObservableProperty] private string description = string.Empty;
         [ObservableProperty] private string status = "할일";
         [ObservableProperty] private string priority = "보통";
         [ObservableProperty] private DateTime? dueDate;

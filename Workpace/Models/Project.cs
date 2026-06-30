@@ -23,6 +23,7 @@ namespace Workpace.Models
         public string TechReason { get; set; } = string.Empty;
         public string Role { get; set; } = string.Empty;
         public string Architecture { get; set; } = string.Empty;
+        public string TechStack { get; set; } = string.Empty;
         public string RetrospectLearn { get; set; } = string.Empty;
         public string RetrospectRegret { get; set; } = string.Empty;
         public string RetrospectImprove { get; set; } = string.Empty;
