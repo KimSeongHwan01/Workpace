@@ -22,5 +22,13 @@
 
         // 한 줄 자기소개
         public string Bio { get; set; } = string.Empty;
+
+        // 알림 설정 — true면 해당 알림 활성화
+        public bool StreakReminderEnabled { get; set; } = true;
+        public bool ProjectDeadlineAlertEnabled { get; set; } = true;
+        public bool TaskDeadlineAlertEnabled { get; set; } = true;
+
+        // 알림 주기
+        public int StreakReminderIntervalHours { get; set; } = 1;
     }
 }

@@ -30,6 +30,19 @@ namespace Workpace.ViewModels
         [ObservableProperty]
         private string bio = "";
 
+        // 알림 설정 토글
+        [ObservableProperty]
+        private bool streakReminderEnabled = true;
+
+        [ObservableProperty]
+        private bool projectDeadlineAlertEnabled = true;
+
+        [ObservableProperty]
+        private bool taskDeadlineAlertEnabled = true;
+
+        [ObservableProperty]
+        private int streakReminderIntervalHours = 1;
+
         public SettingsViewModel()
         {
             _db = new DatabaseService();
@@ -53,6 +66,10 @@ namespace Workpace.ViewModels
             Blog = profile.Blog;
             LinkedIn = profile.LinkedIn;
             Bio = profile.Bio;
+            StreakReminderEnabled = profile.StreakReminderEnabled;
+            ProjectDeadlineAlertEnabled = profile.ProjectDeadlineAlertEnabled;
+            TaskDeadlineAlertEnabled = profile.TaskDeadlineAlertEnabled;
+            StreakReminderIntervalHours = profile.StreakReminderIntervalHours;
         }
 
         // ───────────────────────────────────────
@@ -76,7 +93,11 @@ namespace Workpace.ViewModels
                 GitHub = GitHub,
                 Blog = Blog,
                 LinkedIn = LinkedIn,
-                Bio = Bio
+                Bio = Bio,
+                StreakReminderEnabled = StreakReminderEnabled,
+                ProjectDeadlineAlertEnabled = ProjectDeadlineAlertEnabled,
+                TaskDeadlineAlertEnabled = TaskDeadlineAlertEnabled,
+                StreakReminderIntervalHours = StreakReminderIntervalHours
             };
 
             _db.SaveUserProfile(profile);

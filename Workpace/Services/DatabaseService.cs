@@ -95,7 +95,11 @@ namespace Workpace.Services
                     GitHub TEXT,
                     Blog TEXT,
                     LinkedIn TEXT,
-                    Bio TEXT
+                    Bio TEXT,
+                    StreakReminderEnabled INTEGER DEFAULT 1,
+                    ProjectDeadlineAlertEnabled INTEGER DEFAULT 1,
+                    TaskDeadlineAlertEnabled INTEGER DEFAULT 1,
+                    StreakReminderIntervalHours INTEGER DEFAULT 1
                 );
             ";
 
@@ -360,6 +364,50 @@ namespace Workpace.Services
         }
 
         // ───────────────────────────────────────
+        // 전체 프로젝트의 모든 Task 중 — DueDate가 임박한 것만 조회
+        // 마감 임박 알림용
+        // ───────────────────────────────────────
+        public List<WorkTask> GetTasksWithUpcomingDueDate(int withinDays)
+        {
+            using var conn = new SqliteConnection(_connectionString);
+            conn.Open();
+
+            var limit = DateTime.Today.AddDays(withinDays).ToString("yyyy-MM-dd");
+            var today = DateTime.Today.ToString("yyyy-MM-dd");
+
+            var sql = @"
+                SELECT * FROM Tasks
+                WHERE DueDate IS NOT NULL
+                  AND DueDate >= @Today
+                  AND DueDate <= @Limit
+                  AND Status != '완료'
+            ";
+
+            using var cmd = new SqliteCommand(sql, conn);
+            cmd.Parameters.AddWithValue("@Today", today);
+            cmd.Parameters.AddWithValue("@Limit", limit);
+            using var reader = cmd.ExecuteReader();
+
+            var tasks = new List<WorkTask>();
+            while (reader.Read())
+            {
+                tasks.Add(new WorkTask
+                {
+                    Id = reader.GetInt32(reader.GetOrdinal("Id")),
+                    ProjectId = reader.GetInt32(reader.GetOrdinal("ProjectId")),
+                    Title = reader.GetString(reader.GetOrdinal("Title")),
+                    Status = reader.IsDBNull(reader.GetOrdinal("Status")) ? "할일" : reader.GetString(reader.GetOrdinal("Status")),
+                    Priority = reader.IsDBNull(reader.GetOrdinal("Priority")) ? "보통" : reader.GetString(reader.GetOrdinal("Priority")),
+                    Stage = reader.IsDBNull(reader.GetOrdinal("Stage")) ? "기획" : reader.GetString(reader.GetOrdinal("Stage")),
+                    Progress = reader.IsDBNull(reader.GetOrdinal("Progress")) ? 0 : reader.GetInt32(reader.GetOrdinal("Progress")),
+                    IsCore = reader.IsDBNull(reader.GetOrdinal("IsCore")) ? false : reader.GetInt32(reader.GetOrdinal("IsCore")) == 1,
+                    DueDate = reader.IsDBNull(reader.GetOrdinal("DueDate")) ? null : DateTime.Parse(reader.GetString(reader.GetOrdinal("DueDate"))),
+                });
+            }
+            return tasks;
+        }
+
+        // ───────────────────────────────────────
         // UPDATE — 프로젝트 정보 수정
         // WHERE Id = @Id 로 특정 행만 수정
         // ───────────────────────────────────────
@@ -582,6 +630,10 @@ namespace Workpace.Services
                 Blog = reader.IsDBNull(reader.GetOrdinal("Blog")) ? "" : reader.GetString(reader.GetOrdinal("Blog")),
                 LinkedIn = reader.IsDBNull(reader.GetOrdinal("LinkedIn")) ? "" : reader.GetString(reader.GetOrdinal("LinkedIn")),
                 Bio = reader.IsDBNull(reader.GetOrdinal("Bio")) ? "" : reader.GetString(reader.GetOrdinal("Bio")),
+                StreakReminderEnabled = reader.IsDBNull(reader.GetOrdinal("StreakReminderEnabled")) ? true : reader.GetInt32(reader.GetOrdinal("StreakReminderEnabled")) == 1,
+                ProjectDeadlineAlertEnabled = reader.IsDBNull(reader.GetOrdinal("ProjectDeadlineAlertEnabled")) ? true : reader.GetInt32(reader.GetOrdinal("ProjectDeadlineAlertEnabled")) == 1,
+                TaskDeadlineAlertEnabled = reader.IsDBNull(reader.GetOrdinal("TaskDeadlineAlertEnabled")) ? true : reader.GetInt32(reader.GetOrdinal("TaskDeadlineAlertEnabled")) == 1,
+                StreakReminderIntervalHours = reader.IsDBNull(reader.GetOrdinal("StreakReminderIntervalHours")) ? 1 : reader.GetInt32(reader.GetOrdinal("StreakReminderIntervalHours")),
             };
         }
 
@@ -596,15 +648,14 @@ namespace Workpace.Services
             conn.Open();
 
             var sql = @"
-                INSERT INTO UserProfile (Id, Name, Email, GitHub, Blog, LinkedIn, Bio)
-                VALUES (1, @Name, @Email, @GitHub, @Blog, @LinkedIn, @Bio)
+                INSERT INTO UserProfile (Id, Name, Email, GitHub, Blog, LinkedIn, Bio, StreakReminderEnabled, ProjectDeadlineAlertEnabled, TaskDeadlineAlertEnabled, StreakReminderIntervalHours)
+                VALUES (1, @Name, @Email, @GitHub, @Blog, @LinkedIn, @Bio, @StreakReminderEnabled, @ProjectDeadlineAlertEnabled, @TaskDeadlineAlertEnabled, @StreakReminderIntervalHours)
                 ON CONFLICT(Id) DO UPDATE SET
-                    Name = @Name,
-                    Email = @Email,
-                    GitHub = @GitHub,
-                    Blog = @Blog,
-                    LinkedIn = @LinkedIn,
-                    Bio = @Bio
+                    Name = @Name, Email = @Email, GitHub = @GitHub, Blog = @Blog, LinkedIn = @LinkedIn, Bio = @Bio,
+                    StreakReminderEnabled = @StreakReminderEnabled,
+                    ProjectDeadlineAlertEnabled = @ProjectDeadlineAlertEnabled,
+                    TaskDeadlineAlertEnabled = @TaskDeadlineAlertEnabled,
+                    StreakReminderIntervalHours = @StreakReminderIntervalHours
             ";
 
             using var cmd = new SqliteCommand(sql, conn);
@@ -614,6 +665,10 @@ namespace Workpace.Services
             cmd.Parameters.AddWithValue("@Blog", profile.Blog);
             cmd.Parameters.AddWithValue("@LinkedIn", profile.LinkedIn);
             cmd.Parameters.AddWithValue("@Bio", profile.Bio);
+            cmd.Parameters.AddWithValue("@StreakReminderEnabled", profile.StreakReminderEnabled ? 1 : 0);
+            cmd.Parameters.AddWithValue("@ProjectDeadlineAlertEnabled", profile.ProjectDeadlineAlertEnabled ? 1 : 0);
+            cmd.Parameters.AddWithValue("@TaskDeadlineAlertEnabled", profile.TaskDeadlineAlertEnabled ? 1 : 0);
+            cmd.Parameters.AddWithValue("@StreakReminderIntervalHours", profile.StreakReminderIntervalHours);
 
             cmd.ExecuteNonQuery();
         }
@@ -671,6 +726,39 @@ namespace Workpace.Services
             }
 
             return streak;
+        }
+
+        // 역대 최고 연속 스트릭 계산
+        public int GetBestStreak()
+        {
+            // Streaks 테이블에서 WorkDone=1인 날짜를 오름차순으로 가져와
+            // 연속된 날짜 시퀀스 중 가장 긴 것을 반환
+            var dates = new List<DateTime>();
+            using var conn = new SqliteConnection(_connectionString);
+            conn.Open();
+
+            var cmd = conn.CreateCommand();
+            cmd.CommandText = "SELECT Date FROM Streaks WHERE WorkDone=1 ORDER BY Date ASC";
+            using var reader = cmd.ExecuteReader();
+            while (reader.Read())
+                dates.Add(DateTime.Parse(reader.GetString(0)));
+
+            if (dates.Count == 0) return 0;
+
+            int best = 1, current = 1;
+            for (int i = 1; i < dates.Count; i++)
+            {
+                if ((dates[i] - dates[i - 1]).Days == 1)
+                {
+                    current++;
+                    if (current > best) best = current;
+                }
+                else
+                {
+                    current = 1;
+                }
+            }
+            return best;
         }
 
         // ───────────────────────────────────────

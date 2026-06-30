@@ -23,6 +23,7 @@
                 BorderBrush="#E5E7EB"
                 BorderThickness="1"
                 CornerRadius="12">
+
                 <StackPanel>
                     <TextBlock
                         Margin="0,0,0,20"
@@ -31,106 +32,330 @@
                         Foreground="#1F1F1F"
                         Text="프로필 설정" />
 
-                    <!--  이름  -->
-                    <TextBlock
-                        Margin="0,0,0,6"
-                        FontSize="13"
-                        Foreground="#6B7280"
-                        Text="이름 *" />
-                    <TextBox
-                        Height="36"
-                        Margin="0,0,0,16"
-                        Padding="10,8"
-                        BorderBrush="#E5E7EB"
-                        BorderThickness="1"
-                        Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                    <!--  이름 / 이메일  -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="16" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock
+                                Margin="0,0,0,6"
+                                FontSize="13"
+                                Foreground="#6B7280"
+                                Text="이름 *" />
+                            <TextBox
+                                Height="36"
+                                Padding="10,8"
+                                BorderBrush="#E5E7EB"
+                                BorderThickness="1"
+                                Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock
+                                Margin="0,0,0,6"
+                                FontSize="13"
+                                Foreground="#6B7280"
+                                Text="이메일" />
+                            <TextBox
+                                Height="36"
+                                Padding="10,8"
+                                BorderBrush="#E5E7EB"
+                                BorderThickness="1"
+                                Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </Grid>
 
-                    <!--  이메일  -->
-                    <TextBlock
-                        Margin="0,0,0,6"
-                        FontSize="13"
-                        Foreground="#6B7280"
-                        Text="이메일" />
-                    <TextBox
-                        Height="36"
-                        Margin="0,0,0,16"
-                        Padding="10,8"
-                        BorderBrush="#E5E7EB"
-                        BorderThickness="1"
-                        Text="{Binding Email, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <!--  GitHub  -->
-                    <TextBlock
-                        Margin="0,0,0,6"
-                        FontSize="13"
-                        Foreground="#6B7280"
-                        Text="GitHub" />
-                    <TextBox
-                        Height="36"
-                        Margin="0,0,0,16"
-                        Padding="10,8"
-                        BorderBrush="#E5E7EB"
-                        BorderThickness="1"
-                        Text="{Binding GitHub, UpdateSourceTrigger=PropertyChanged}" />
+                    <!--  GitHub / LinkedIn  -->
+                    <Grid Margin="0,0,0,16">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="*" />
+                            <ColumnDefinition Width="16" />
+                            <ColumnDefinition Width="*" />
+                        </Grid.ColumnDefinitions>
+                        <StackPanel Grid.Column="0">
+                            <TextBlock
+                                Margin="0,0,0,6"
+                                FontSize="13"
+                                Foreground="#6B7280"
+                                Text="GitHub" />
+                            <TextBox
+                                Height="36"
+                                Padding="10,8"
+                                BorderBrush="#E5E7EB"
+                                BorderThickness="1"
+                                Text="{Binding GitHub, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                        <StackPanel Grid.Column="2">
+                            <TextBlock
+                                Margin="0,0,0,6"
+                                FontSize="13"
+                                Foreground="#6B7280"
+                                Text="LinkedIn" />
+                            <TextBox
+                                Height="36"
+                                Padding="10,8"
+                                BorderBrush="#E5E7EB"
+                                BorderThickness="1"
+                                Text="{Binding LinkedIn, UpdateSourceTrigger=PropertyChanged}" />
+                        </StackPanel>
+                    </Grid>
 
                     <!--  블로그  -->
-                    <TextBlock
-                        Margin="0,0,0,6"
-                        FontSize="13"
-                        Foreground="#6B7280"
-                        Text="블로그" />
-                    <TextBox
-                        Height="36"
-                        Margin="0,0,0,16"
-                        Padding="10,8"
-                        BorderBrush="#E5E7EB"
-                        BorderThickness="1"
-                        Text="{Binding Blog, UpdateSourceTrigger=PropertyChanged}" />
-
-                    <!--  LinkedIn  -->
-                    <TextBlock
-                        Margin="0,0,0,6"
-                        FontSize="13"
-                        Foreground="#6B7280"
-                        Text="LinkedIn" />
-                    <TextBox
-                        Height="36"
-                        Margin="0,0,0,16"
-                        Padding="10,8"
-                        BorderBrush="#E5E7EB"
-                        BorderThickness="1"
-                        Text="{Binding LinkedIn, UpdateSourceTrigger=PropertyChanged}" />
+                    <StackPanel Margin="0,0,0,16">
+                        <TextBlock
+                            Margin="0,0,0,6"
+                            FontSize="13"
+                            Foreground="#6B7280"
+                            Text="블로그" />
+                        <TextBox
+                            Height="36"
+                            Padding="10,8"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1"
+                            Text="{Binding Blog, UpdateSourceTrigger=PropertyChanged}" />
+                    </StackPanel>
 
                     <!--  한 줄 자기소개  -->
-                    <TextBlock
-                        Margin="0,0,0,6"
-                        FontSize="13"
-                        Foreground="#6B7280"
-                        Text="한 줄 자기소개" />
-                    <TextBox
-                        Height="60"
-                        Margin="0,0,0,20"
-                        Padding="10,8"
-                        AcceptsReturn="True"
-                        BorderBrush="#E5E7EB"
-                        BorderThickness="1"
-                        Text="{Binding Bio, UpdateSourceTrigger=PropertyChanged}"
-                        TextWrapping="Wrap" />
+                    <StackPanel Margin="0,0,0,20">
+                        <TextBlock
+                            Margin="0,0,0,6"
+                            FontSize="13"
+                            Foreground="#6B7280"
+                            Text="한 줄 자기소개" />
+                        <TextBox
+                            Height="60"
+                            Padding="10,8"
+                            AcceptsReturn="True"
+                            BorderBrush="#E5E7EB"
+                            BorderThickness="1"
+                            Text="{Binding Bio, UpdateSourceTrigger=PropertyChanged}"
+                            TextWrapping="Wrap" />
+                    </StackPanel>
 
                     <!--  저장 버튼  -->
                     <Button
-                        Width="120"
-                        Height="40"
+                        Width="80"
+                        Height="36"
                         HorizontalAlignment="Right"
-                        Background="#7C3AED"
+                        Background="{StaticResource PrimaryBrush}"
                         BorderThickness="0"
                         Command="{Binding SaveCommand}"
-                        Content="저장"
                         Cursor="Hand"
-                        Foreground="White" />
+                        FontSize="13"
+                        Foreground="White">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border
+                                    x:Name="SaveBtnBorder"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="SaveBtnBorder" Property="Background" Value="#6D28D9" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                        <TextBlock Text="저장" />
+                    </Button>
                 </StackPanel>
             </Border>
 
+            <!--  ② 알림 설정  -->
+            <Border
+                Margin="0,0,0,16"
+                Padding="24"
+                Background="White"
+                BorderBrush="#E5E7EB"
+                BorderThickness="1"
+                CornerRadius="12">
+                <StackPanel>
+                    <TextBlock
+                        Margin="0,0,0,20"
+                        FontSize="16"
+                        FontWeight="Bold"
+                        Foreground="#1F1F1F"
+                        Text="알림 설정" />
+
+                    <!--  스트릭 리마인더  -->
+                    <DockPanel Margin="0,0,0,16">
+                        <Border
+                            Width="40"
+                            Height="40"
+                            Margin="0,0,16,0"
+                            Background="#F5F3FF"
+                            CornerRadius="10"
+                            DockPanel.Dock="Left">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="18"
+                                Text="🔥" />
+                        </Border>
+                        <ToggleButton
+                            Width="44"
+                            Height="24"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding StreakReminderEnabled}">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border
+                                        x:Name="Track"
+                                        Background="#D1D5DB"
+                                        CornerRadius="12">
+                                        <Border
+                                            x:Name="Thumb"
+                                            Width="18"
+                                            Height="18"
+                                            Margin="3,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            Background="White"
+                                            CornerRadius="9" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="Track" Property="Background" Value="{StaticResource PrimaryBrush}" />
+                                            <Setter TargetName="Thumb" Property="Margin" Value="0,0,3,0" />
+                                            <Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="Medium"
+                                Foreground="#1F1F1F"
+                                Text="스트릭 리마인더" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="#6B7280"
+                                Text="{Binding StreakReminderIntervalHours, StringFormat=설정한 주기({0}시간)마다 작업 독려 알림}" />
+                        </StackPanel>
+                    </DockPanel>
+
+                    <!--  프로젝트 마감 임박 알림  -->
+                    <DockPanel Margin="0,0,0,16">
+                        <Border
+                            Width="40"
+                            Height="40"
+                            Margin="0,0,16,0"
+                            Background="#F5F3FF"
+                            CornerRadius="10"
+                            DockPanel.Dock="Left">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="18"
+                                Text="⚠️" />
+                        </Border>
+                        <ToggleButton
+                            Width="44"
+                            Height="24"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding ProjectDeadlineAlertEnabled}">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border
+                                        x:Name="Track"
+                                        Background="#D1D5DB"
+                                        CornerRadius="12">
+                                        <Border
+                                            x:Name="Thumb"
+                                            Width="18"
+                                            Height="18"
+                                            Margin="3,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            Background="White"
+                                            CornerRadius="9" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="Track" Property="Background" Value="{StaticResource PrimaryBrush}" />
+                                            <Setter TargetName="Thumb" Property="Margin" Value="0,0,3,0" />
+                                            <Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="Medium"
+                                Foreground="#1F1F1F"
+                                Text="마감 임박 알림" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="#6B7280"
+                                Text="프로젝트 마감 3일 전 경고 알림" />
+                        </StackPanel>
+                    </DockPanel>
+
+                    <!--  작업 단위 마감 알림  -->
+                    <DockPanel>
+                        <Border
+                            Width="40"
+                            Height="40"
+                            Margin="0,0,16,0"
+                            Background="#F5F3FF"
+                            CornerRadius="10"
+                            DockPanel.Dock="Left">
+                            <TextBlock
+                                HorizontalAlignment="Center"
+                                VerticalAlignment="Center"
+                                FontSize="18"
+                                Text="📌" />
+                        </Border>
+                        <ToggleButton
+                            Width="44"
+                            Height="24"
+                            DockPanel.Dock="Right"
+                            IsChecked="{Binding TaskDeadlineAlertEnabled}">
+                            <ToggleButton.Template>
+                                <ControlTemplate TargetType="ToggleButton">
+                                    <Border
+                                        x:Name="Track"
+                                        Background="#D1D5DB"
+                                        CornerRadius="12">
+                                        <Border
+                                            x:Name="Thumb"
+                                            Width="18"
+                                            Height="18"
+                                            Margin="3,0,0,0"
+                                            HorizontalAlignment="Left"
+                                            Background="White"
+                                            CornerRadius="9" />
+                                    </Border>
+                                    <ControlTemplate.Triggers>
+                                        <Trigger Property="IsChecked" Value="True">
+                                            <Setter TargetName="Track" Property="Background" Value="{StaticResource PrimaryBrush}" />
+                                            <Setter TargetName="Thumb" Property="Margin" Value="0,0,3,0" />
+                                            <Setter TargetName="Thumb" Property="HorizontalAlignment" Value="Right" />
+                                        </Trigger>
+                                    </ControlTemplate.Triggers>
+                                </ControlTemplate>
+                            </ToggleButton.Template>
+                        </ToggleButton>
+                        <StackPanel VerticalAlignment="Center">
+                            <TextBlock
+                                FontSize="14"
+                                FontWeight="Medium"
+                                Foreground="#1F1F1F"
+                                Text="작업 마감 알림" />
+                            <TextBlock
+                                FontSize="12"
+                                Foreground="#6B7280"
+                                Text="개별 작업 마감 3일 전 경고 알림" />
+                        </StackPanel>
+                    </DockPanel>
+                </StackPanel>
+            </Border>
         </StackPanel>
     </ScrollViewer>
 </UserControl>

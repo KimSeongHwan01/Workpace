@@ -90,22 +90,53 @@
                 </StackPanel>
 
                 <!--  내 프로젝트 헤더  -->
-                <DockPanel Grid.Row="2" Margin="20,20,20,8">
+                <DockPanel Grid.Row="2" Margin="16,20,16,8">
                     <TextBlock
-                        FontSize="12"
-                        FontWeight="Medium"
-                        Foreground="#9CA3AF"
+                        VerticalAlignment="Center"
+                        FontSize="13"
+                        FontWeight="SemiBold"
+                        Foreground="#6B7280"
                         Text="내 프로젝트" />
                     <Button
+                        Width="24"
+                        Height="24"
+                        HorizontalAlignment="Right"
                         Background="Transparent"
-                        BorderThickness="0"
+                        BorderBrush="#D1D5DB"
+                        BorderThickness="1"
                         Command="{Binding AddProjectCommand}"
-                        Content="+"
                         Cursor="Hand"
                         DockPanel.Dock="Right"
-                        FontSize="18"
-                        Foreground="{StaticResource PrimaryBrush}" />
+                        Foreground="#6B7280">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border
+                                    x:Name="AddBtnBorder"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="6">
+                                    <TextBlock
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        FontSize="15"
+                                        FontWeight="Bold"
+                                        Foreground="#6B7280"
+                                        Text="+" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="AddBtnBorder" Property="Background" Value="#F5F3FF" />
+                                        <Setter TargetName="AddBtnBorder" Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
                 </DockPanel>
+
+
+
 
                 <!--  프로젝트 목록  -->
                 <ListBox
@@ -134,16 +165,53 @@
                                     </ContextMenu>
                                 </Setter.Value>
                             </Setter>
+                            <Setter Property="Padding" Value="0" />
+                            <Setter Property="Background" Value="Transparent" />
+                            <Setter Property="BorderThickness" Value="0" />
+                            <Setter Property="Cursor" Value="Hand" />
+                            <Setter Property="Template">
+                                <Setter.Value>
+                                    <ControlTemplate TargetType="ListBoxItem">
+                                        <Border
+                                            x:Name="ItemBorder"
+                                            Margin="0,2"
+                                            Padding="0"
+                                            Background="Transparent"
+                                            CornerRadius="8">
+                                            <!--  선택 시 왼쪽 컬러 바  -->
+                                            <Grid>
+                                                <Grid.ColumnDefinitions>
+                                                    <ColumnDefinition Width="3" />
+                                                    <ColumnDefinition Width="*" />
+                                                </Grid.ColumnDefinitions>
+                                                <Border
+                                                    x:Name="AccentBar"
+                                                    Grid.Column="0"
+                                                    Background="{StaticResource PrimaryBrush}"
+                                                    CornerRadius="3,0,0,3"
+                                                    Visibility="Collapsed" />
+                                                <ContentPresenter Grid.Column="1" />
+                                            </Grid>
+                                        </Border>
+                                        <ControlTemplate.Triggers>
+                                            <Trigger Property="IsSelected" Value="True">
+                                                <Setter TargetName="ItemBorder" Property="Background" Value="#EDE9FE" />
+                                                <Setter TargetName="AccentBar" Property="Visibility" Value="Visible" />
+                                            </Trigger>
+                                            <Trigger Property="IsMouseOver" Value="True">
+                                                <Setter TargetName="ItemBorder" Property="Background" Value="#F5F3FF" />
+                                            </Trigger>
+                                        </ControlTemplate.Triggers>
+                                    </ControlTemplate>
+                                </Setter.Value>
+                            </Setter>
                         </Style>
                     </ListBox.ItemContainerStyle>
 
                     <ListBox.ItemTemplate>
                         <DataTemplate>
                             <!--  Border에서 ContextMenu 제거, Background만 유지  -->
-                            <Border
-                                Padding="12,10"
-                                Background="Transparent"
-                                CornerRadius="8">
+                            <Border Padding="12,10" Background="Transparent">
                                 <StackPanel>
                                     <TextBlock
                                         FontSize="14"
@@ -229,21 +297,30 @@
                     BorderThickness="1"
                     CornerRadius="8">
                     <StackPanel>
-                        <DockPanel>
+                        <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
                             <TextBlock
                                 VerticalAlignment="Center"
                                 FontSize="13"
                                 FontWeight="Bold"
                                 Foreground="#EA580C"
-                                Text="🔥 연속 집중" />
+                                Text="🔥 연속 집중  " />
                             <TextBlock
                                 VerticalAlignment="Center"
-                                DockPanel.Dock="Right"
+                                FontSize="20"
+                                FontWeight="Bold"
+                                Foreground="#EA580C"
+                                Text="{Binding CurrentStreak}" />
+                            <TextBlock
+                                VerticalAlignment="Center"
                                 FontSize="13"
                                 FontWeight="Bold"
                                 Foreground="#EA580C"
-                                Text="{Binding CurrentStreak, StringFormat={}{0}일}" />
-                        </DockPanel>
+                                Text="일" />
+                        </StackPanel>
+                        <TextBlock
+                            FontSize="11"
+                            Foreground="#9CA3AF"
+                            Text="{Binding BestStreak, StringFormat=최고 기록: {0}일}" />
                         <TextBlock
                             Margin="0,4,0,0"
                             FontSize="11"
@@ -253,18 +330,44 @@
                 </Border>
 
                 <!--  포트폴리오 추출 버튼  -->
-                <Border Grid.Row="6" Padding="12,8">
-                    <Button
-                        Height="48"
-                        Background="{StaticResource PrimaryBrush}"
-                        BorderThickness="0"
-                        Command="{Binding GoToPortfolioCommand}"
-                        Content="📄 포트폴리오 추출 ✨"
-                        Cursor="Hand"
-                        FontSize="14"
-                        FontWeight="Medium"
-                        Foreground="White" />
-                </Border>
+                <Button
+                    Grid.Row="6"
+                    Height="48"
+                    Margin="12,8"
+                    Background="{StaticResource PrimaryBrush}"
+                    BorderThickness="0"
+                    Command="{Binding GoToPortfolioCommand}"
+                    Cursor="Hand"
+                    FontSize="14"
+                    FontWeight="Medium"
+                    Foreground="White">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                x:Name="BtnBorder"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="12">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="BtnBorder" Property="Background" Value="#6D28D9" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock
+                            Margin="0,0,6,0"
+                            FontSize="16"
+                            Text="📄" />
+                        <TextBlock VerticalAlignment="Center" Text="포트폴리오 추출" />
+                        <TextBlock
+                            Margin="6,0,0,0"
+                            FontSize="14"
+                            Text="✨" />
+                    </StackPanel>
+                </Button>
 
             </Grid>
         </Border>

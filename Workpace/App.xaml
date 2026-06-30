@@ -631,6 +631,71 @@
             </Setter>
         </Style>
 
+        <Style TargetType="CheckBox">
+            <Setter Property="FocusVisualStyle" Value="{x:Null}" />
+            <Setter Property="Cursor" Value="Hand" />
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Foreground" Value="#374151" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="CheckBox">
+                        <Border Background="Transparent" SnapsToDevicePixels="True">
+                            <StackPanel Orientation="Horizontal">
+                                <Border
+                                    x:Name="CheckBorder"
+                                    Width="18"
+                                    Height="18"
+                                    Margin="0,0,8,0"
+                                    Background="White"
+                                    BorderBrush="#D1D5DB"
+                                    BorderThickness="1"
+                                    CornerRadius="5"
+                                    SnapsToDevicePixels="True">
+                                    <Path
+                                        x:Name="CheckMark"
+                                        Width="11"
+                                        Height="8"
+                                        HorizontalAlignment="Center"
+                                        VerticalAlignment="Center"
+                                        Data="M1 4.2 L4.2 7.4 L10 1"
+                                        Opacity="0"
+                                        Stretch="Fill"
+                                        Stroke="White"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="1.8" />
+                                </Border>
 
+                                <ContentPresenter VerticalAlignment="Center" RecognizesAccessKey="True" />
+                            </StackPanel>
+                        </Border>
+
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsChecked" Value="True">
+                                <Setter TargetName="CheckBorder" Property="Background" Value="{StaticResource PrimaryBrush}" />
+                                <Setter TargetName="CheckBorder" Property="BorderBrush" Value="Transparent" />
+                                <Setter TargetName="CheckBorder" Property="BorderThickness" Value="0" />
+                                <Setter TargetName="CheckMark" Property="Opacity" Value="1" />
+                            </Trigger>
+
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="CheckBorder" Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+                            </Trigger>
+
+                            <MultiTrigger>
+                                <MultiTrigger.Conditions>
+                                    <Condition Property="IsChecked" Value="True" />
+                                    <Condition Property="IsMouseOver" Value="True" />
+                                </MultiTrigger.Conditions>
+                                <Setter TargetName="CheckBorder" Property="Background" Value="{StaticResource PrimaryBrush}" />
+                                <Setter TargetName="CheckBorder" Property="BorderBrush" Value="Transparent" />
+                                <Setter TargetName="CheckBorder" Property="BorderThickness" Value="0" />
+                            </MultiTrigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

@@ -21,6 +21,7 @@
                     Margin="16,0,0,0"
                     VerticalAlignment="Center"
                     DisplayMemberPath="Name"
+                    DockPanel.Dock="Left"
                     ItemsSource="{Binding Projects}"
                     SelectedItem="{Binding SelectedProject}" />
             </DockPanel>
@@ -240,7 +241,22 @@
                                 Foreground="{StaticResource PrimaryBrush}"
                                 Maximum="100"
                                 Minimum="0"
-                                Value="{Binding PlanProgress}" />
+                                Value="{Binding PlanProgress}">
+                                <ProgressBar.Template>
+                                    <ControlTemplate TargetType="ProgressBar">
+                                        <Border
+                                            x:Name="PART_Track"
+                                            Background="#E5E7EB"
+                                            CornerRadius="4">
+                                            <Border
+                                                x:Name="PART_Indicator"
+                                                HorizontalAlignment="Left"
+                                                Background="{StaticResource PrimaryBrush}"
+                                                CornerRadius="4" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </ProgressBar.Template>
+                            </ProgressBar>
                         </DockPanel>
 
                         <!--  설계  -->
@@ -265,7 +281,22 @@
                                 Foreground="{StaticResource PrimaryBrush}"
                                 Maximum="100"
                                 Minimum="0"
-                                Value="{Binding DesignProgress}" />
+                                Value="{Binding DesignProgress}">
+                                <ProgressBar.Template>
+                                    <ControlTemplate TargetType="ProgressBar">
+                                        <Border
+                                            x:Name="PART_Track"
+                                            Background="#E5E7EB"
+                                            CornerRadius="4">
+                                            <Border
+                                                x:Name="PART_Indicator"
+                                                HorizontalAlignment="Left"
+                                                Background="{StaticResource PrimaryBrush}"
+                                                CornerRadius="4" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </ProgressBar.Template>
+                            </ProgressBar>
                         </DockPanel>
 
                         <!--  개발  -->
@@ -290,7 +321,22 @@
                                 Foreground="{StaticResource PrimaryBrush}"
                                 Maximum="100"
                                 Minimum="0"
-                                Value="{Binding DevProgress}" />
+                                Value="{Binding DevProgress}">
+                                <ProgressBar.Template>
+                                    <ControlTemplate TargetType="ProgressBar">
+                                        <Border
+                                            x:Name="PART_Track"
+                                            Background="#E5E7EB"
+                                            CornerRadius="4">
+                                            <Border
+                                                x:Name="PART_Indicator"
+                                                HorizontalAlignment="Left"
+                                                Background="{StaticResource PrimaryBrush}"
+                                                CornerRadius="4" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </ProgressBar.Template>
+                            </ProgressBar>
                         </DockPanel>
 
                         <!--  테스트  -->
@@ -315,7 +361,22 @@
                                 Foreground="{StaticResource PrimaryBrush}"
                                 Maximum="100"
                                 Minimum="0"
-                                Value="{Binding TestProgress}" />
+                                Value="{Binding TestProgress}">
+                                <ProgressBar.Template>
+                                    <ControlTemplate TargetType="ProgressBar">
+                                        <Border
+                                            x:Name="PART_Track"
+                                            Background="#E5E7EB"
+                                            CornerRadius="4">
+                                            <Border
+                                                x:Name="PART_Indicator"
+                                                HorizontalAlignment="Left"
+                                                Background="{StaticResource PrimaryBrush}"
+                                                CornerRadius="4" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </ProgressBar.Template>
+                            </ProgressBar>
                         </DockPanel>
 
                         <!--  배포  -->
@@ -340,7 +401,22 @@
                                 Foreground="{StaticResource PrimaryBrush}"
                                 Maximum="100"
                                 Minimum="0"
-                                Value="{Binding DoneProgress}" />
+                                Value="{Binding DoneProgress}">
+                                <ProgressBar.Template>
+                                    <ControlTemplate TargetType="ProgressBar">
+                                        <Border
+                                            x:Name="PART_Track"
+                                            Background="#E5E7EB"
+                                            CornerRadius="4">
+                                            <Border
+                                                x:Name="PART_Indicator"
+                                                HorizontalAlignment="Left"
+                                                Background="{StaticResource PrimaryBrush}"
+                                                CornerRadius="4" />
+                                        </Border>
+                                    </ControlTemplate>
+                                </ProgressBar.Template>
+                            </ProgressBar>
                         </DockPanel>
                     </StackPanel>
                 </Border>
@@ -451,33 +527,31 @@
                             </Grid>
 
                             <!--  스트릭 요약  -->
-                            <StackPanel Margin="0,12,0,0" Orientation="Horizontal">
+                            <StackPanel Margin="0,16,0,0" Orientation="Horizontal">
                                 <TextBlock
                                     VerticalAlignment="Center"
-                                    FontSize="13"
-                                    Foreground="#374151"
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    Foreground="#EA580C"
                                     Text="연속 집중 " />
                                 <TextBlock
                                     VerticalAlignment="Center"
-                                    FontSize="13"
+                                    FontSize="20"
                                     FontWeight="Bold"
                                     Foreground="#EA580C"
-                                    Text="{Binding CurrentStreak, StringFormat={}{0}일}" />
+                                    Text="{Binding CurrentStreak}" />
                                 <TextBlock
                                     VerticalAlignment="Center"
-                                    FontSize="16"
-                                    Text=" 🔥  " />
+                                    FontSize="14"
+                                    FontWeight="Bold"
+                                    Foreground="#EA580C"
+                                    Text="일 🔥" />
                                 <TextBlock
+                                    Margin="16,0,0,0"
                                     VerticalAlignment="Center"
                                     FontSize="13"
                                     Foreground="#6B7280"
-                                    Text="최고 기록: " />
-                                <TextBlock
-                                    VerticalAlignment="Center"
-                                    FontSize="13"
-                                    FontWeight="Bold"
-                                    Foreground="#374151"
-                                    Text="{Binding BestStreak, StringFormat={}{0}일}" />
+                                    Text="{Binding BestStreak, StringFormat=최고 기록: {0}일}" />
                             </StackPanel>
 
                         </StackPanel>

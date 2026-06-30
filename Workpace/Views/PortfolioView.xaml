@@ -31,6 +31,28 @@
                     Foreground="#1F1F1F"
                     Text="포트폴리오 추출" />
 
+                <!--  포트폴리오 생성 완료 안내 배너  -->
+                <Border
+                    Margin="0,0,0,20"
+                    Padding="16"
+                    Background="#F5F3FF"
+                    BorderBrush="#DDD6FE"
+                    BorderThickness="1"
+                    CornerRadius="10">
+                    <StackPanel>
+                        <TextBlock
+                            FontSize="14"
+                            FontWeight="Bold"
+                            Foreground="{StaticResource PrimaryBrush}"
+                            Text="🎉 포트폴리오 자동 생성 완료!" />
+                        <TextBlock
+                            Margin="0,4,0,0"
+                            FontSize="12"
+                            Foreground="#6B7280"
+                            Text="모든 기록을 바탕으로 포트폴리오가 완성되었습니다." />
+                    </StackPanel>
+                </Border>
+
                 <!--  프로젝트 요약 카드 영역  -->
                 <TextBlock
                     Margin="0,0,0,12"
@@ -41,9 +63,10 @@
 
                 <Grid Margin="0,0,0,16">
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="23*" />
+                        <ColumnDefinition Width="80*" />
                         <ColumnDefinition Width="8" />
-                        <ColumnDefinition Width="*" />
+                        <ColumnDefinition Width="103*" />
                     </Grid.ColumnDefinitions>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto" />
@@ -54,7 +77,10 @@
                     <!--  프로젝트 기간 카드  -->
                     <Border
                         Grid.Row="0"
+                        Grid.RowSpan="2"
                         Grid.Column="0"
+                        Grid.ColumnSpan="2"
+                        Margin="0,0,0,8"
                         Padding="16"
                         Background="White"
                         BorderBrush="#E5E7EB"
@@ -81,7 +107,9 @@
                     <!--  완료 작업 카드  -->
                     <Border
                         Grid.Row="0"
-                        Grid.Column="2"
+                        Grid.RowSpan="2"
+                        Grid.Column="3"
+                        Margin="0,0,0,8"
                         Padding="16"
                         Background="White"
                         BorderBrush="#E5E7EB"
@@ -105,6 +133,7 @@
                     <Border
                         Grid.Row="2"
                         Grid.Column="0"
+                        Grid.ColumnSpan="2"
                         Padding="16"
                         Background="White"
                         BorderBrush="#E5E7EB"
@@ -127,7 +156,7 @@
                     <!--  트러블슈팅 카드  -->
                     <Border
                         Grid.Row="2"
-                        Grid.Column="2"
+                        Grid.Column="3"
                         Padding="16"
                         Background="White"
                         BorderBrush="#E5E7EB"
@@ -237,9 +266,29 @@
                         FontSize="14"
                         FontWeight="Medium"
                         Foreground="White">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border
+                                    x:Name="PdfBtnBorder"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="10">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="PdfBtnBorder" Property="Background" Value="#6D28D9" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock FontSize="14" Text="⬇ " />
-                            <TextBlock Text="PDF 다운로드" />
+                            <TextBlock
+                                Margin="0,0,6,0"
+                                VerticalAlignment="Center"
+                                FontFamily="Segoe MDL2 Assets"
+                                FontSize="14"
+                                Text="&#xE896;" />
+                            <TextBlock VerticalAlignment="Center" Text="PDF 다운로드" />
                         </StackPanel>
                     </Button>
 
@@ -254,6 +303,23 @@
                         Cursor="Hand"
                         FontSize="14"
                         Foreground="#374151">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border
+                                    x:Name="CopyBtnBorder"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="10">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="CopyBtnBorder" Property="Background" Value="#F9FAFB" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
                         <StackPanel Orientation="Horizontal">
                             <TextBlock FontSize="14" Text="📋 " />
                             <TextBlock Text="텍스트 복사" />

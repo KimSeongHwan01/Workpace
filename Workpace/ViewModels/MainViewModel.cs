@@ -24,7 +24,11 @@ namespace Workpace.ViewModels
         // ProjectViewModel의 CurrentStreak을 사이드바에 노출
         public int CurrentStreak => ProjectViewModel.CurrentStreak;
 
+        public int BestStreak => _db.GetBestStreak();
+
         private readonly PortfolioViewModel _portfolioVM;
+
+        private readonly NotificationService _notificationService;
 
         // ───────────────────────────────────────
         // ObservableCollection — 일반 List와 달리
@@ -57,6 +61,10 @@ namespace Workpace.ViewModels
             ProjectViewModel.CurrentStreak = _db.GetCurrentStreak();
 
             ProjectViewModel.PropertyChanged += OnProjectViewModelPropertyChanged;
+
+            // 알림 서비스 시작
+            _notificationService = new NotificationService(_db);
+            _notificationService.Start();
         }
 
         // PropertyChanged 핸들러를 메서드로 분리
@@ -67,7 +75,10 @@ namespace Workpace.ViewModels
                 OnPropertyChanged(nameof(CoreTaskCount));
 
             if (e.PropertyName == nameof(ProjectViewModel.CurrentStreak))
+            {
                 OnPropertyChanged(nameof(CurrentStreak));
+                OnPropertyChanged(nameof(BestStreak));
+            }
 
             if (e.PropertyName == nameof(ProjectViewModel.CurrentProgress))
                 RefreshSelectedProjectProgress();
