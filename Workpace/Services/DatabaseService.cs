@@ -100,8 +100,7 @@ namespace Workpace.Services
                     Bio TEXT,
                     StreakReminderEnabled INTEGER DEFAULT 1,
                     ProjectDeadlineAlertEnabled INTEGER DEFAULT 1,
-                    TaskDeadlineAlertEnabled INTEGER DEFAULT 1,
-                    StreakReminderIntervalHours INTEGER DEFAULT 1
+                    TaskDeadlineAlertEnabled INTEGER DEFAULT 1
                 );
             ";
 
@@ -629,8 +628,8 @@ namespace Workpace.Services
             conn.Open();
 
             var sql = @"
-                INSERT INTO UserProfile (Id, StreakReminderEnabled, ProjectDeadlineAlertEnabled, TaskDeadlineAlertEnabled, StreakReminderIntervalHours)
-                VALUES (1, 1, 1, 1, 1)
+                INSERT INTO UserProfile (Id, StreakReminderEnabled, ProjectDeadlineAlertEnabled, TaskDeadlineAlertEnabled)
+                VALUES (1, 1, 1, 1)
                 ON CONFLICT(Id) DO NOTHING
             ";
 
@@ -664,7 +663,6 @@ namespace Workpace.Services
                 StreakReminderEnabled = reader.IsDBNull(reader.GetOrdinal("StreakReminderEnabled")) ? true : reader.GetInt32(reader.GetOrdinal("StreakReminderEnabled")) == 1,
                 ProjectDeadlineAlertEnabled = reader.IsDBNull(reader.GetOrdinal("ProjectDeadlineAlertEnabled")) ? true : reader.GetInt32(reader.GetOrdinal("ProjectDeadlineAlertEnabled")) == 1,
                 TaskDeadlineAlertEnabled = reader.IsDBNull(reader.GetOrdinal("TaskDeadlineAlertEnabled")) ? true : reader.GetInt32(reader.GetOrdinal("TaskDeadlineAlertEnabled")) == 1,
-                StreakReminderIntervalHours = reader.IsDBNull(reader.GetOrdinal("StreakReminderIntervalHours")) ? 1 : reader.GetInt32(reader.GetOrdinal("StreakReminderIntervalHours")),
             };
         }
 
@@ -679,14 +677,13 @@ namespace Workpace.Services
             conn.Open();
 
             var sql = @"
-                INSERT INTO UserProfile (Id, Name, Email, Blog, LinkedIn, Bio, StreakReminderEnabled, ProjectDeadlineAlertEnabled, TaskDeadlineAlertEnabled, StreakReminderIntervalHours)
-                VALUES (1, @Name, @Email, @Blog, @LinkedIn, @Bio, @StreakReminderEnabled, @ProjectDeadlineAlertEnabled, @TaskDeadlineAlertEnabled, @StreakReminderIntervalHours)
+                INSERT INTO UserProfile (Id, Name, Email, Blog, LinkedIn, Bio, StreakReminderEnabled, ProjectDeadlineAlertEnabled, TaskDeadlineAlertEnabled)
+                VALUES (1, @Name, @Email, @Blog, @LinkedIn, @Bio, @StreakReminderEnabled, @ProjectDeadlineAlertEnabled, @TaskDeadlineAlertEnabled)
                 ON CONFLICT(Id) DO UPDATE SET
                     Name = @Name, Email = @Email, Blog = @Blog, LinkedIn = @LinkedIn, Bio = @Bio,
                     StreakReminderEnabled = @StreakReminderEnabled,
                     ProjectDeadlineAlertEnabled = @ProjectDeadlineAlertEnabled,
-                    TaskDeadlineAlertEnabled = @TaskDeadlineAlertEnabled,
-                    StreakReminderIntervalHours = @StreakReminderIntervalHours
+                    TaskDeadlineAlertEnabled = @TaskDeadlineAlertEnabled
             ";
 
             using var cmd = new SqliteCommand(sql, conn);
@@ -698,7 +695,6 @@ namespace Workpace.Services
             cmd.Parameters.AddWithValue("@StreakReminderEnabled", profile.StreakReminderEnabled ? 1 : 0);
             cmd.Parameters.AddWithValue("@ProjectDeadlineAlertEnabled", profile.ProjectDeadlineAlertEnabled ? 1 : 0);
             cmd.Parameters.AddWithValue("@TaskDeadlineAlertEnabled", profile.TaskDeadlineAlertEnabled ? 1 : 0);
-            cmd.Parameters.AddWithValue("@StreakReminderIntervalHours", profile.StreakReminderIntervalHours);
 
             cmd.ExecuteNonQuery();
         }

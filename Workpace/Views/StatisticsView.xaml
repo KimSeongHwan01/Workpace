@@ -64,11 +64,18 @@
                             Background="#ECFDF5"
                             CornerRadius="24"
                             DockPanel.Dock="Left">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="22"
-                                Text="✅" />
+                            <Viewbox Width="24" Height="24">
+                                <Canvas Width="24" Height="24">
+                                    <Path
+                                        Data="{StaticResource IconCheckCircle}"
+                                        Fill="Transparent"
+                                        Stroke="#10B981"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="2" />
+                                </Canvas>
+                            </Viewbox>
                         </Border>
                         <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
                             <TextBlock
@@ -107,11 +114,18 @@
                             Background="#EFF6FF"
                             CornerRadius="24"
                             DockPanel.Dock="Left">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="22"
-                                Text="⏰" />
+                            <Viewbox Width="24" Height="24">
+                                <Canvas Width="24" Height="24">
+                                    <Path
+                                        Data="{StaticResource IconClock}"
+                                        Fill="Transparent"
+                                        Stroke="#3B82F6"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="2" />
+                                </Canvas>
+                            </Viewbox>
                         </Border>
                         <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
                             <TextBlock
@@ -150,11 +164,18 @@
                             Background="#F5F3FF"
                             CornerRadius="24"
                             DockPanel.Dock="Left">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="22"
-                                Text="📅" />
+                            <Viewbox Width="24" Height="24">
+                                <Canvas Width="24" Height="24">
+                                    <Path
+                                        Data="{StaticResource IconCalendar}"
+                                        Fill="Transparent"
+                                        Stroke="{StaticResource PrimaryBrush}"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="2" />
+                                </Canvas>
+                            </Viewbox>
                         </Border>
                         <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
                             <TextBlock

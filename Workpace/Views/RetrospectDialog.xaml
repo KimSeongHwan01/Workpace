@@ -17,11 +17,29 @@
 
         <!--  제목  -->
         <StackPanel Grid.Row="0" Margin="0,0,0,24">
-            <TextBlock
-                FontSize="18"
-                FontWeight="Bold"
-                Foreground="#1F1F1F"
-                Text="🎉 프로젝트 완료를 축하해요!" />
+            <StackPanel Orientation="Horizontal">
+                <Viewbox
+                    Width="20"
+                    Height="20"
+                    Margin="0,0,8,0">
+                    <Canvas Width="24" Height="24">
+                        <Path
+                            Data="{StaticResource IconSparkles}"
+                            Fill="Transparent"
+                            Stroke="{StaticResource PrimaryBrush}"
+                            StrokeEndLineCap="Round"
+                            StrokeLineJoin="Round"
+                            StrokeStartLineCap="Round"
+                            StrokeThickness="2" />
+                    </Canvas>
+                </Viewbox>
+                <TextBlock
+                    VerticalAlignment="Center"
+                    FontSize="18"
+                    FontWeight="Bold"
+                    Foreground="#1F1F1F"
+                    Text="프로젝트 완료를 축하해요!" />
+            </StackPanel>
             <TextBlock
                 Margin="0,6,0,0"
                 FontSize="12"
@@ -46,7 +64,8 @@
                 AcceptsReturn="True"
                 BorderBrush="#E5E7EB"
                 BorderThickness="1"
-                TextWrapping="Wrap" />
+                TextWrapping="Wrap"
+                VerticalScrollBarVisibility="Auto" />
 
             <!--  아쉬운 점  -->
             <TextBlock
@@ -62,7 +81,8 @@
                 AcceptsReturn="True"
                 BorderBrush="#E5E7EB"
                 BorderThickness="1"
-                TextWrapping="Wrap" />
+                TextWrapping="Wrap"
+                VerticalScrollBarVisibility="Auto" />
 
             <!--  개선 방향  -->
             <TextBlock
@@ -78,7 +98,8 @@
                 AcceptsReturn="True"
                 BorderBrush="#E5E7EB"
                 BorderThickness="1"
-                TextWrapping="Wrap" />
+                TextWrapping="Wrap"
+                VerticalScrollBarVisibility="Auto" />
 
         </StackPanel>
 
@@ -98,17 +119,69 @@
                 BorderThickness="1"
                 Click="LaterButton_Click"
                 Content="나중에"
-                Cursor="Hand" />
+                Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="1"
+                            CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#F9FAFB" />
+                                <Setter TargetName="Bd" Property="BorderBrush" Value="#D1D5DB" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
 
             <Button
                 Grid.Column="2"
                 Height="40"
-                Background="#7C3AED"
+                Background="{StaticResource PrimaryBrush}"
                 BorderThickness="0"
                 Click="SaveButton_Click"
-                Content="💾 저장하기"
                 Cursor="Hand"
-                Foreground="White" />
+                Foreground="White">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#6D28D9" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+                <StackPanel Orientation="Horizontal">
+                    <Viewbox
+                        Width="15"
+                        Height="15"
+                        Margin="0,0,8,0">
+                        <Canvas Width="24" Height="24">
+                            <Path
+                                Data="{StaticResource IconSave}"
+                                Fill="Transparent"
+                                Stroke="White"
+                                StrokeEndLineCap="Round"
+                                StrokeLineJoin="Round"
+                                StrokeStartLineCap="Round"
+                                StrokeThickness="2" />
+                        </Canvas>
+                    </Viewbox>
+                    <TextBlock VerticalAlignment="Center" Text="저장하기" />
+                </StackPanel>
+            </Button>
         </Grid>
     </Grid>
 </Window>

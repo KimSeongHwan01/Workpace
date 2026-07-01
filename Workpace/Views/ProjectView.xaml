@@ -249,8 +249,7 @@
             <!--  1. 헤더  -->
             <StackPanel
                 Grid.Row="0"
-                Margin="0,0,0,20"
-                VerticalAlignment="Center"
+                Margin="0,24,0,20"
                 Orientation="Horizontal">
                 <TextBlock
                     VerticalAlignment="Center"
@@ -272,6 +271,13 @@
                         Foreground="{StaticResource PrimaryBrush}"
                         Text="{Binding DDayText}" />
                 </Border>
+                <!--  프로젝트 기간 — D-day 뱃지 바로 옆에 보조 텍스트로 표시  -->
+                <TextBlock
+                    Margin="12,0,0,0"
+                    VerticalAlignment="Center"
+                    FontSize="13"
+                    Foreground="#9CA3AF"
+                    Text="{Binding DateRangeText}" />
             </StackPanel>
 
             <!--  2. 진행률  -->
@@ -331,136 +337,223 @@
             </StackPanel>
 
             <!--  3. 단계 표시  -->
-            <StackPanel
-                Grid.Row="2"
-                Margin="0,0,0,20"
-                VerticalAlignment="Center"
-                Orientation="Horizontal">
+            <!--  원 컬럼: Width="32" 고정 → 창 크기와 무관하게 원이 선에 항상 딱 붙음  -->
+            <!--  선 컬럼: Width="*" 유동 → 창이 커지면 선이 늘어나서 공간을 채움  -->
+            <Grid Grid.Row="2" Margin="0,0,0,20">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="32" />
+                    <!--  원 행  -->
+                    <RowDefinition Height="Auto" />
+                    <!--  텍스트 행  -->
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="32" />
+                    <!--  기획 원  -->
+                    <ColumnDefinition Width="*" />
+                    <!--  선 1  -->
+                    <ColumnDefinition Width="32" />
+                    <!--  설계 원  -->
+                    <ColumnDefinition Width="*" />
+                    <!--  선 2  -->
+                    <ColumnDefinition Width="32" />
+                    <!--  개발 원  -->
+                    <ColumnDefinition Width="*" />
+                    <!--  선 3  -->
+                    <ColumnDefinition Width="32" />
+                    <!--  테스트 원  -->
+                    <ColumnDefinition Width="*" />
+                    <!--  선 4  -->
+                    <ColumnDefinition Width="32" />
+                    <!--  배포 원  -->
+                </Grid.ColumnDefinitions>
+
+                <!--  기획  -->
                 <Border
-                    Width="28"
-                    Height="28"
+                    Grid.Row="0"
+                    Grid.Column="0"
+                    Width="32"
+                    Height="32"
                     Background="{Binding IsStage1Done, Converter={StaticResource BoolToStageColorConverter}}"
-                    CornerRadius="14">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontSize="11"
-                        FontWeight="Bold"
-                        Foreground="White"
-                        Text="✓" />
+                    CornerRadius="16">
+                    <Viewbox Width="14" Height="14">
+                        <Canvas Width="24" Height="24">
+                            <Path
+                                Data="{StaticResource IconCheck}"
+                                Fill="Transparent"
+                                Stroke="White"
+                                StrokeEndLineCap="Round"
+                                StrokeLineJoin="Round"
+                                StrokeStartLineCap="Round"
+                                StrokeThickness="3" />
+                        </Canvas>
+                    </Viewbox>
                 </Border>
                 <TextBlock
-                    Margin="6,0,0,0"
-                    VerticalAlignment="Center"
+                    Grid.Row="1"
+                    Grid.Column="0"
+                    Margin="0,6,0,0"
+                    HorizontalAlignment="Center"
                     FontSize="12"
                     FontWeight="Medium"
                     Foreground="{Binding IsStage1Done, Converter={StaticResource BoolToStageForegroundConverter}}"
                     Text="기획" />
+
+                <!--  선 1  -->
                 <Rectangle
-                    Width="32"
+                    Grid.Row="0"
+                    Grid.Column="1"
                     Height="2"
-                    Margin="8,0"
+                    VerticalAlignment="Center"
                     Fill="{Binding IsStage1Done, Converter={StaticResource BoolToStageColorConverter}}" />
 
+                <!--  설계  -->
                 <Border
-                    Width="28"
-                    Height="28"
+                    Grid.Row="0"
+                    Grid.Column="2"
+                    Width="32"
+                    Height="32"
                     Background="{Binding IsStage2Done, Converter={StaticResource BoolToStageColorConverter}}"
-                    CornerRadius="14">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontSize="11"
-                        FontWeight="Bold"
-                        Foreground="White"
-                        Text="✓" />
+                    CornerRadius="16">
+                    <Viewbox Width="14" Height="14">
+                        <Canvas Width="24" Height="24">
+                            <Path
+                                Data="{StaticResource IconCheck}"
+                                Fill="Transparent"
+                                Stroke="White"
+                                StrokeEndLineCap="Round"
+                                StrokeLineJoin="Round"
+                                StrokeStartLineCap="Round"
+                                StrokeThickness="3" />
+                        </Canvas>
+                    </Viewbox>
                 </Border>
                 <TextBlock
-                    Margin="6,0,0,0"
-                    VerticalAlignment="Center"
+                    Grid.Row="1"
+                    Grid.Column="2"
+                    Margin="0,6,0,0"
+                    HorizontalAlignment="Center"
                     FontSize="12"
                     FontWeight="Medium"
                     Foreground="{Binding IsStage2Done, Converter={StaticResource BoolToStageForegroundConverter}}"
                     Text="설계" />
+
+                <!--  선 2  -->
                 <Rectangle
-                    Width="32"
+                    Grid.Row="0"
+                    Grid.Column="3"
                     Height="2"
-                    Margin="8,0"
+                    VerticalAlignment="Center"
                     Fill="{Binding IsStage2Done, Converter={StaticResource BoolToStageColorConverter}}" />
 
+                <!--  개발  -->
                 <Border
-                    Width="28"
-                    Height="28"
+                    Grid.Row="0"
+                    Grid.Column="4"
+                    Width="32"
+                    Height="32"
                     Background="{Binding IsStage3Done, Converter={StaticResource BoolToStageColorConverter}}"
-                    CornerRadius="14">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontSize="11"
-                        FontWeight="Bold"
-                        Foreground="White"
-                        Text="✓" />
+                    CornerRadius="16">
+                    <Viewbox Width="14" Height="14">
+                        <Canvas Width="24" Height="24">
+                            <Path
+                                Data="{StaticResource IconCheck}"
+                                Fill="Transparent"
+                                Stroke="White"
+                                StrokeEndLineCap="Round"
+                                StrokeLineJoin="Round"
+                                StrokeStartLineCap="Round"
+                                StrokeThickness="3" />
+                        </Canvas>
+                    </Viewbox>
                 </Border>
                 <TextBlock
-                    Margin="6,0,0,0"
-                    VerticalAlignment="Center"
+                    Grid.Row="1"
+                    Grid.Column="4"
+                    Margin="0,6,0,0"
+                    HorizontalAlignment="Center"
                     FontSize="12"
                     FontWeight="Medium"
                     Foreground="{Binding IsStage3Done, Converter={StaticResource BoolToStageForegroundConverter}}"
                     Text="개발" />
+
+                <!--  선 3  -->
                 <Rectangle
-                    Width="32"
+                    Grid.Row="0"
+                    Grid.Column="5"
                     Height="2"
-                    Margin="8,0"
+                    VerticalAlignment="Center"
                     Fill="{Binding IsStage3Done, Converter={StaticResource BoolToStageColorConverter}}" />
 
+                <!--  테스트  -->
                 <Border
-                    Width="28"
-                    Height="28"
+                    Grid.Row="0"
+                    Grid.Column="6"
+                    Width="32"
+                    Height="32"
                     Background="{Binding IsStage4Done, Converter={StaticResource BoolToStageColorConverter}}"
-                    CornerRadius="14">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontSize="11"
-                        FontWeight="Bold"
-                        Foreground="White"
-                        Text="✓" />
+                    CornerRadius="16">
+                    <Viewbox Width="14" Height="14">
+                        <Canvas Width="24" Height="24">
+                            <Path
+                                Data="{StaticResource IconCheck}"
+                                Fill="Transparent"
+                                Stroke="White"
+                                StrokeEndLineCap="Round"
+                                StrokeLineJoin="Round"
+                                StrokeStartLineCap="Round"
+                                StrokeThickness="3" />
+                        </Canvas>
+                    </Viewbox>
                 </Border>
                 <TextBlock
-                    Margin="6,0,0,0"
-                    VerticalAlignment="Center"
+                    Grid.Row="1"
+                    Grid.Column="6"
+                    Margin="0,6,0,0"
+                    HorizontalAlignment="Center"
                     FontSize="12"
                     FontWeight="Medium"
                     Foreground="{Binding IsStage4Done, Converter={StaticResource BoolToStageForegroundConverter}}"
                     Text="테스트" />
+
+                <!--  선 4  -->
                 <Rectangle
-                    Width="32"
+                    Grid.Row="0"
+                    Grid.Column="7"
                     Height="2"
-                    Margin="8,0"
+                    VerticalAlignment="Center"
                     Fill="{Binding IsStage4Done, Converter={StaticResource BoolToStageColorConverter}}" />
 
+                <!--  배포  -->
                 <Border
-                    Width="28"
-                    Height="28"
+                    Grid.Row="0"
+                    Grid.Column="8"
+                    Width="32"
+                    Height="32"
                     Background="{Binding IsStage5Done, Converter={StaticResource BoolToStageColorConverter}}"
-                    CornerRadius="14">
-                    <TextBlock
-                        HorizontalAlignment="Center"
-                        VerticalAlignment="Center"
-                        FontSize="11"
-                        FontWeight="Bold"
-                        Foreground="White"
-                        Text="✓" />
+                    CornerRadius="16">
+                    <Viewbox Width="14" Height="14">
+                        <Canvas Width="24" Height="24">
+                            <Path
+                                Data="{StaticResource IconCheck}"
+                                Fill="Transparent"
+                                Stroke="White"
+                                StrokeEndLineCap="Round"
+                                StrokeLineJoin="Round"
+                                StrokeStartLineCap="Round"
+                                StrokeThickness="3" />
+                        </Canvas>
+                    </Viewbox>
                 </Border>
                 <TextBlock
-                    Margin="6,0,0,0"
-                    VerticalAlignment="Center"
+                    Grid.Row="1"
+                    Grid.Column="8"
+                    Margin="0,6,0,0"
+                    HorizontalAlignment="Center"
                     FontSize="12"
                     FontWeight="Medium"
                     Foreground="{Binding IsStage5Done, Converter={StaticResource BoolToStageForegroundConverter}}"
                     Text="배포" />
-            </StackPanel>
+            </Grid>
 
             <!--  4. 탭 필터 — 하단 언더라인 데스크톱 스타일  -->
             <Border
@@ -572,16 +665,55 @@
                                     <StackPanel>
                                         <DockPanel Margin="0,0,0,8">
                                             <Button
-                                                Padding="2,0"
+                                                Padding="0"
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Command="{Binding DataContext.ToggleCoreCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding}"
-                                                Content="{Binding IsCore, Converter={StaticResource BoolToLockIconConverter}}"
                                                 Cursor="Hand"
-                                                DockPanel.Dock="Right"
-                                                FontSize="12"
-                                                Foreground="{Binding IsCore, Converter={StaticResource BoolToLockColorConverter}}" />
+                                                DockPanel.Dock="Right">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border
+                                                            x:Name="LockBtnBorder"
+                                                            Padding="3"
+                                                            Background="Transparent"
+                                                            CornerRadius="4">
+                                                            <Viewbox Width="14" Height="14">
+                                                                <Canvas Width="24" Height="24">
+                                                                    <!--  잠금 상태(IsCore=true)  -->
+                                                                    <Path
+                                                                        x:Name="IconLocked"
+                                                                        Data="{StaticResource IconLock}"
+                                                                        Fill="Transparent"
+                                                                        Stroke="{StaticResource PrimaryBrush}"
+                                                                        StrokeEndLineCap="Round"
+                                                                        StrokeLineJoin="Round"
+                                                                        StrokeStartLineCap="Round"
+                                                                        StrokeThickness="2"
+                                                                        Visibility="{Binding IsCore, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                                    <!--  잠금 해제 상태(IsCore=false)  -->
+                                                                    <Path
+                                                                        x:Name="IconUnlocked"
+                                                                        Data="{StaticResource IconUnlock}"
+                                                                        Fill="Transparent"
+                                                                        Stroke="#D1D5DB"
+                                                                        StrokeEndLineCap="Round"
+                                                                        StrokeLineJoin="Round"
+                                                                        StrokeStartLineCap="Round"
+                                                                        StrokeThickness="2"
+                                                                        Visibility="{Binding IsCore, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                                                                </Canvas>
+                                                            </Viewbox>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="LockBtnBorder" Property="Background" Value="#F5F3FF" />
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 FontSize="13"
@@ -602,13 +734,25 @@
                                                     Text="{Binding Priority}" />
                                             </Border>
                                         </StackPanel>
-                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                            <TextBlock
-                                                Margin="0,0,4,0"
-                                                VerticalAlignment="Center"
-                                                FontSize="11"
-                                                Foreground="#9CA3AF"
-                                                Text="📅" />
+                                        <StackPanel
+                                            VerticalAlignment="Center"
+                                            Orientation="Horizontal"
+                                            Visibility="{Binding DueDate, Converter={StaticResource NullToCollapsedConverter}}">
+                                            <Viewbox
+                                                Width="13"
+                                                Height="13"
+                                                Margin="0,0,4,0">
+                                                <Canvas Width="24" Height="24">
+                                                    <Path
+                                                        Data="{StaticResource IconCalendar}"
+                                                        Fill="Transparent"
+                                                        Stroke="#9CA3AF"
+                                                        StrokeEndLineCap="Round"
+                                                        StrokeLineJoin="Round"
+                                                        StrokeStartLineCap="Round"
+                                                        StrokeThickness="2" />
+                                                </Canvas>
+                                            </Viewbox>
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 FontSize="11"
@@ -681,16 +825,55 @@
                                     <StackPanel>
                                         <DockPanel Margin="0,0,0,8">
                                             <Button
-                                                Padding="2,0"
+                                                Padding="0"
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Command="{Binding DataContext.ToggleCoreCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding}"
-                                                Content="{Binding IsCore, Converter={StaticResource BoolToLockIconConverter}}"
                                                 Cursor="Hand"
-                                                DockPanel.Dock="Right"
-                                                FontSize="12"
-                                                Foreground="{Binding IsCore, Converter={StaticResource BoolToLockColorConverter}}" />
+                                                DockPanel.Dock="Right">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border
+                                                            x:Name="LockBtnBorder"
+                                                            Padding="3"
+                                                            Background="Transparent"
+                                                            CornerRadius="4">
+                                                            <Viewbox Width="14" Height="14">
+                                                                <Canvas Width="24" Height="24">
+                                                                    <!--  잠금 상태(IsCore=true)  -->
+                                                                    <Path
+                                                                        x:Name="IconLocked"
+                                                                        Data="{StaticResource IconLock}"
+                                                                        Fill="Transparent"
+                                                                        Stroke="{StaticResource PrimaryBrush}"
+                                                                        StrokeEndLineCap="Round"
+                                                                        StrokeLineJoin="Round"
+                                                                        StrokeStartLineCap="Round"
+                                                                        StrokeThickness="2"
+                                                                        Visibility="{Binding IsCore, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                                    <!--  잠금 해제 상태(IsCore=false)  -->
+                                                                    <Path
+                                                                        x:Name="IconUnlocked"
+                                                                        Data="{StaticResource IconUnlock}"
+                                                                        Fill="Transparent"
+                                                                        Stroke="#D1D5DB"
+                                                                        StrokeEndLineCap="Round"
+                                                                        StrokeLineJoin="Round"
+                                                                        StrokeStartLineCap="Round"
+                                                                        StrokeThickness="2"
+                                                                        Visibility="{Binding IsCore, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                                                                </Canvas>
+                                                            </Viewbox>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="LockBtnBorder" Property="Background" Value="#F5F3FF" />
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 FontSize="13"
@@ -711,13 +894,25 @@
                                                     Text="{Binding Priority}" />
                                             </Border>
                                         </StackPanel>
-                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                            <TextBlock
-                                                Margin="0,0,4,0"
-                                                VerticalAlignment="Center"
-                                                FontSize="11"
-                                                Foreground="#9CA3AF"
-                                                Text="📅" />
+                                        <StackPanel
+                                            VerticalAlignment="Center"
+                                            Orientation="Horizontal"
+                                            Visibility="{Binding DueDate, Converter={StaticResource NullToCollapsedConverter}}">
+                                            <Viewbox
+                                                Width="13"
+                                                Height="13"
+                                                Margin="0,0,4,0">
+                                                <Canvas Width="24" Height="24">
+                                                    <Path
+                                                        Data="{StaticResource IconCalendar}"
+                                                        Fill="Transparent"
+                                                        Stroke="#9CA3AF"
+                                                        StrokeEndLineCap="Round"
+                                                        StrokeLineJoin="Round"
+                                                        StrokeStartLineCap="Round"
+                                                        StrokeThickness="2" />
+                                                </Canvas>
+                                            </Viewbox>
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 FontSize="11"
@@ -790,16 +985,55 @@
                                     <StackPanel>
                                         <DockPanel Margin="0,0,0,8">
                                             <Button
-                                                Padding="2,0"
+                                                Padding="0"
                                                 Background="Transparent"
                                                 BorderThickness="0"
                                                 Command="{Binding DataContext.ToggleCoreCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
                                                 CommandParameter="{Binding}"
-                                                Content="{Binding IsCore, Converter={StaticResource BoolToLockIconConverter}}"
                                                 Cursor="Hand"
-                                                DockPanel.Dock="Right"
-                                                FontSize="12"
-                                                Foreground="{Binding IsCore, Converter={StaticResource BoolToLockColorConverter}}" />
+                                                DockPanel.Dock="Right">
+                                                <Button.Template>
+                                                    <ControlTemplate TargetType="Button">
+                                                        <Border
+                                                            x:Name="LockBtnBorder"
+                                                            Padding="3"
+                                                            Background="Transparent"
+                                                            CornerRadius="4">
+                                                            <Viewbox Width="14" Height="14">
+                                                                <Canvas Width="24" Height="24">
+                                                                    <!--  잠금 상태(IsCore=true)  -->
+                                                                    <Path
+                                                                        x:Name="IconLocked"
+                                                                        Data="{StaticResource IconLock}"
+                                                                        Fill="Transparent"
+                                                                        Stroke="{StaticResource PrimaryBrush}"
+                                                                        StrokeEndLineCap="Round"
+                                                                        StrokeLineJoin="Round"
+                                                                        StrokeStartLineCap="Round"
+                                                                        StrokeThickness="2"
+                                                                        Visibility="{Binding IsCore, Converter={StaticResource BoolToVisibilityConverter}}" />
+                                                                    <!--  잠금 해제 상태(IsCore=false)  -->
+                                                                    <Path
+                                                                        x:Name="IconUnlocked"
+                                                                        Data="{StaticResource IconUnlock}"
+                                                                        Fill="Transparent"
+                                                                        Stroke="#D1D5DB"
+                                                                        StrokeEndLineCap="Round"
+                                                                        StrokeLineJoin="Round"
+                                                                        StrokeStartLineCap="Round"
+                                                                        StrokeThickness="2"
+                                                                        Visibility="{Binding IsCore, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                                                                </Canvas>
+                                                            </Viewbox>
+                                                        </Border>
+                                                        <ControlTemplate.Triggers>
+                                                            <Trigger Property="IsMouseOver" Value="True">
+                                                                <Setter TargetName="LockBtnBorder" Property="Background" Value="#F5F3FF" />
+                                                            </Trigger>
+                                                        </ControlTemplate.Triggers>
+                                                    </ControlTemplate>
+                                                </Button.Template>
+                                            </Button>
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 FontSize="13"
@@ -821,13 +1055,25 @@
                                                     Text="완료" />
                                             </Border>
                                         </StackPanel>
-                                        <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
-                                            <TextBlock
-                                                Margin="0,0,4,0"
-                                                VerticalAlignment="Center"
-                                                FontSize="11"
-                                                Foreground="#9CA3AF"
-                                                Text="📅" />
+                                        <StackPanel
+                                            VerticalAlignment="Center"
+                                            Orientation="Horizontal"
+                                            Visibility="{Binding DueDate, Converter={StaticResource NullToCollapsedConverter}}">
+                                            <Viewbox
+                                                Width="13"
+                                                Height="13"
+                                                Margin="0,0,4,0">
+                                                <Canvas Width="24" Height="24">
+                                                    <Path
+                                                        Data="{StaticResource IconCalendar}"
+                                                        Fill="Transparent"
+                                                        Stroke="#9CA3AF"
+                                                        StrokeEndLineCap="Round"
+                                                        StrokeLineJoin="Round"
+                                                        StrokeStartLineCap="Round"
+                                                        StrokeThickness="2" />
+                                                </Canvas>
+                                            </Viewbox>
                                             <TextBlock
                                                 VerticalAlignment="Center"
                                                 FontSize="11"
@@ -891,12 +1137,18 @@
                                             x:Name="Root"
                                             Background="Transparent"
                                             CornerRadius="6">
-                                            <TextBlock
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                FontSize="13"
-                                                Foreground="#9CA3AF"
-                                                Text="✕" />
+                                            <Viewbox Width="14" Height="14">
+                                                <Canvas Width="24" Height="24">
+                                                    <Path
+                                                        Data="{StaticResource IconX}"
+                                                        Fill="Transparent"
+                                                        Stroke="#6B7280"
+                                                        StrokeEndLineCap="Round"
+                                                        StrokeLineJoin="Round"
+                                                        StrokeStartLineCap="Round"
+                                                        StrokeThickness="2" />
+                                                </Canvas>
+                                            </Viewbox>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
@@ -941,10 +1193,18 @@
                                             Padding="5"
                                             Background="Transparent"
                                             CornerRadius="4">
-                                            <TextBlock
-                                                FontSize="13"
-                                                Foreground="#9CA3AF"
-                                                Text="✏" />
+                                            <Viewbox Width="15" Height="15">
+                                                <Canvas Width="24" Height="24">
+                                                    <Path
+                                                        Data="{StaticResource IconPencil}"
+                                                        Fill="Transparent"
+                                                        Stroke="#6B7280"
+                                                        StrokeEndLineCap="Round"
+                                                        StrokeLineJoin="Round"
+                                                        StrokeStartLineCap="Round"
+                                                        StrokeThickness="2" />
+                                                </Canvas>
+                                            </Viewbox>
                                         </Border>
                                         <ControlTemplate.Triggers>
                                             <Trigger Property="IsMouseOver" Value="True">
@@ -969,47 +1229,22 @@
                         <!--  ── 보기 모드 ──  -->
                         <StackPanel Visibility="{Binding IsEditMode, Converter={StaticResource InverseBoolToVisibilityConverter}}">
 
-                            <!--  상태 배지  -->
-                            <Border
-                                Margin="0,0,0,16"
-                                Padding="8,4"
-                                HorizontalAlignment="Left"
-                                Background="#EDE9FE"
-                                CornerRadius="6">
-                                <TextBlock
-                                    FontSize="12"
-                                    FontWeight="Medium"
-                                    Foreground="{StaticResource PrimaryBrush}"
-                                    Text="{Binding SelectedTask.Status}" />
-                            </Border>
-
-                            <!--  정보 그리드  -->
-                            <Grid Margin="0,0,0,8">
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="80" />
-                                    <ColumnDefinition Width="*" />
-                                </Grid.ColumnDefinitions>
-                                <Grid.RowDefinitions>
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                    <RowDefinition Height="Auto" />
-                                </Grid.RowDefinitions>
-
-                                <!--  우선순위  -->
-                                <TextBlock
-                                    Grid.Row="0"
-                                    Grid.Column="0"
-                                    Margin="0,0,0,14"
-                                    VerticalAlignment="Center"
-                                    FontSize="12"
-                                    Foreground="#9CA3AF"
-                                    Text="우선순위" />
+                            <!--  뱃지 행 — 상태/우선순위/단계  -->
+                            <StackPanel Margin="0,0,0,10" Orientation="Horizontal">
                                 <Border
-                                    Grid.Row="0"
-                                    Grid.Column="1"
-                                    Margin="0,0,0,14"
+                                    Margin="0,0,6,0"
                                     Padding="10,4"
-                                    HorizontalAlignment="Left"
+                                    Background="#EDE9FE"
+                                    CornerRadius="6">
+                                    <TextBlock
+                                        FontSize="12"
+                                        FontWeight="Medium"
+                                        Foreground="{StaticResource PrimaryBrush}"
+                                        Text="{Binding SelectedTask.Status}" />
+                                </Border>
+                                <Border
+                                    Margin="0,0,6,0"
+                                    Padding="10,4"
                                     Background="{Binding SelectedTask.Priority, Converter={StaticResource PriorityToBackgroundConverter}}"
                                     CornerRadius="6">
                                     <TextBlock
@@ -1018,71 +1253,61 @@
                                         Foreground="{Binding SelectedTask.Priority, Converter={StaticResource PriorityToForegroundConverter}}"
                                         Text="{Binding SelectedTask.Priority}" />
                                 </Border>
-
-                                <!--  마감일  -->
-                                <TextBlock
-                                    Grid.Row="1"
-                                    Grid.Column="0"
-                                    Margin="0,0,0,14"
-                                    VerticalAlignment="Center"
-                                    FontSize="12"
-                                    Foreground="#9CA3AF"
-                                    Text="마감일" />
-                                <StackPanel
-                                    Grid.Row="1"
-                                    Grid.Column="1"
-                                    Margin="0,0,0,14"
-                                    VerticalAlignment="Center"
-                                    Orientation="Horizontal">
+                                <Border
+                                    Padding="10,4"
+                                    Background="#F3F4F6"
+                                    CornerRadius="6">
                                     <TextBlock
-                                        Margin="0,0,6,0"
-                                        FontSize="13"
-                                        Foreground="#9CA3AF"
-                                        Text="📅" />
-                                    <TextBlock
-                                        FontSize="13"
+                                        FontSize="12"
+                                        FontWeight="Medium"
                                         Foreground="#374151"
-                                        Text="{Binding SelectedTask.DueDate, StringFormat=yyyy년 M월 d일}" />
-                                </StackPanel>
+                                        Text="{Binding SelectedTask.Stage}" />
+                                </Border>
+                            </StackPanel>
 
-                                <!--  단계  -->
+                            <!--  마감일 행 — 없으면 숨김  -->
+                            <StackPanel
+                                Margin="0,0,0,12"
+                                Orientation="Horizontal"
+                                Visibility="{Binding SelectedTask.DueDate, Converter={StaticResource NullToCollapsedConverter}}">
+                                <Viewbox
+                                    Width="13"
+                                    Height="13"
+                                    Margin="0,0,6,0">
+                                    <Canvas Width="24" Height="24">
+                                        <Path
+                                            Data="{StaticResource IconCalendar}"
+                                            Fill="Transparent"
+                                            Stroke="#9CA3AF"
+                                            StrokeEndLineCap="Round"
+                                            StrokeLineJoin="Round"
+                                            StrokeStartLineCap="Round"
+                                            StrokeThickness="2" />
+                                    </Canvas>
+                                </Viewbox>
                                 <TextBlock
-                                    Grid.Row="2"
-                                    Grid.Column="0"
-                                    Margin="0,0,0,0"
-                                    VerticalAlignment="Center"
-                                    FontSize="12"
-                                    Foreground="#9CA3AF"
-                                    Text="단계" />
-                                <TextBlock
-                                    Grid.Row="2"
-                                    Grid.Column="1"
                                     VerticalAlignment="Center"
                                     FontSize="13"
-                                    Foreground="#374151"
-                                    Text="{Binding SelectedTask.Stage}" />
-                            </Grid>
+                                    Foreground="#6B7280"
+                                    Text="{Binding SelectedTask.DueDate, StringFormat=yyyy년 M월 d일}" />
+                            </StackPanel>
 
-                            <!--  설명 — 내용 없으면 칸 자체를 숨김  -->
-                            <StackPanel Margin="0,16,0,0" Visibility="{Binding SelectedTask.Description, Converter={StaticResource StringNotEmptyToVisibilityConverter}}">
-                                <TextBlock
-                                    Margin="0,0,0,6"
-                                    FontSize="12"
-                                    Foreground="#9CA3AF"
-                                    Text="설명" />
+                            <!--  설명 — 있을 때만 표시  -->
+                            <StackPanel Margin="0,0,0,16" Visibility="{Binding SelectedTask.Description, Converter={StaticResource StringNotEmptyToVisibilityConverter}}">
                                 <TextBlock
                                     FontSize="13"
                                     Foreground="#374151"
                                     Text="{Binding SelectedTask.Description}"
                                     TextWrapping="Wrap" />
                             </StackPanel>
+
                         </StackPanel>
 
                         <!--  ── 수정 모드 ──  -->
                         <StackPanel Visibility="{Binding IsEditMode, Converter={StaticResource BoolToVisibilityConverter}}">
 
                             <!--  헤더  -->
-                            <DockPanel Margin="0,0,0,20">
+                            <Grid Margin="0,0,0,20">
                                 <TextBlock
                                     VerticalAlignment="Center"
                                     FontSize="14"
@@ -1092,33 +1317,42 @@
                                 <Button
                                     Width="28"
                                     Height="28"
+                                    HorizontalAlignment="Right"
+                                    VerticalAlignment="Center"
                                     Background="Transparent"
                                     BorderThickness="0"
                                     Command="{Binding CancelEditCommand}"
-                                    Cursor="Hand"
-                                    DockPanel.Dock="Right">
+                                    Cursor="Hand">
                                     <Button.Template>
                                         <ControlTemplate TargetType="Button">
                                             <Border
                                                 x:Name="Root"
                                                 Background="Transparent"
                                                 CornerRadius="6">
-                                                <TextBlock
-                                                    HorizontalAlignment="Center"
-                                                    VerticalAlignment="Center"
-                                                    FontSize="13"
-                                                    Foreground="#9CA3AF"
-                                                    Text="✕" />
+                                                <Viewbox Width="14" Height="14">
+                                                    <Canvas Width="24" Height="24">
+                                                        <Path
+                                                            x:Name="CloseIcon"
+                                                            Data="{StaticResource IconX}"
+                                                            Fill="Transparent"
+                                                            Stroke="#9CA3AF"
+                                                            StrokeEndLineCap="Round"
+                                                            StrokeLineJoin="Round"
+                                                            StrokeStartLineCap="Round"
+                                                            StrokeThickness="2" />
+                                                    </Canvas>
+                                                </Viewbox>
                                             </Border>
                                             <ControlTemplate.Triggers>
                                                 <Trigger Property="IsMouseOver" Value="True">
                                                     <Setter TargetName="Root" Property="Background" Value="#F3F4F6" />
+                                                    <Setter TargetName="CloseIcon" Property="Stroke" Value="#374151" />
                                                 </Trigger>
                                             </ControlTemplate.Triggers>
                                         </ControlTemplate>
                                     </Button.Template>
                                 </Button>
-                            </DockPanel>
+                            </Grid>
 
                             <!--  제목  -->
                             <TextBlock

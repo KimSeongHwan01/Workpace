@@ -13,9 +13,6 @@ namespace Workpace.ViewModels
         private string projectName = "";
 
         [ObservableProperty]
-        private string selectedType = "소프트웨어개발";
-
-        [ObservableProperty]
         private DateTime startDate = DateTime.Today;
 
         [ObservableProperty]
@@ -66,16 +63,6 @@ namespace Workpace.ViewModels
                       .Select(t => t.Name)
                       .ToList();
 
-        // 프로젝트 유형 목록 — ComboBox에 표시할 항목들
-        public List<string> ProjectTypes { get; } = new()
-        {
-            "소프트웨어개발",
-            "디자인",
-            "학교과제",
-            "직장업무",
-            "개인목표"
-        };
-
         // 확인 버튼 눌렀을 때 만들어진 프로젝트
         // null이면 취소한 것
         public Project? Result { get; private set; }
@@ -96,7 +83,6 @@ namespace Workpace.ViewModels
             if (editingProject != null)
             {
                 ProjectName = editingProject.Name;
-                SelectedType = editingProject.Type;
                 StartDate = editingProject.StartDate;
                 Deadline = editingProject.Deadline;
                 Description = editingProject.Description;
@@ -150,7 +136,7 @@ namespace Workpace.ViewModels
             Result = new Project
             {
                 Name = ProjectName,
-                Type = SelectedType,
+                Type = "",
                 StartDate = StartDate,
                 Deadline = Deadline,
                 Description = Description,

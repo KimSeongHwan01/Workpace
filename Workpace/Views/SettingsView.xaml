@@ -111,7 +111,8 @@
                             BorderBrush="#E5E7EB"
                             BorderThickness="1"
                             Text="{Binding Bio, UpdateSourceTrigger=PropertyChanged}"
-                            TextWrapping="Wrap" />
+                            TextWrapping="Wrap"
+                            VerticalScrollBarVisibility="Auto" />
                     </StackPanel>
 
                     <!--  저장 버튼  -->
@@ -170,11 +171,18 @@
                             Background="#F5F3FF"
                             CornerRadius="10"
                             DockPanel.Dock="Left">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="18"
-                                Text="🔥" />
+                            <Viewbox Width="20" Height="20">
+                                <Canvas Width="24" Height="24">
+                                    <Path
+                                        Data="{StaticResource IconBell}"
+                                        Fill="Transparent"
+                                        Stroke="{StaticResource PrimaryBrush}"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="2" />
+                                </Canvas>
+                            </Viewbox>
                         </Border>
                         <ToggleButton
                             Width="44"
@@ -215,7 +223,7 @@
                             <TextBlock
                                 FontSize="12"
                                 Foreground="#6B7280"
-                                Text="{Binding StreakReminderIntervalHours, StringFormat=설정한 주기({0}시간)마다 작업 독려 알림}" />
+                                Text="매일 오후 8시, 오늘 완료한 작업이 없으면 알림" />
                         </StackPanel>
                     </DockPanel>
 
@@ -228,11 +236,18 @@
                             Background="#F5F3FF"
                             CornerRadius="10"
                             DockPanel.Dock="Left">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="18"
-                                Text="⚠️" />
+                            <Viewbox Width="20" Height="20">
+                                <Canvas Width="24" Height="24">
+                                    <Path
+                                        Data="{StaticResource IconAlertTriangle}"
+                                        Fill="Transparent"
+                                        Stroke="{StaticResource PrimaryBrush}"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="2" />
+                                </Canvas>
+                            </Viewbox>
                         </Border>
                         <ToggleButton
                             Width="44"
@@ -286,11 +301,18 @@
                             Background="#F5F3FF"
                             CornerRadius="10"
                             DockPanel.Dock="Left">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="18"
-                                Text="📌" />
+                            <Viewbox Width="20" Height="20">
+                                <Canvas Width="24" Height="24">
+                                    <Path
+                                        Data="{StaticResource IconPin}"
+                                        Fill="Transparent"
+                                        Stroke="{StaticResource PrimaryBrush}"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="2" />
+                                </Canvas>
+                            </Viewbox>
                         </Border>
                         <ToggleButton
                             Width="44"

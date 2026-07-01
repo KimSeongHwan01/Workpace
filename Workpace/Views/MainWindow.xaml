@@ -49,13 +49,19 @@
                             Height="32"
                             Background="{StaticResource PrimaryBrush}"
                             CornerRadius="8">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                VerticalAlignment="Center"
-                                FontSize="18"
-                                FontWeight="Bold"
-                                Foreground="White"
-                                Text="W" />
+                            <!--  W 로고  -->
+                            <Viewbox Width="20" Height="20">
+                                <Canvas Width="80" Height="80">
+                                    <Path
+                                        Data="M 14,22 L 28,58 L 40,36 L 52,58 L 66,22"
+                                        Fill="Transparent"
+                                        Stroke="White"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="10" />
+                                </Canvas>
+                            </Viewbox>
                         </Border>
                         <TextBlock
                             Margin="10,0,0,0"
@@ -71,19 +77,41 @@
                 <StackPanel Grid.Row="1" Margin="12,0">
                     <Button Command="{Binding GoToStatisticsCommand}" Style="{StaticResource NavButtonStyle}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock
-                                Margin="0,0,10,0"
-                                FontSize="16"
-                                Text="📊" />
+                            <Viewbox
+                                Width="16"
+                                Height="16"
+                                Margin="0,0,10,0">
+                                <Canvas Width="24" Height="24">
+                                    <Path
+                                        Data="{StaticResource IconChart}"
+                                        Fill="Transparent"
+                                        Stroke="#374151"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="2" />
+                                </Canvas>
+                            </Viewbox>
                             <TextBlock Text="통계" />
                         </StackPanel>
                     </Button>
                     <Button Command="{Binding GoToSettingsCommand}" Style="{StaticResource NavButtonStyle}">
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock
-                                Margin="0,0,10,0"
-                                FontSize="16"
-                                Text="⚙" />
+                            <Viewbox
+                                Width="16"
+                                Height="16"
+                                Margin="0,0,10,0">
+                                <Canvas Width="24" Height="24">
+                                    <Path
+                                        Data="{StaticResource IconSettings}"
+                                        Fill="Transparent"
+                                        Stroke="#374151"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="2" />
+                                </Canvas>
+                            </Viewbox>
                             <TextBlock Text="설정" />
                         </StackPanel>
                     </Button>
@@ -102,32 +130,34 @@
                         Height="24"
                         HorizontalAlignment="Right"
                         Background="Transparent"
-                        BorderBrush="#D1D5DB"
-                        BorderThickness="1"
+                        BorderThickness="0"
                         Command="{Binding AddProjectCommand}"
                         Cursor="Hand"
-                        DockPanel.Dock="Right"
-                        Foreground="#6B7280">
+                        DockPanel.Dock="Right">
                         <Button.Template>
                             <ControlTemplate TargetType="Button">
                                 <Border
                                     x:Name="AddBtnBorder"
                                     Background="{TemplateBinding Background}"
-                                    BorderBrush="{TemplateBinding BorderBrush}"
-                                    BorderThickness="1"
-                                    CornerRadius="6">
-                                    <TextBlock
-                                        HorizontalAlignment="Center"
-                                        VerticalAlignment="Center"
-                                        FontSize="15"
-                                        FontWeight="Bold"
-                                        Foreground="#6B7280"
-                                        Text="+" />
+                                    CornerRadius="12">
+                                    <Viewbox Width="14" Height="14">
+                                        <Canvas Width="24" Height="24">
+                                            <Path
+                                                x:Name="AddBtnIcon"
+                                                Data="{StaticResource IconPlus}"
+                                                Fill="Transparent"
+                                                Stroke="#9CA3AF"
+                                                StrokeEndLineCap="Round"
+                                                StrokeLineJoin="Round"
+                                                StrokeStartLineCap="Round"
+                                                StrokeThickness="2" />
+                                        </Canvas>
+                                    </Viewbox>
                                 </Border>
                                 <ControlTemplate.Triggers>
                                     <Trigger Property="IsMouseOver" Value="True">
                                         <Setter TargetName="AddBtnBorder" Property="Background" Value="#F5F3FF" />
-                                        <Setter TargetName="AddBtnBorder" Property="BorderBrush" Value="{StaticResource PrimaryBrush}" />
+                                        <Setter TargetName="AddBtnIcon" Property="Stroke" Value="{StaticResource PrimaryBrush}" />
                                     </Trigger>
                                 </ControlTemplate.Triggers>
                             </ControlTemplate>
@@ -247,10 +277,37 @@
                                         BorderThickness="0"
                                         Command="{Binding DataContext.EditProjectCommand, RelativeSource={RelativeSource AncestorType=ListBox}}"
                                         CommandParameter="{Binding}"
-                                        Content="✏️"
                                         Cursor="Hand"
-                                        FontSize="12"
-                                        Visibility="Collapsed" />
+                                        Visibility="Collapsed">
+                                        <Button.Template>
+                                            <ControlTemplate TargetType="Button">
+                                                <Border
+                                                    x:Name="EditBtnBorder"
+                                                    Background="Transparent"
+                                                    CornerRadius="6">
+                                                    <Viewbox Width="14" Height="14">
+                                                        <Canvas Width="24" Height="24">
+                                                            <Path
+                                                                x:Name="EditBtnIcon"
+                                                                Data="{StaticResource IconPencil}"
+                                                                Fill="Transparent"
+                                                                Stroke="#9CA3AF"
+                                                                StrokeEndLineCap="Round"
+                                                                StrokeLineJoin="Round"
+                                                                StrokeStartLineCap="Round"
+                                                                StrokeThickness="2" />
+                                                        </Canvas>
+                                                    </Viewbox>
+                                                </Border>
+                                                <ControlTemplate.Triggers>
+                                                    <Trigger Property="IsMouseOver" Value="True">
+                                                        <Setter TargetName="EditBtnBorder" Property="Background" Value="#F5F3FF" />
+                                                        <Setter TargetName="EditBtnIcon" Property="Stroke" Value="{StaticResource PrimaryBrush}" />
+                                                    </Trigger>
+                                                </ControlTemplate.Triggers>
+                                            </ControlTemplate>
+                                        </Button.Template>
+                                    </Button>
                                 </Grid>
                             </Border>
 
@@ -277,12 +334,29 @@
                     CornerRadius="8">
                     <StackPanel>
                         <DockPanel Margin="0,0,0,8">
-                            <TextBlock
-                                VerticalAlignment="Center"
-                                FontSize="13"
-                                FontWeight="Bold"
-                                Foreground="{StaticResource PrimaryBrush}"
-                                Text="핵심 기능 🔒" />
+                            <StackPanel VerticalAlignment="Center" Orientation="Horizontal">
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="13"
+                                    FontWeight="Bold"
+                                    Foreground="{StaticResource PrimaryBrush}"
+                                    Text="핵심 기능" />
+                                <Viewbox
+                                    Width="13"
+                                    Height="13"
+                                    Margin="5,0,0,0">
+                                    <Canvas Width="24" Height="24">
+                                        <Path
+                                            Data="{StaticResource IconLock}"
+                                            Fill="Transparent"
+                                            Stroke="{StaticResource PrimaryBrush}"
+                                            StrokeEndLineCap="Round"
+                                            StrokeLineJoin="Round"
+                                            StrokeStartLineCap="Round"
+                                            StrokeThickness="2" />
+                                    </Canvas>
+                                </Viewbox>
+                            </StackPanel>
                             <TextBlock
                                 Margin="6,0,0,0"
                                 VerticalAlignment="Center"
@@ -294,18 +368,38 @@
                             <ItemsControl.ItemTemplate>
                                 <DataTemplate>
                                     <DockPanel Margin="0,0,0,6">
-                                        <TextBlock
+                                        <Viewbox
+                                            Width="14"
+                                            Height="14"
                                             Margin="0,0,6,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Text="✅"
-                                            Visibility="{Binding Status, Converter={StaticResource EqualityConverter}, ConverterParameter=완료}" />
-                                        <TextBlock
+                                            Visibility="{Binding Status, Converter={StaticResource EqualityConverter}, ConverterParameter=완료}">
+                                            <Canvas Width="24" Height="24">
+                                                <Path
+                                                    Data="{StaticResource IconCheck}"
+                                                    Fill="Transparent"
+                                                    Stroke="#10B981"
+                                                    StrokeEndLineCap="Round"
+                                                    StrokeLineJoin="Round"
+                                                    StrokeStartLineCap="Round"
+                                                    StrokeThickness="2.5" />
+                                            </Canvas>
+                                        </Viewbox>
+                                        <Viewbox
+                                            Width="14"
+                                            Height="14"
                                             Margin="0,0,6,0"
-                                            VerticalAlignment="Center"
-                                            FontSize="14"
-                                            Text="🔒"
-                                            Visibility="{Binding Status, Converter={StaticResource InverseBoolToVisibilityConverter}}" />
+                                            Visibility="{Binding Status, Converter={StaticResource InverseBoolToVisibilityConverter}}">
+                                            <Canvas Width="24" Height="24">
+                                                <Path
+                                                    Data="{StaticResource IconLock}"
+                                                    Fill="Transparent"
+                                                    Stroke="{StaticResource PrimaryBrush}"
+                                                    StrokeEndLineCap="Round"
+                                                    StrokeLineJoin="Round"
+                                                    StrokeStartLineCap="Round"
+                                                    StrokeThickness="2" />
+                                            </Canvas>
+                                        </Viewbox>
                                         <TextBlock
                                             VerticalAlignment="Center"
                                             FontSize="12"
@@ -319,7 +413,7 @@
                         <TextBlock
                             FontSize="11"
                             Foreground="#9CA3AF"
-                            Text="카드의 🔒 버튼으로 지정하세요"
+                            Text="카드의 잠금 버튼으로 지정하세요"
                             Visibility="{Binding CoreTasks.Count, Converter={StaticResource EqualityConverter}, ConverterParameter=0}" />
                     </StackPanel>
                 </Border>
@@ -335,12 +429,27 @@
                     CornerRadius="8">
                     <StackPanel>
                         <StackPanel Margin="0,0,0,2" Orientation="Horizontal">
+                            <Viewbox
+                                Width="16"
+                                Height="16"
+                                Margin="0,0,6,0">
+                                <Canvas Width="24" Height="24">
+                                    <Path
+                                        Data="{StaticResource IconFlame}"
+                                        Fill="Transparent"
+                                        Stroke="#EA580C"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="2" />
+                                </Canvas>
+                            </Viewbox>
                             <TextBlock
                                 VerticalAlignment="Center"
                                 FontSize="13"
                                 FontWeight="Bold"
                                 Foreground="#EA580C"
-                                Text="🔥 연속 집중  " />
+                                Text="연속 집중  " />
                             <TextBlock
                                 VerticalAlignment="Center"
                                 FontSize="20"
@@ -362,7 +471,7 @@
                             Margin="0,4,0,0"
                             FontSize="11"
                             Foreground="#9CA3AF"
-                            Text="오늘 Task를 완료하면 기록돼요" />
+                            Text="오늘 작업이 갱신되면 기록돼요" />
                     </StackPanel>
                 </Border>
 
@@ -394,15 +503,37 @@
                         </ControlTemplate>
                     </Button.Template>
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock
-                            Margin="0,0,6,0"
-                            FontSize="16"
-                            Text="📄" />
+                        <Viewbox
+                            Width="16"
+                            Height="16"
+                            Margin="0,0,8,0">
+                            <Canvas Width="24" Height="24">
+                                <Path
+                                    Data="{StaticResource IconFileText}"
+                                    Fill="Transparent"
+                                    Stroke="White"
+                                    StrokeEndLineCap="Round"
+                                    StrokeLineJoin="Round"
+                                    StrokeStartLineCap="Round"
+                                    StrokeThickness="2" />
+                            </Canvas>
+                        </Viewbox>
                         <TextBlock VerticalAlignment="Center" Text="포트폴리오 추출" />
-                        <TextBlock
-                            Margin="6,0,0,0"
-                            FontSize="14"
-                            Text="✨" />
+                        <Viewbox
+                            Width="14"
+                            Height="14"
+                            Margin="8,0,0,0">
+                            <Canvas Width="24" Height="24">
+                                <Path
+                                    Data="{StaticResource IconSparkles}"
+                                    Fill="Transparent"
+                                    Stroke="White"
+                                    StrokeEndLineCap="Round"
+                                    StrokeLineJoin="Round"
+                                    StrokeStartLineCap="Round"
+                                    StrokeThickness="2" />
+                            </Canvas>
+                        </Viewbox>
                     </StackPanel>
                 </Button>
 

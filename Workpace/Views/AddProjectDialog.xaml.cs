@@ -1,4 +1,5 @@
 ﻿using System.Windows;
+using System.Windows.Controls;
 using Workpace.Models;
 using Workpace.ViewModels;
 
@@ -31,7 +32,13 @@ namespace Workpace.Views
             Title = "프로젝트 수정";
             HeaderTitleText.Text = "프로젝트 수정";
             HeaderSubtitleText.Text = "프로젝트 정보를 수정하세요.";
-            ConfirmButton.Content = "💾 수정 완료";
+
+            // 수정 모드 버튼 내용 교체 — StackPanel 안 TextBlock을 찾아서 텍스트 변경
+            if (ConfirmButton.Content is StackPanel sp)
+            {
+                var tb = sp.Children.OfType<TextBlock>().FirstOrDefault();
+                if (tb != null) tb.Text = "수정 완료";
+            }
         }
 
         // 다이얼로그 결과 — MainViewModel에서 꺼내 쓸 수 있게

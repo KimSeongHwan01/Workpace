@@ -40,11 +40,29 @@
                     BorderThickness="1"
                     CornerRadius="10">
                     <StackPanel>
-                        <TextBlock
-                            FontSize="14"
-                            FontWeight="Bold"
-                            Foreground="{StaticResource PrimaryBrush}"
-                            Text="🎉 포트폴리오 자동 생성 완료!" />
+                        <StackPanel Orientation="Horizontal">
+                            <Viewbox
+                                Width="16"
+                                Height="16"
+                                Margin="0,0,8,0">
+                                <Canvas Width="24" Height="24">
+                                    <Path
+                                        Data="{StaticResource IconSparkles}"
+                                        Fill="Transparent"
+                                        Stroke="{StaticResource PrimaryBrush}"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="2" />
+                                </Canvas>
+                            </Viewbox>
+                            <TextBlock
+                                VerticalAlignment="Center"
+                                FontSize="14"
+                                FontWeight="Bold"
+                                Foreground="{StaticResource PrimaryBrush}"
+                                Text="포트폴리오 자동 생성 완료!" />
+                        </StackPanel>
                         <TextBlock
                             Margin="0,4,0,0"
                             FontSize="12"
@@ -87,10 +105,28 @@
                         BorderThickness="1"
                         CornerRadius="10">
                         <StackPanel>
-                            <TextBlock
-                                FontSize="12"
-                                Foreground="#6B7280"
-                                Text="📅 프로젝트 기간" />
+                            <StackPanel Margin="0,0,0,4" Orientation="Horizontal">
+                                <Viewbox
+                                    Width="13"
+                                    Height="13"
+                                    Margin="0,0,6,0">
+                                    <Canvas Width="24" Height="24">
+                                        <Path
+                                            Data="{StaticResource IconCalendar}"
+                                            Fill="Transparent"
+                                            Stroke="#6B7280"
+                                            StrokeEndLineCap="Round"
+                                            StrokeLineJoin="Round"
+                                            StrokeStartLineCap="Round"
+                                            StrokeThickness="2" />
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Foreground="#6B7280"
+                                    Text="프로젝트 기간" />
+                            </StackPanel>
                             <TextBlock
                                 Margin="0,4,0,2"
                                 FontSize="24"
@@ -116,10 +152,28 @@
                         BorderThickness="1"
                         CornerRadius="10">
                         <StackPanel>
-                            <TextBlock
-                                FontSize="12"
-                                Foreground="#6B7280"
-                                Text="✅ 완료 작업" />
+                            <StackPanel Margin="0,0,0,4" Orientation="Horizontal">
+                                <Viewbox
+                                    Width="13"
+                                    Height="13"
+                                    Margin="0,0,6,0">
+                                    <Canvas Width="24" Height="24">
+                                        <Path
+                                            Data="{StaticResource IconCheck}"
+                                            Fill="Transparent"
+                                            Stroke="#10B981"
+                                            StrokeEndLineCap="Round"
+                                            StrokeLineJoin="Round"
+                                            StrokeStartLineCap="Round"
+                                            StrokeThickness="2.5" />
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Foreground="#6B7280"
+                                    Text="완료 작업" />
+                            </StackPanel>
                             <TextBlock
                                 Margin="0,4,0,0"
                                 FontSize="20"
@@ -140,10 +194,28 @@
                         BorderThickness="1"
                         CornerRadius="10">
                         <StackPanel>
-                            <TextBlock
-                                FontSize="12"
-                                Foreground="#6B7280"
-                                Text="🎯 완료율" />
+                            <StackPanel Margin="0,0,0,4" Orientation="Horizontal">
+                                <Viewbox
+                                    Width="13"
+                                    Height="13"
+                                    Margin="0,0,6,0">
+                                    <Canvas Width="24" Height="24">
+                                        <Path
+                                            Data="{StaticResource IconTarget}"
+                                            Fill="Transparent"
+                                            Stroke="#6B7280"
+                                            StrokeEndLineCap="Round"
+                                            StrokeLineJoin="Round"
+                                            StrokeStartLineCap="Round"
+                                            StrokeThickness="2" />
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Foreground="#6B7280"
+                                    Text="완료율" />
+                            </StackPanel>
                             <TextBlock
                                 Margin="0,4,0,0"
                                 FontSize="24"
@@ -163,10 +235,28 @@
                         BorderThickness="1"
                         CornerRadius="10">
                         <StackPanel>
-                            <TextBlock
-                                FontSize="12"
-                                Foreground="#6B7280"
-                                Text="🔧 트러블슈팅" />
+                            <StackPanel Margin="0,0,0,4" Orientation="Horizontal">
+                                <Viewbox
+                                    Width="13"
+                                    Height="13"
+                                    Margin="0,0,6,0">
+                                    <Canvas Width="24" Height="24">
+                                        <Path
+                                            Data="{StaticResource IconWrench}"
+                                            Fill="Transparent"
+                                            Stroke="#6B7280"
+                                            StrokeEndLineCap="Round"
+                                            StrokeLineJoin="Round"
+                                            StrokeStartLineCap="Round"
+                                            StrokeThickness="2" />
+                                    </Canvas>
+                                </Viewbox>
+                                <TextBlock
+                                    VerticalAlignment="Center"
+                                    FontSize="12"
+                                    Foreground="#6B7280"
+                                    Text="트러블슈팅" />
+                            </StackPanel>
                             <TextBlock
                                 Margin="0,4,0,0"
                                 FontSize="24"
@@ -282,12 +372,21 @@
                             </ControlTemplate>
                         </Button.Template>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock
-                                Margin="0,0,6,0"
-                                VerticalAlignment="Center"
-                                FontFamily="Segoe MDL2 Assets"
-                                FontSize="14"
-                                Text="&#xE896;" />
+                            <Viewbox
+                                Width="16"
+                                Height="16"
+                                Margin="0,0,8,0">
+                                <Canvas Width="24" Height="24">
+                                    <Path
+                                        Data="{StaticResource IconDownload}"
+                                        Fill="Transparent"
+                                        Stroke="White"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="2" />
+                                </Canvas>
+                            </Viewbox>
                             <TextBlock VerticalAlignment="Center" Text="PDF 다운로드" />
                         </StackPanel>
                     </Button>
@@ -321,8 +420,22 @@
                             </ControlTemplate>
                         </Button.Template>
                         <StackPanel Orientation="Horizontal">
-                            <TextBlock FontSize="14" Text="📋 " />
-                            <TextBlock Text="텍스트 복사" />
+                            <Viewbox
+                                Width="16"
+                                Height="16"
+                                Margin="0,0,8,0">
+                                <Canvas Width="24" Height="24">
+                                    <Path
+                                        Data="{StaticResource IconClipboard}"
+                                        Fill="Transparent"
+                                        Stroke="#374151"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="2" />
+                                </Canvas>
+                            </Viewbox>
+                            <TextBlock VerticalAlignment="Center" Text="텍스트 복사" />
                         </StackPanel>
                     </Button>
                 </Grid>

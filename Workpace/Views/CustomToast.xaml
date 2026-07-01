@@ -39,11 +39,18 @@
                 VerticalAlignment="Top"
                 Background="#F5F3FF"
                 CornerRadius="10">
-                <TextBlock
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    FontSize="24"
-                    Text="{Binding Icon}" />
+                <Viewbox Width="24" Height="24">
+                    <Canvas Width="24" Height="24">
+                        <Path
+                            Data="{Binding IconGeometry}"
+                            Fill="Transparent"
+                            Stroke="{StaticResource PrimaryBrush}"
+                            StrokeEndLineCap="Round"
+                            StrokeLineJoin="Round"
+                            StrokeStartLineCap="Round"
+                            StrokeThickness="2" />
+                    </Canvas>
+                </Viewbox>
             </Border>
 
             <StackPanel Grid.Column="1" VerticalAlignment="Center">
@@ -63,16 +70,42 @@
 
             <Button
                 Grid.Column="2"
-                Width="20"
-                Height="20"
+                Width="24"
+                Height="24"
                 VerticalAlignment="Top"
                 Background="Transparent"
                 BorderThickness="0"
                 Click="CloseButton_Click"
-                Content="✕"
-                Cursor="Hand"
-                FontSize="11"
-                Foreground="#9CA3AF" />
+                Cursor="Hand">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Bd"
+                            Background="Transparent"
+                            CornerRadius="6">
+                            <Viewbox Width="14" Height="14">
+                                <Canvas Width="24" Height="24">
+                                    <Path
+                                        x:Name="CloseIcon"
+                                        Data="{StaticResource IconX}"
+                                        Fill="Transparent"
+                                        Stroke="#9CA3AF"
+                                        StrokeEndLineCap="Round"
+                                        StrokeLineJoin="Round"
+                                        StrokeStartLineCap="Round"
+                                        StrokeThickness="2" />
+                                </Canvas>
+                            </Viewbox>
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#F5F3FF" />
+                                <Setter TargetName="CloseIcon" Property="Stroke" Value="{StaticResource PrimaryBrush}" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Grid>
     </Border>
 </Window>

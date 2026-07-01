@@ -145,7 +145,6 @@ namespace Workpace.Services
                 AddHeading(section, "📋 프로젝트 기본 정보");
                 AddBody(section, $"기간: {data.Project.StartDate:yyyy-MM-dd} ~ {data.Project.Deadline:yyyy-MM-dd}");
                 AddBody(section, $"총 기간: {(data.Project.Deadline - data.Project.StartDate).Days}일");
-                AddBody(section, $"프로젝트 유형: {data.Project.Type}");
                 if (!string.IsNullOrWhiteSpace(data.Project.GitHubUrl))
                     AddBody(section, $"GitHub: {data.Project.GitHubUrl}");
 
@@ -389,7 +388,6 @@ namespace Workpace.Services
             sb.AppendLine("[프로젝트 기본 정보]");
             sb.AppendLine($"기간: {data.Project.StartDate:yyyy-MM-dd} ~ {data.Project.Deadline:yyyy-MM-dd}");
             sb.AppendLine($"총 기간: {(data.Project.Deadline - data.Project.StartDate).Days}일");
-            sb.AppendLine($"프로젝트 유형: {data.Project.Type}");
             if (!string.IsNullOrWhiteSpace(data.Project.GitHubUrl))
                 sb.AppendLine($"GitHub: {data.Project.GitHubUrl}");
             if (!string.IsNullOrWhiteSpace(data.Project.Role))
@@ -533,8 +531,22 @@ namespace Workpace.Services
         // ───────────────────────────────────────
         private void AddBody(Section section, string text)
         {
-            var para = section.AddParagraph(text);
-            para.Format.SpaceAfter = 4;
+            // \n이 포함된 텍스트는 줄 단위로 분리해서 각각 단락으로 추가
+            // MigraDoc은 AddParagraph에 \n을 넣어도 줄바꿈을 인식하지 않음
+            var lines = text.Split('\n');
+
+            for (int i = 0; i < lines.Length; i++)
+            {
+                var line = lines[i].TrimEnd('\r'); // Windows \r\n 대응
+
+                var para = section.AddParagraph(line);
+
+                // 마지막 줄에만 SpaceAfter 적용
+                para.Format.SpaceAfter = i == lines.Length - 1 ? 4 : 0;
+
+                // 긴 텍스트가 페이지 밖으로 삐져나가지 않도록 단락 단위 설정
+                para.Format.RightIndent = 0;
+            }
         }
 
         // ───────────────────────────────────────

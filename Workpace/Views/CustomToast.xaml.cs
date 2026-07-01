@@ -12,7 +12,12 @@ namespace Workpace.Views
         {
             InitializeComponent();
 
-            DataContext = new { Icon = icon, Title = title, Message = message };
+            // App.xaml에 등록된 Geometry 리소스를 키 이름으로 꺼내옴
+            // NotificationService에서 "IconFlame" 같은 키 문자열을 넘겨주면 여기서 실제 Path로 변환
+            var geometry = Application.Current.TryFindResource(icon) as System.Windows.Media.Geometry
+                           ?? Application.Current.TryFindResource("IconBell") as System.Windows.Media.Geometry;
+
+            DataContext = new { IconGeometry = geometry, Title = title, Message = message };
 
             // 자동 닫힘 타이머
             _autoCloseTimer = new DispatcherTimer

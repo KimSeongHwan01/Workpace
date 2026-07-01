@@ -24,8 +24,5 @@
         public bool StreakReminderEnabled { get; set; } = true;
         public bool ProjectDeadlineAlertEnabled { get; set; } = true;
         public bool TaskDeadlineAlertEnabled { get; set; } = true;
-
-        // 알림 주기
-        public int StreakReminderIntervalHours { get; set; } = 1;
     }
 }

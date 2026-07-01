@@ -31,6 +31,10 @@ namespace Workpace.ViewModels
         [ObservableProperty]
         private string dDayText = "";
 
+        // "2026.07.01 ~ 2026.07.31" 형태의 프로젝트 기간 텍스트
+        [ObservableProperty]
+        private string dateRangeText = "";
+
         // ── 진행률 영역 ────────────────────────────
         // 현재 진행률 숫자 (0~100)
         [ObservableProperty]
@@ -138,6 +142,9 @@ namespace Workpace.ViewModels
                 DDayText = "D-day";
             else
                 DDayText = $"D+{Math.Abs(daysLeft)}일";
+
+            // 프로젝트 기간 텍스트 — 헤더 옆에 표시
+            DateRangeText = $"{CurrentProject.StartDate:yyyy.MM.dd} ~ {CurrentProject.Deadline:yyyy.MM.dd}";
         }
 
         // ───────────────────────────────────────
@@ -251,6 +258,7 @@ namespace Workpace.ViewModels
         private void ClearAll()
         {
             DDayText = "";
+            DateRangeText = "";
             CurrentProgress = 0;
             TargetProgress = 0;
             CurrentProgressText = "";

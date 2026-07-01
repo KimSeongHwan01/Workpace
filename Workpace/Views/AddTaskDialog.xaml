@@ -6,7 +6,7 @@
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     Title="작업 추가"
     Width="480"
-    Height="420"
+    Height="640"
     ResizeMode="NoResize"
     WindowStartupLocation="CenterOwner"
     mc:Ignorable="d">
@@ -19,7 +19,11 @@
         </Grid.RowDefinitions>
 
         <!--  제목  -->
-        <Border Grid.Row="0" Padding="32,24,32,0">
+        <Border
+            Grid.Row="0"
+            Padding="32,24,32,16"
+            BorderBrush="#F3F4F6"
+            BorderThickness="0,0,0,1">
             <StackPanel>
                 <TextBlock
                     FontSize="20"
@@ -144,17 +148,69 @@
                     BorderThickness="1"
                     Command="{Binding CancelCommand}"
                     Content="취소"
-                    Cursor="Hand" />
+                    Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="#F9FAFB" />
+                                    <Setter TargetName="Bd" Property="BorderBrush" Value="#D1D5DB" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
 
                 <Button
                     Grid.Column="2"
                     Height="40"
-                    Background="#7C3AED"
+                    Background="{StaticResource PrimaryBrush}"
                     BorderThickness="0"
                     Command="{Binding ConfirmCommand}"
-                    Content="작업 추가"
                     Cursor="Hand"
-                    Foreground="White" />
+                    Foreground="White">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="#6D28D9" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <StackPanel Orientation="Horizontal">
+                        <Viewbox
+                            Width="15"
+                            Height="15"
+                            Margin="0,0,8,0">
+                            <Canvas Width="24" Height="24">
+                                <Path
+                                    Data="{StaticResource IconPlus}"
+                                    Fill="Transparent"
+                                    Stroke="White"
+                                    StrokeEndLineCap="Round"
+                                    StrokeLineJoin="Round"
+                                    StrokeStartLineCap="Round"
+                                    StrokeThickness="2" />
+                            </Canvas>
+                        </Viewbox>
+                        <TextBlock VerticalAlignment="Center" Text="작업 추가" />
+                    </StackPanel>
+                </Button>
             </Grid>
         </Border>
 

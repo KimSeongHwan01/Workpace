@@ -148,29 +148,43 @@ namespace Workpace.ViewModels
         {
             if (_portfolioData == null)
             {
-                MessageBox.Show("프로젝트를 먼저 선택해주세요.");
+                MessageBox.Show(Application.Current.MainWindow, "프로젝트를 먼저 선택해주세요.");
                 return;
             }
 
+            // 저장 위치 선택 다이얼로그
+            var saveDialog = new Microsoft.Win32.SaveFileDialog
+            {
+                Title = "포트폴리오 저장 위치 선택",
+                Filter = "PDF 파일 (*.pdf)|*.pdf",
+                // 기본 파일명: 프로젝트명_portfolio.pdf
+                FileName = $"{_portfolioData.Project.Name}_portfolio.pdf",
+                // 기본 위치: 바탕화면
+                InitialDirectory = Environment.GetFolderPath(Environment.SpecialFolder.Desktop)
+            };
+
+            // 취소 누르면 그냥 종료
+            if (saveDialog.ShowDialog() != true) return;
+
             try
             {
-                var filePath = _portfolioService.GeneratePdf(_portfolioData,
+                _portfolioService.GeneratePdfToPath(_portfolioData, saveDialog.FileName,
                     IncludeBasicInfo, IncludeOverview, IncludeTechStack,
                     IncludeMainFeatures, IncludeTroubleshooting, IncludeResults);
 
-                MessageBox.Show($"저장 완료!\n\n{filePath}",
+                MessageBox.Show(Application.Current.MainWindow, $"저장 완료!\n\n{saveDialog.FileName}",
                     "완료", MessageBoxButton.OK, MessageBoxImage.Information);
 
-                // 탐색기에서 파일 선택
+                // 탐색기에서 저장된 파일 선택
                 System.Diagnostics.Process.Start(new System.Diagnostics.ProcessStartInfo
                 {
                     FileName = "explorer.exe",
-                    Arguments = $"/select,\"{filePath}\""
+                    Arguments = $"/select,\"{saveDialog.FileName}\""
                 });
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"PDF 생성 오류: {ex.Message}", "오류",
+                MessageBox.Show(Application.Current.MainWindow, $"PDF 생성 오류: {ex.Message}", "오류",
                     MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }

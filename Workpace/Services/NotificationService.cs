@@ -13,9 +13,16 @@ namespace Workpace.Services
         private readonly DatabaseService _db;
         private readonly DispatcherTimer _timer;
 
-        // 스트릭 리마인더 — 마지막으로 알림 보낸 시각 기록
-        // "주기마다" 체크하려면 마지막 발송 시각 기준으로 경과 시간을 계산해야 함
-        private DateTime _lastStreakNotified = DateTime.MinValue;
+        // 스트릭 리마인더 — 오늘 알림을 이미 보냈는지 앱 실행 중 기록
+        private DateTime? _lastStreakReminderDate = null;
+
+        // 스트릭 알림 시작 시간 — 20시(기본 설정)
+        // ── 테스트 시 여기만 바꾸면 됨 ──────────────
+        private static readonly TimeSpan StreakReminderStartTime =
+            new(hours: 16, minutes: 20, seconds: 50);
+
+        // 테스트용 - true면 오늘 작업을 했어도 스트릭 알림 강제 표시
+        private static readonly bool ForceStreakReminder = false;
 
         // 작업 단위 마감 알림은 앱 켤 때 한 번만 보내므로 별도 추적 불필요
 
@@ -27,13 +34,7 @@ namespace Workpace.Services
         public NotificationService(DatabaseService db)
         {
             _db = db;
-            _timer = new DispatcherTimer
-            {
-                // 1분마다 "스트릭 리마인더 주기가 지났는지" 체크
-                Interval = TimeSpan.FromMinutes(1)
-                // 테스트용 — 빠르게 확인하려면 아래로 교체
-                // Interval = TimeSpan.FromSeconds(5)
-            };
+            _timer = new DispatcherTimer();
             _timer.Tick += OnTick;
         }
 
@@ -44,46 +45,77 @@ namespace Workpace.Services
             CheckProjectDeadlineAlerts();
             CheckTaskDeadlineAlerts();
 
-            // 스트릭 리마인더 기준 시각을 "지금"으로 맞춤
-            // 이걸 안 해주면 _lastStreakNotified가 DateTime.MinValue라서
-            // 앱을 켤 때마다 설정한 주기를 무시하고 1분 뒤 곧바로 첫 알림이 나가버림
-            _lastStreakNotified = DateTime.Now;
-
-            _timer.Start();
+            CheckStreakReminder();          // 이미 시간이 지난 경우 즉시 알림
+            ScheduleNextStreakReminder();   // 시간이 안 지났으면 해당 시간까지 예약
         }
 
         public void Stop() => _timer.Stop();
 
-        // 1분마다 실행 — 스트릭 리마인더 주기 체크
         private void OnTick(object? sender, EventArgs e)
+        {
+            _timer.Stop();
+
+            CheckStreakReminder();
+
+            ScheduleNextStreakReminder();
+        }
+
+        private void ScheduleNextStreakReminder()
+        {
+            var now = DateTime.Now;
+
+            var nextReminder = DateTime.Today.Add(StreakReminderStartTime);
+
+            // 오늘 알림 시간이 이미 지났으면 내일 같은 시간으로 예약
+            if (nextReminder <= now)
+                nextReminder = nextReminder.AddDays(1);
+
+            var interval = nextReminder - now;
+
+            // 너무 짧거나 0 이하 방지
+            if (interval < TimeSpan.FromSeconds(1))
+                interval = TimeSpan.FromSeconds(1);
+
+            _timer.Interval = interval;
+            _timer.Start();
+        }
+
+        private void CheckStreakReminder()
         {
             var profile = _db.GetUserProfile();
             if (profile == null) return;
 
             if (!profile.StreakReminderEnabled) return;
 
+            // 프로젝트가 하나도 없으면 알림 X — 작업할 게 없는 상태
+            var projects = _db.GetAllProjects();
+            if (projects.Count == 0) return;
+
             var now = DateTime.Now;
 
-            // 마지막 발송 이후 설정한 주기(시간)가 지났는지 확인
-            //var intervalPassed = (now - _lastStreakNotified).TotalHours >= profile.StreakReminderIntervalHours;
+            // 아직 알림 시간이 안 됐으면 알림 X
+            if (now.TimeOfDay < StreakReminderStartTime) return;
 
-            // ⚠️ 테스트용 — TotalHours를 TotalMinutes로 바꿔서 "시간" 대신 "분" 단위로 빠르게 확인
-            var intervalPassed = (now - _lastStreakNotified).TotalMinutes >= profile.StreakReminderIntervalHours;
+            // 오늘 이미 스트릭 알림을 보냈으면 알림 X
+            if (_lastStreakReminderDate == DateTime.Today) return;
 
-            if (intervalPassed)
+            // 테스트 모드가 아닐 때만 오늘 작업 완료 여부 확인
+            if (!ForceStreakReminder)
             {
                 var todayDone = _db.GetStreakDates(1)
                     .Any(d => d.Date == DateTime.Today);
 
-                if (!todayDone)
-                {
-                    SendNotification("스트릭 리마인더",
-                        "오늘 아직 작업을 완료하지 않았어요! 스트릭을 이어가세요.", "🔥");
-                }
-
-                // 작업을 이미 했어도, 다음 주기까지는 다시 안 체크하도록 시각 갱신
-                _lastStreakNotified = now;
+                if (todayDone) return;
             }
+            
+            SendNotification(
+                "스트릭 리마인더",
+                "오늘 아직 완료한 작업이 없어요. 작은 작업 하나만 끝내고 스트릭을 이어가볼까요?",
+                "IconFlame"
+            );
+
+            // 오늘은 다시 보내지 않도록 기록
+            _lastStreakReminderDate = DateTime.Today;
         }
 
         // 프로젝트 마감 임박 체크 — 앱 켤 때 한 번
@@ -98,7 +130,7 @@ namespace Workpace.Services
                 var daysLeft = (project.Deadline.Date - DateTime.Today).Days;
                 if (daysLeft >= 0 && daysLeft <= ProjectDeadlineAlertDays)
                     SendNotification("마감 임박",
-                        $"'{project.Name}' 마감까지 {daysLeft}일 남았어요!", "⚠️");
+                        $"'{project.Name}' 마감까지 {daysLeft}일 남았어요!", "IconAlertTriangle");
             }
         }
 
@@ -117,7 +149,7 @@ namespace Workpace.Services
                 var projectName = projects.TryGetValue(task.ProjectId, out var name) ? name : "알 수 없는 프로젝트";
 
                 SendNotification("작업 마감 임박",
-                    $"[{projectName}] '{task.Title}' 작업 마감까지 {daysLeft}일 남았어요!", "📌");
+                        $"[{projectName}] '{task.Title}' 작업 마감까지 {daysLeft}일 남았어요!", "IconPin");
             }
         }
 

@@ -11,16 +11,34 @@
     <StackPanel Margin="28">
 
         <!--  완료 타이틀  -->
+        <!--  완료 타이틀  -->
+        <StackPanel Margin="0,0,0,4" Orientation="Horizontal">
+            <Viewbox
+                Width="20"
+                Height="20"
+                Margin="0,0,8,0">
+                <Canvas Width="24" Height="24">
+                    <Path
+                        Data="{StaticResource IconCheckCircle}"
+                        Fill="Transparent"
+                        Stroke="#10B981"
+                        StrokeEndLineCap="Round"
+                        StrokeLineJoin="Round"
+                        StrokeStartLineCap="Round"
+                        StrokeThickness="2" />
+                </Canvas>
+            </Viewbox>
+            <TextBlock
+                VerticalAlignment="Center"
+                FontSize="18"
+                FontWeight="Bold"
+                Foreground="#1F1F1F"
+                Text="작업 완료!" />
+        </StackPanel>
         <TextBlock
-            Margin="0,0,0,4"
-            FontSize="18"
-            FontWeight="Bold">
-            ✅ 작업 완료!
-        </TextBlock>
-        <TextBlock
-            Margin="0,0,0,20"
+            Margin="0,8,0,20"
             FontSize="13"
-            Foreground="#666"
+            Foreground="#6B7280"
             Text="{Binding TaskTitle}" />
 
         <!--  ── 이슈 입력 영역 ──  -->
@@ -28,7 +46,7 @@
             Margin="0,0,0,8"
             FontSize="13"
             FontWeight="SemiBold">
-            이슈가 있었나요?<Run FontSize="11" Foreground="#999">(없으면 비워두세요)</Run>
+            이슈가 있었나요?&#160;&#160;<Run FontSize="11" Foreground="#999">(없으면 비워두세요)</Run>
         </TextBlock>
 
         <Grid Margin="0,0,0,6">
@@ -162,10 +180,45 @@
                     Background="Transparent"
                     BorderThickness="0"
                     Command="{Binding CopyCommitMessageCommand}"
-                    Content="📋 복사"
-                    Cursor="Hand"
-                    FontSize="12"
-                    Foreground="#7C3AED" />
+                    Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                x:Name="Bd"
+                                Padding="8,4"
+                                Background="Transparent"
+                                CornerRadius="6">
+                                <StackPanel Orientation="Horizontal">
+                                    <Viewbox
+                                        Width="13"
+                                        Height="13"
+                                        Margin="0,0,4,0">
+                                        <Canvas Width="24" Height="24">
+                                            <Path
+                                                Data="{StaticResource IconClipboard}"
+                                                Fill="Transparent"
+                                                Stroke="{StaticResource PrimaryBrush}"
+                                                StrokeEndLineCap="Round"
+                                                StrokeLineJoin="Round"
+                                                StrokeStartLineCap="Round"
+                                                StrokeThickness="2" />
+                                        </Canvas>
+                                    </Viewbox>
+                                    <TextBlock
+                                        VerticalAlignment="Center"
+                                        FontSize="12"
+                                        Foreground="{StaticResource PrimaryBrush}"
+                                        Text="복사" />
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="#EDE9FE" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
             </Grid>
         </Border>
 
@@ -185,19 +238,53 @@
                 Command="{Binding CancelCommand}"
                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                 Content="취소"
-                FontSize="13" />
+                Cursor="Hand"
+                FontSize="13">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#E5E7EB" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
 
             <Button
                 Grid.Column="1"
                 Height="38"
                 Margin="6,0,0,0"
-                Background="#7C3AED"
+                Background="{StaticResource PrimaryBrush}"
                 BorderThickness="0"
                 Command="{Binding ConfirmCommand}"
                 CommandParameter="{Binding RelativeSource={RelativeSource AncestorType=Window}}"
                 Content="완료"
+                Cursor="Hand"
                 FontSize="13"
-                Foreground="White" />
+                Foreground="White">
+                <Button.Template>
+                    <ControlTemplate TargetType="Button">
+                        <Border
+                            x:Name="Bd"
+                            Background="{TemplateBinding Background}"
+                            CornerRadius="8">
+                            <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                        </Border>
+                        <ControlTemplate.Triggers>
+                            <Trigger Property="IsMouseOver" Value="True">
+                                <Setter TargetName="Bd" Property="Background" Value="#6D28D9" />
+                            </Trigger>
+                        </ControlTemplate.Triggers>
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
         </Grid>
 
     </StackPanel>

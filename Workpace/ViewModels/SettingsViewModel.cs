@@ -37,9 +37,6 @@ namespace Workpace.ViewModels
         [ObservableProperty]
         private bool taskDeadlineAlertEnabled = true;
 
-        [ObservableProperty]
-        private int streakReminderIntervalHours = 1;
-
         // 프로필 로딩 중인지 여부
         // LoadProfile()이 토글 값을 채우는 동안 On{Property}Changed가 같이 발동되는데
         // 이건 "불러오는 것"이라 DB에 다시 쓰면 안 됨 → 이 플래그로 그 시점만 걸러냄
@@ -72,7 +69,6 @@ namespace Workpace.ViewModels
             StreakReminderEnabled = profile.StreakReminderEnabled;
             ProjectDeadlineAlertEnabled = profile.ProjectDeadlineAlertEnabled;
             TaskDeadlineAlertEnabled = profile.TaskDeadlineAlertEnabled;
-            StreakReminderIntervalHours = profile.StreakReminderIntervalHours;
         }
 
         // ───────────────────────────────────────
@@ -98,8 +94,7 @@ namespace Workpace.ViewModels
                 Bio = Bio,
                 StreakReminderEnabled = StreakReminderEnabled,
                 ProjectDeadlineAlertEnabled = ProjectDeadlineAlertEnabled,
-                TaskDeadlineAlertEnabled = TaskDeadlineAlertEnabled,
-                StreakReminderIntervalHours = StreakReminderIntervalHours
+                TaskDeadlineAlertEnabled = TaskDeadlineAlertEnabled
             };
 
             _db.SaveUserProfile(profile);

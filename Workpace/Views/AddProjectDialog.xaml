@@ -47,12 +47,28 @@
             <StackPanel>
 
                 <!--  ① 프로젝트 기본 정보  -->
-                <TextBlock
-                    Margin="0,0,0,16"
-                    FontSize="14"
-                    FontWeight="Bold"
-                    Foreground="#1F1F1F"
-                    Text="① 프로젝트 기본 정보" />
+                <StackPanel Margin="0,0,0,16" Orientation="Horizontal">
+                    <Border
+                        Width="22"
+                        Height="22"
+                        Margin="0,0,8,0"
+                        Background="{StaticResource PrimaryBrush}"
+                        CornerRadius="11">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="11"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            Text="1" />
+                    </Border>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#1F1F1F"
+                        Text="프로젝트 기본 정보" />
+                </StackPanel>
 
                 <!--  프로젝트 이름  -->
                 <TextBlock
@@ -120,7 +136,7 @@
                     Margin="0,0,0,6"
                     FontSize="13"
                     Foreground="#6B7280"
-                    Text="GitHub 링크 (선택)" />
+                    Text="GitHub 링크" />
                 <TextBox
                     Height="36"
                     Margin="0,0,0,16"
@@ -134,7 +150,7 @@
                     Margin="0,0,0,6"
                     FontSize="13"
                     Foreground="#6B7280"
-                    Text="개발 배경 (한 줄 설명) *" />
+                    Text="개발 배경 (한 줄 설명)" />
                 <TextBox
                     Height="36"
                     Margin="0,0,0,24"
@@ -144,12 +160,28 @@
                     Text="{Binding Background, UpdateSourceTrigger=PropertyChanged}" />
 
                 <!--  ② 기술 스택 선택  -->
-                <TextBlock
-                    Margin="0,0,0,16"
-                    FontSize="14"
-                    FontWeight="Bold"
-                    Foreground="#1F1F1F"
-                    Text="② 기술 스택 선택 (복수 선택 가능)" />
+                <StackPanel Margin="0,0,0,16" Orientation="Horizontal">
+                    <Border
+                        Width="22"
+                        Height="22"
+                        Margin="0,0,8,0"
+                        Background="{StaticResource PrimaryBrush}"
+                        CornerRadius="11">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="11"
+                            FontWeight="Bold"
+                            Foreground="White"
+                            Text="2" />
+                    </Border>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#1F1F1F"
+                        Text="기술 스택 선택 (복수 선택 가능)" />
+                </StackPanel>
 
                 <ItemsControl Margin="0,0,0,8" ItemsSource="{Binding TechStacks}">
                     <ItemsControl.ItemsPanel>
@@ -163,12 +195,9 @@
                             <ToggleButton
                                 Margin="0,0,8,8"
                                 Padding="12,6"
-                                Background="White"
-                                BorderBrush="#E5E7EB"
-                                BorderThickness="1"
                                 Content="{Binding Name}"
-                                Cursor="Hand"
-                                IsChecked="{Binding IsSelected}" />
+                                IsChecked="{Binding IsSelected}"
+                                Style="{StaticResource TechStackToggleStyle}" />
                         </DataTemplate>
                     </ItemsControl.ItemTemplate>
                 </ItemsControl>
@@ -182,8 +211,51 @@
                     BorderBrush="#E5E7EB"
                     BorderThickness="1"
                     Command="{Binding ShowAddTechStackCommand}"
-                    Content="+ 기타 추가"
                     Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                x:Name="Bd"
+                                Padding="{TemplateBinding Padding}"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8">
+                                <StackPanel Orientation="Horizontal">
+                                    <Viewbox
+                                        Width="13"
+                                        Height="13"
+                                        Margin="0,0,6,0">
+                                        <Canvas Width="24" Height="24">
+                                            <Path
+                                                x:Name="PlusIcon"
+                                                Data="{StaticResource IconPlus}"
+                                                Fill="Transparent"
+                                                Stroke="#6B7280"
+                                                StrokeEndLineCap="Round"
+                                                StrokeLineJoin="Round"
+                                                StrokeStartLineCap="Round"
+                                                StrokeThickness="2" />
+                                        </Canvas>
+                                    </Viewbox>
+                                    <TextBlock
+                                        x:Name="BtnText"
+                                        VerticalAlignment="Center"
+                                        FontSize="13"
+                                        Foreground="#6B7280"
+                                        Text="기타 추가" />
+                                </StackPanel>
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="#F5F3FF" />
+                                    <Setter TargetName="Bd" Property="BorderBrush" Value="#C4B5FD" />
+                                    <Setter TargetName="PlusIcon" Property="Stroke" Value="{StaticResource PrimaryBrush}" />
+                                    <Setter TargetName="BtnText" Property="Foreground" Value="{StaticResource PrimaryBrush}" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
                     <Button.Style>
                         <Style TargetType="Button">
                             <Style.Triggers>
@@ -237,8 +309,24 @@
                         Command="{Binding AddCustomTechStackCommand}"
                         Content="추가"
                         Cursor="Hand"
-                        Foreground="White" />
-
+                        Foreground="White">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border
+                                    x:Name="Bd"
+                                    Padding="{TemplateBinding Padding}"
+                                    Background="{TemplateBinding Background}"
+                                    CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="#6D28D9" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
                     <Button
                         Grid.Column="4"
                         Height="32"
@@ -248,126 +336,52 @@
                         BorderThickness="1"
                         Command="{Binding CancelAddTechStackCommand}"
                         Content="취소"
-                        Cursor="Hand" />
+                        Cursor="Hand">
+                        <Button.Template>
+                            <ControlTemplate TargetType="Button">
+                                <Border
+                                    x:Name="Bd"
+                                    Padding="{TemplateBinding Padding}"
+                                    Background="{TemplateBinding Background}"
+                                    BorderBrush="{TemplateBinding BorderBrush}"
+                                    BorderThickness="1"
+                                    CornerRadius="8">
+                                    <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                                </Border>
+                                <ControlTemplate.Triggers>
+                                    <Trigger Property="IsMouseOver" Value="True">
+                                        <Setter TargetName="Bd" Property="Background" Value="#F9FAFB" />
+                                        <Setter TargetName="Bd" Property="BorderBrush" Value="#D1D5DB" />
+                                    </Trigger>
+                                </ControlTemplate.Triggers>
+                            </ControlTemplate>
+                        </Button.Template>
+                    </Button>
                 </Grid>
 
-                <!--  ③ 프로젝트 유형 선택  -->
-                <TextBlock
-                    Margin="0,0,0,16"
-                    FontSize="14"
-                    FontWeight="Bold"
-                    Foreground="#1F1F1F"
-                    Text="③ 프로젝트 유형 선택" />
-
-                <UniformGrid
-                    Margin="0,0,0,24"
-                    Columns="5"
-                    Rows="1">
-
-                    <!--  소프트웨어 개발  -->
-                    <RadioButton
-                        GroupName="ProjectType"
-                        IsChecked="{Binding SelectedType, Converter={StaticResource EqualityConverter}, ConverterParameter=소프트웨어개발}"
-                        Style="{StaticResource TypeCardStyle}">
-                        <StackPanel HorizontalAlignment="Center">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                FontSize="24"
-                                Text="💻" />
-                            <TextBlock
-                                Margin="0,6,0,0"
-                                FontSize="11"
-                                Text="소프트웨어 개발"
-                                TextAlignment="Center"
-                                TextWrapping="Wrap" />
-                        </StackPanel>
-                    </RadioButton>
-
-                    <!--  디자인  -->
-                    <RadioButton
-                        GroupName="ProjectType"
-                        IsChecked="{Binding SelectedType, Converter={StaticResource EqualityConverter}, ConverterParameter=디자인}"
-                        Style="{StaticResource TypeCardStyle}">
-                        <StackPanel HorizontalAlignment="Center">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                FontSize="24"
-                                Text="🎨" />
-                            <TextBlock
-                                Margin="0,6,0,0"
-                                FontSize="11"
-                                Text="디자인 프로젝트"
-                                TextAlignment="Center"
-                                TextWrapping="Wrap" />
-                        </StackPanel>
-                    </RadioButton>
-
-                    <!--  학교 과제  -->
-                    <RadioButton
-                        GroupName="ProjectType"
-                        IsChecked="{Binding SelectedType, Converter={StaticResource EqualityConverter}, ConverterParameter=학교과제}"
-                        Style="{StaticResource TypeCardStyle}">
-                        <StackPanel HorizontalAlignment="Center">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                FontSize="24"
-                                Text="📚" />
-                            <TextBlock
-                                Margin="0,6,0,0"
-                                FontSize="11"
-                                Text="학교 과제"
-                                TextAlignment="Center"
-                                TextWrapping="Wrap" />
-                        </StackPanel>
-                    </RadioButton>
-
-                    <!--  직장 업무  -->
-                    <RadioButton
-                        GroupName="ProjectType"
-                        IsChecked="{Binding SelectedType, Converter={StaticResource EqualityConverter}, ConverterParameter=직장업무}"
-                        Style="{StaticResource TypeCardStyle}">
-                        <StackPanel HorizontalAlignment="Center">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                FontSize="24"
-                                Text="💼" />
-                            <TextBlock
-                                Margin="0,6,0,0"
-                                FontSize="11"
-                                Text="직장 업무"
-                                TextAlignment="Center"
-                                TextWrapping="Wrap" />
-                        </StackPanel>
-                    </RadioButton>
-
-                    <!--  개인 목표  -->
-                    <RadioButton
-                        GroupName="ProjectType"
-                        IsChecked="{Binding SelectedType, Converter={StaticResource EqualityConverter}, ConverterParameter=개인목표}"
-                        Style="{StaticResource TypeCardStyle}">
-                        <StackPanel HorizontalAlignment="Center">
-                            <TextBlock
-                                HorizontalAlignment="Center"
-                                FontSize="24"
-                                Text="🎯" />
-                            <TextBlock
-                                Margin="0,6,0,0"
-                                FontSize="11"
-                                Text="개인 목표"
-                                TextAlignment="Center"
-                                TextWrapping="Wrap" />
-                        </StackPanel>
-                    </RadioButton>
-
-                </UniformGrid>
-
-                <!--  ④ 포트폴리오 강화 정보  -->
-                <TextBlock
-                    Margin="0,0,0,4"
-                    FontSize="14"
-                    FontWeight="Bold"
-                    Foreground="#1F1F1F"
-                    Text="④ 포트폴리오 정보 (선택)" />
+                <!--  ③ 포트폴리오 정보  -->
+                <StackPanel Margin="0,0,0,4" Orientation="Horizontal">
+                    <Border
+                        Width="22"
+                        Height="22"
+                        Margin="0,0,8,0"
+                        Background="#E5E7EB"
+                        CornerRadius="11">
+                        <TextBlock
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            FontSize="11"
+                            FontWeight="Bold"
+                            Foreground="#6B7280"
+                            Text="3" />
+                    </Border>
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        FontSize="14"
+                        FontWeight="Bold"
+                        Foreground="#1F1F1F"
+                        Text="포트폴리오 정보 (선택)" />
+                </StackPanel>
                 <TextBlock
                     Margin="0,0,0,16"
                     FontSize="12"
@@ -388,7 +402,8 @@
                     BorderBrush="#E5E7EB"
                     BorderThickness="1"
                     Text="{Binding TechReason, UpdateSourceTrigger=PropertyChanged}"
-                    TextWrapping="Wrap" />
+                    TextWrapping="Wrap"
+                    VerticalScrollBarVisibility="Auto" />
                 <TextBlock
                     Margin="0,0,0,16"
                     FontSize="11"
@@ -453,18 +468,70 @@
                     BorderThickness="1"
                     Command="{Binding CancelCommand}"
                     Content="취소"
-                    Cursor="Hand" />
+                    Cursor="Hand">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                BorderBrush="{TemplateBinding BorderBrush}"
+                                BorderThickness="1"
+                                CornerRadius="8">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="#F9FAFB" />
+                                    <Setter TargetName="Bd" Property="BorderBrush" Value="#D1D5DB" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                </Button>
 
                 <Button
                     x:Name="ConfirmButton"
                     Grid.Column="2"
                     Height="40"
-                    Background="#7C3AED"
+                    Background="{StaticResource PrimaryBrush}"
                     BorderThickness="0"
                     Command="{Binding ConfirmCommand}"
-                    Content="🚀 프로젝트 시작하기"
                     Cursor="Hand"
-                    Foreground="White" />
+                    Foreground="White">
+                    <Button.Template>
+                        <ControlTemplate TargetType="Button">
+                            <Border
+                                x:Name="Bd"
+                                Background="{TemplateBinding Background}"
+                                CornerRadius="8">
+                                <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
+                            </Border>
+                            <ControlTemplate.Triggers>
+                                <Trigger Property="IsMouseOver" Value="True">
+                                    <Setter TargetName="Bd" Property="Background" Value="#6D28D9" />
+                                </Trigger>
+                            </ControlTemplate.Triggers>
+                        </ControlTemplate>
+                    </Button.Template>
+                    <StackPanel Orientation="Horizontal">
+                        <Viewbox
+                            Width="15"
+                            Height="15"
+                            Margin="0,0,8,0">
+                            <Canvas Width="24" Height="24">
+                                <Path
+                                    Data="{StaticResource IconSparkles}"
+                                    Fill="Transparent"
+                                    Stroke="White"
+                                    StrokeEndLineCap="Round"
+                                    StrokeLineJoin="Round"
+                                    StrokeStartLineCap="Round"
+                                    StrokeThickness="2" />
+                            </Canvas>
+                        </Viewbox>
+                        <TextBlock VerticalAlignment="Center" Text="프로젝트 시작하기" />
+                    </StackPanel>
+                </Button>
             </Grid>
         </Border>
 
