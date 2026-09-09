@@ -40,19 +40,7 @@ Workpace는 혼자 프로젝트를 진행하는 개발자가 **작업을 끝까�
 
 MVVM 패턴으로 View / ViewModel / Service / Database 레이어를 분리했습니다.
 
-```
-Views (XAML)
-  ↕ Data Binding / Command
-ViewModels (C#)
-  ↕ 데이터 요청 / 반환
-Services (C#)              Models (C#)
-  DatabaseService            Project / WorkTask / Issue
-  PortfolioService           Streak / UserProfile
-  NotificationService
-  ↕
-SQLite DB
-  Projects · Tasks · Issues · Files · Streaks · UserProfile
-```
+![아키텍처](docs/Workpace_Architecture.drawio.svg)
 
 - `[ObservableProperty]` 소스 생성기로 PropertyChanged 자동 처리
 - `WeakReferenceMessenger`로 ViewModel 간 통신 (메모리 누수 방지)
@@ -96,11 +84,16 @@ SQLite DB
 ### 5. 스트릭 시스템
 매일 작업을 완료하면 연속 작업일(스트릭)이 카운트됩니다. GitHub 잔디와 유사한 365일 활동 히트맵으로 꾸준함을 시각화합니다.
 
+![통계화면_1](assets/statistics_1.png)
+![통계화면_2](assets/statistics_2.png)
+
 - `Streaks` 테이블 `UNIQUE(Date)` + `INSERT OR IGNORE` → 하루 1회만 카운트
 - Canvas가 ItemsControl 내부에서 너비 0으로 collapse되는 WPF 제약으로 월 헤더를 코드비하인드에서 직접 렌더링
 
 ### 6. 포트폴리오 자동 생성
 프로젝트 완료 후 버튼 하나로 PDF 포트폴리오 문서가 자동 생성됩니다.
+
+![통계화면](assets/portfolio.png)
 
 - **자동 수집**: 프로젝트 기간 / 완료 작업 수 / 최고 스트릭 / 일정 준수율 / 트러블슈팅 이력
 - **최초 1회 입력**: 기술 스택 선정 이유 / GitHub URL / 개발 배경 / 회고
@@ -166,4 +159,4 @@ UserProfile : Id / Name / Email / LinkedIn / Blog / Bio
 
 ## 🎬 시연 영상
 
-[![시연 영상](https://img.shields.io/badge/YouTube-시연영상_보기-FF0000?style=flat&logo=youtube&logoColor=white)](https://www.youtube.com/watch?v=5smDx6y9e8E)
+[![Workpace 시연 영상](https://img.youtube.com/vi/5smDx6y9e8E/maxresdefault.jpg)](https://www.youtube.com/watch?v=5smDx6y9e8E)
